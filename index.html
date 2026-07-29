@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Arena fără frontiere — dueluri oarbe între modele AI, clasament Elo, totul offline-first, într-un singur fișier. Fișierul e al tău.">
+<title>Arena fără frontiere</title>
+<style>
+:root{
+  --bg:#161320; --panel:#1e1a2b; --panel2:#262138; --line:#372f52; --line2:#4a4070;
+  --text:#ece7db; --dim:#9b93ac; --faint:#6e6685;
+  --gold:#d9a441; --gold-soft:#e8c37a; --teal:#4ec2b3; --teal-soft:#8adfd3;
+  --red:#c85c5c; --green:#7fbf7a;
+  --r:12px;
+  --serif:"Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scrollbar-color:var(--line2) var(--bg)}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.55;min-height:100vh;
+  background-image:radial-gradient(ellipse 90% 55% at 50% -12%,rgba(217,164,65,.09),transparent 62%),
+                   radial-gradient(ellipse 75% 45% at 50% 112%,rgba(78,194,179,.06),transparent 60%)}
+a{color:var(--gold-soft)}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
+input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+::placeholder{color:var(--faint)}
+
+/* ------- shell ------- */
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px 64px}
+header{padding:26px 0 10px;text-align:center}
+.title{font-family:var(--serif);font-size:clamp(26px,4.5vw,40px);letter-spacing:.06em;color:var(--gold-soft)}
+.title b{font-weight:400;color:var(--text)}
+.laurel{display:flex;align-items:center;gap:12px;justify-content:center;color:var(--faint);margin-top:4px}
+.laurel::before,.laurel::after{content:"";height:1px;width:min(160px,26vw);background:linear-gradient(90deg,transparent,var(--line2));}
+.laurel::after{background:linear-gradient(90deg,var(--line2),transparent)}
+.tagline{font-size:12.5px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase}
+nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:18px 0 22px}
+nav button{padding:8px 16px;border-radius:999px;border:1px solid var(--line);color:var(--dim);font-size:13.5px;letter-spacing:.04em}
+nav button:hover{color:var(--text);border-color:var(--line2)}
+nav button.on{color:var(--bg);background:var(--gold);border-color:var(--gold);font-weight:600}
+.langs{position:absolute;top:14px;right:14px;display:flex;gap:4px}
+.langs button{padding:4px 9px;border-radius:6px;border:1px solid var(--line);font-size:12px;color:var(--dim)}
+.langs button.on{color:var(--gold-soft);border-color:var(--gold)}
+main section{display:none}
+main section.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ------- prompt bar ------- */
+.promptbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.promptbox textarea{min-height:74px;resize:vertical;background:var(--bg)}
+.pb-row{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.btn{padding:9px 18px;border-radius:9px;border:1px solid var(--line2);background:var(--panel2);font-size:14px}
+.btn:hover{border-color:var(--gold)}
+.btn.primary{background:var(--gold);border-color:var(--gold);color:#241c08;font-weight:700}
+.btn.primary:hover{background:var(--gold-soft)}
+.btn.primary:disabled,.btn:disabled{opacity:.45;cursor:not-allowed}
+.hint{font-size:12.5px;color:var(--faint)}
+.suggest{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.suggest button{font-size:12px;color:var(--dim);border:1px dashed var(--line);border-radius:999px;padding:4px 10px}
+.suggest button:hover{color:var(--gold-soft);border-color:var(--gold)}
+
+/* ------- duel panes ------- */
+.duel{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.pane{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;min-height:220px;overflow:hidden}
+.pane.a{border-top:3px solid var(--gold)}
+.pane.b{border-top:3px solid var(--teal)}
+.pane-h{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--serif);letter-spacing:.05em}
+.pane.a .pane-h{color:var(--gold-soft)} .pane.b .pane-h{color:var(--teal-soft)}
+.pane-h .who{font-size:16px}
+.pane-h .real{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--dim)}
+.pane-h .delta{font-family:var(--mono);font-size:12px}
+.delta.up{color:var(--green)} .delta.down{color:var(--red)}
+.pane-b{padding:14px;white-space:pre-wrap;overflow-wrap:break-word;flex:1;font-size:14.5px}
+.pane-b.err{color:var(--red)}
+.cursor::after{content:"▍";color:var(--gold);animation:blink 1s steps(1) infinite}
+.pane.b .cursor::after{color:var(--teal)}
+@keyframes blink{50%{opacity:0}}
+.vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;
+  background:conic-gradient(from 210deg,var(--gold) 0 50%,var(--teal) 50% 100%);padding:2px;z-index:2;pointer-events:none}
+.vs i{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;
+  background:var(--bg);font-family:var(--serif);font-style:normal;font-size:17px;letter-spacing:.08em;color:var(--text)}
+.vote{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.vote button{padding:12px 8px;border-radius:10px;border:1px solid var(--line);background:var(--panel);font-size:13.5px}
+.vote button:hover:not(:disabled){transform:translateY(-1px)}
+.vote .va:hover:not(:disabled){border-color:var(--gold);color:var(--gold-soft)}
+.vote .vb:hover:not(:disabled){border-color:var(--teal);color:var(--teal-soft)}
+.vote button:disabled{opacity:.4;cursor:not-allowed}
+.verdict{margin-top:14px;text-align:center;font-family:var(--serif);font-size:17px;color:var(--gold-soft);display:none}
+.verdict.on{display:block;animation:fade .4s ease}
+.postrow{display:none;justify-content:center;gap:10px;margin-top:12px}
+.postrow.on{display:flex}
+
+/* ------- leaderboard ------- */
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
+th{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:600;background:var(--panel2)}
+td.num,th.num{text-align:right;font-family:var(--mono)}
+tr:last-child td{border-bottom:none}
+td .rk{font-family:var(--serif);color:var(--gold-soft);font-size:15px}
+.bar{height:5px;border-radius:99px;background:var(--line);margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--teal))}
+.empty{padding:34px;text-align:center;color:var(--faint);border:1px dashed var(--line);border-radius:var(--r);font-size:14px}
+
+/* ------- compare ------- */
+.cmp-sel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+.cmp-sel label{font-size:12px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+
+/* ------- settings ------- */
+.cardlist{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.mcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.mcard .nm{font-family:var(--serif);font-size:16px}
+.mcard .meta{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.mcard .sp{flex:1}
+.tag{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line2);border-radius:5px;padding:2px 7px;color:var(--dim)}
+.tag.demo{color:var(--teal-soft);border-color:var(--teal)}
+.mini{padding:6px 12px;border-radius:8px;border:1px solid var(--line);font-size:12.5px;color:var(--dim)}
+.mini:hover{color:var(--text);border-color:var(--line2)}
+.mini.danger:hover{color:var(--red);border-color:var(--red)}
+.st{font-family:var(--mono);font-size:11.5px;padding:2px 8px;border-radius:5px;border:1px solid var(--line)}
+.st.ok{color:var(--green);border-color:var(--green)}
+.st.bad{color:var(--red);border-color:var(--red)}
+.form{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-top:14px;display:none}
+.form.on{display:block}
+.form h3{font-family:var(--serif);font-weight:400;margin-bottom:10px;color:var(--gold-soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2 .full{grid-column:1/-1}
+.form label{font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;display:block;margin:6px 0 3px}
+.io{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.note{font-size:12.5px;color:var(--faint);margin-top:10px;line-height:1.6}
+h2.sec{font-family:var(--serif);font-weight:400;font-size:21px;color:var(--gold-soft);letter-spacing:.04em;margin:6px 0 10px}
+.toggle{width:38px;height:22px;border-radius:99px;background:var(--line);position:relative;flex:none;transition:background .15s}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--dim);transition:transform .15s,background .15s}
+.toggle.on{background:var(--gold)}
+.toggle.on::after{transform:translateX(16px);background:#241c08}
+
+/* ------- free catalog ------- */
+.gcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-top:10px}
+.gcard .gh{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.gcard .gn{font-family:var(--serif);font-size:16px;color:var(--gold-soft)}
+.gcard .gk{flex:1;min-width:180px}
+.gcard .gk input{padding:6px 10px;font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12.5px;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+.chip:hover{color:var(--teal-soft);border-color:var(--teal)}
+.chip.in{color:var(--faint);border-style:dashed;cursor:default}
+.gnote{font-size:12px;color:var(--faint);margin-top:8px}
+.fbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;margin-top:10px}
+.fbar input[type=search]{flex:1;min-width:160px;padding:6px 10px;font-size:13px}
+.fbar select{width:auto;padding:6px 10px;font-size:13px}
+.fchip{font-size:12.5px;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.fchip.on{color:var(--bg);background:var(--gold);border-color:var(--gold);font-weight:600}
+.fcount{font-family:var(--mono);font-size:12px;color:var(--faint);width:100%;margin-top:2px}
+.gnote a{color:var(--teal-soft)}
+
+/* ------- toast ------- */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:10px 18px;font-size:14px;transition:transform .25s ease;z-index:9}
+#toast.on{transform:translateX(-50%) translateY(0)}
+
+footer{margin-top:44px;text-align:center;color:var(--faint);font-size:12.5px;line-height:1.8}
+footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
+
+@media(max-width:760px){
+  .duel,.cmp-sel,.grid2{grid-template-columns:1fr}
+  .vs{display:none}
+  .vote{grid-template-columns:1fr 1fr}
+  .langs{position:static;justify-content:center;margin-top:8px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="langs" id="langs"></div>
+<div class="wrap">
+
+<header>
+  <div class="title">ARENA <b>fără frontiere</b></div>
+  <div class="laurel"><span class="tagline" data-i18n="tagline"></span></div>
+</header>
+
+<nav id="nav">
+  <button data-tab="duel" class="on" data-i18n="tab_duel"></button>
+  <button data-tab="cmp" data-i18n="tab_cmp"></button>
+  <button data-tab="board" data-i18n="tab_board"></button>
+  <button data-tab="set" data-i18n="tab_set"></button>
+</nav>
+
+<main>
+
+<!-- ============ DUEL ============ -->
+<section id="tab-duel" class="on">
+  <div class="promptbox">
+    <textarea id="d-prompt" data-i18n-ph="prompt_ph"></textarea>
+    <div class="suggest" id="d-suggest"></div>
+    <div class="pb-row">
+      <button class="btn primary" id="d-go" data-i18n="fight"></button>
+      <button class="btn" id="d-stop" style="display:none" data-i18n="stop"></button>
+      <span class="hint" data-i18n="duel_hint"></span>
+    </div>
+  </div>
+
+  <div class="duel">
+    <div class="pane a">
+      <div class="pane-h"><span class="who" id="d-wa">⚔ A</span><span class="real" id="d-ra"></span><span class="delta" id="d-da"></span></div>
+      <div class="pane-b" id="d-pa"></div>
+    </div>
+    <div class="vs"><i>VS</i></div>
+    <div class="pane b">
+      <div class="pane-h"><span class="who" id="d-wb">⚔ B</span><span class="real" id="d-rb"></span><span class="delta" id="d-db"></span></div>
+      <div class="pane-b" id="d-pb"></div>
+    </div>
+  </div>
+
+  <div class="vote">
+    <button class="va" id="v-a" disabled data-i18n="v_a"></button>
+    <button class="vb" id="v-b" disabled data-i18n="v_b"></button>
+    <button id="v-tie" disabled data-i18n="v_tie"></button>
+    <button id="v-bad" disabled data-i18n="v_bad"></button>
+  </div>
+
+  <div class="verdict" id="d-verdict"></div>
+  <div class="postrow" id="d-post">
+    <button class="btn primary" id="d-again" data-i18n="again"></button>
+  </div>
+</section>
+
+<!-- ============ COMPARE ============ -->
+<section id="tab-cmp">
+  <div class="cmp-sel">
+    <div><label data-i18n="cmp_left"></label><select id="c-selA"></select></div>
+    <div><label data-i18n="cmp_right"></label><select id="c-selB"></select></div>
+  </div>
+  <div class="promptbox">
+    <textarea id="c-prompt" data-i18n-ph="prompt_ph"></textarea>
+    <div class="pb-row">
+      <button class="btn primary" id="c-go" data-i18n="compare"></button>
+      <span class="hint" data-i18n="cmp_hint"></span>
+    </div>
+  </div>
+  <div class="duel">
+    <div class="pane a">
+      <div class="pane-h"><span class="who" id="c-wa">—</span></div>
+      <div class="pane-b" id="c-pa"></div>
+    </div>
+    <div class="pane b">
+      <div class="pane-h"><span class="who" id="c-wb">—</span></div>
+      <div class="pane-b" id="c-pb"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEADERBOARD ============ -->
+<section id="tab-board">
+  <h2 class="sec" data-i18n="board_title"></h2>
+  <div id="board-wrap"></div>
+  <div class="io">
+    <button class="btn" id="b-reset" data-i18n="board_reset"></button>
+  </div>
+  <p class="note" data-i18n="board_note"></p>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section id="tab-set">
+  <h2 class="sec" data-i18n="set_models"></h2>
+  <div class="cardlist" id="mlist"></div>
+  <div class="io">
+    <button class="btn primary" id="m-add" data-i18n="add_model"></button>
+    <button class="btn" id="m-testall" data-i18n="test_all"></button>
+  </div>
+
+  <div class="form" id="mform">
+    <h3 id="mf-title"></h3>
+    <div class="grid2">
+      <div class="full"><label data-i18n="f_name"></label><input id="f-name" placeholder="ex: Claude Sonnet 4.6"></div>
+      <div><label data-i18n="f_prov"></label>
+        <select id="f-prov">
+          <option value="openai">OpenAI-compatible</option>
+          <option value="pollinations">Pollinations (cheie opțională)</option>
+          <option value="browser">În browser (WebLLM · WebGPU)</option>
+          <option value="chromeai">AI încorporat în browser (Gemini Nano)</option>
+          <option value="transformersjs">Transformers.js (WASM/WebGPU)</option>
+          <option value="anthropic">Anthropic</option>
+          <option value="ollama">Ollama (local)</option>
+        </select>
+      </div>
+      <div><label data-i18n="f_model"></label><input id="f-model" placeholder="ex: claude-sonnet-4-6"></div>
+      <div class="full"><label data-i18n="f_url"></label><input id="f-url" placeholder="https://api.openai.com/v1"></div>
+      <div class="full"><label data-i18n="f_key"></label><input id="f-key" type="password" autocomplete="off" placeholder="sk-…"></div>
+    </div>
+    <div class="pb-row">
+      <button class="btn primary" id="mf-save" data-i18n="save"></button>
+      <button class="btn" id="mf-cancel" data-i18n="cancel"></button>
+    </div>
+  </div>
+
+  <h2 class="sec" style="margin-top:26px" data-i18n="cat_title"></h2>
+  <p class="note" data-i18n="cat_note"></p>
+  <div class="fbar" id="fbar">
+    <input type="search" id="f-q" data-i18n-ph="f_search">
+    <span id="f-cats"></span>
+    <select id="f-reg"></select>
+    <span class="fcount" id="f-count"></span>
+  </div>
+  <div class="io" style="margin-top:10px"><button class="btn primary" id="sync-all" data-i18n="sync_all"></button></div>
+  <div id="catlist"></div>
+
+  <h2 class="sec" style="margin-top:26px" data-i18n="set_data"></h2>
+  <div class="io">
+    <button class="btn" id="io-export" data-i18n="exportd"></button>
+    <button class="btn" id="io-import" data-i18n="importd"></button>
+    <button class="btn" id="io-wipe" data-i18n="wipe"></button>
+    <input type="file" id="io-file" accept="application/json" style="display:none">
+  </div>
+  <p class="note" data-i18n="set_note"></p>
+</section>
+
+</main>
+
+<footer>
+  <span class="sig">Arena fără frontiere</span><br>
+  <span data-i18n="foot"></span>
+</footer>
+</div>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   ARENA fără frontiere — dueluri oarbe între modele AI + clasament Elo
+   Un singur fișier. Zero dependențe. Zero telemetrie. Fișierul e al tău.
+   ===================================================================== */
+
+/* ---------------- i18n ---------------- */
+const I18N = {
+ ro:{
+  tagline:"dueluri oarbe · clasament elo · fișierul e al tău",
+  tab_duel:"Duel", tab_cmp:"Comparație", tab_board:"Clasament", tab_set:"Setări",
+  prompt_ph:"Scrie o întrebare sau o sarcină pentru cei doi combatanți…",
+  fight:"Începe duelul", stop:"Oprește", compare:"Compară", again:"Duel nou",
+  duel_hint:"Doi combatanți anonimi. Votezi, apoi află cine au fost.",
+  cmp_hint:"Alegi tu combatanții — fără vot, fără Elo.",
+  v_a:"◀ A e mai bun", v_b:"B e mai bun ▶", v_tie:"Egalitate", v_bad:"Ambele slabe",
+  cmp_left:"Colțul auriu", cmp_right:"Colțul verde",
+  board_title:"Clasament Elo", board_reset:"Resetează clasamentul",
+  board_note:"Elo pornește de la 1000, K=32. Egalitatea și „ambele slabe” contează ca remiză. Clasamentul e local, doar al tău.",
+  th_rank:"#", th_model:"Model", th_elo:"Elo", th_m:"Dueluri", th_w:"V", th_d:"E", th_l:"Î",
+  empty_board:"Niciun duel încă. Arena așteaptă primii gladiatori.",
+  set_models:"Combatanți", add_model:"+ Adaugă model",
+  f_name:"Nume afișat", f_prov:"Provider", f_model:"ID model", f_url:"Base URL", f_key:"Cheie API",
+  save:"Salvează", cancel:"Renunță", edit:"Editează", del:"Șterge", test:"Test", test_all:"⚡ Testează toate modelele active", test_ok_n:"funcționale", test_bad_n:"căzute/limitate", test_quota:"Testezi {n} modele — fiecare test consumă un apel din cota zilnică a providerului (ex. OpenRouter: 50/zi). Continui?",
+  mf_new:"Combatant nou", mf_edit:"Editează combatantul",
+  set_data:"Datele tale",
+  exportd:"Exportă tot (JSON)", importd:"Importă", wipe:"Șterge tot",
+  set_note:"Totul — modele, chei, clasament — stă doar în browserul tău (localStorage). Exportul include cheile API: păstrează fișierul în siguranță. Modelele demo funcționează complet offline, fără nicio cheie.",
+  foot:"Un singur fișier HTML · vanilla JS · zero telemetrie · zero servere proprii<br>Cheile API pleacă doar spre providerul ales de tine, direct din browser.",
+  need2:"Ai nevoie de cel puțin 2 combatanți activi. Vezi Setări.",
+  need_prompt:"Scrie mai întâi un prompt.",
+  verdict_a:"Victorie pentru colțul auriu", verdict_b:"Victorie pentru colțul verde",
+  verdict_tie:"Remiză onorabilă", verdict_bad:"Arena rămâne nemulțumită", verdict_err:"Duel anulat — un combatant a picat. Fără Elo.",
+  was:"a fost", confirm_del:"Ștergi acest combatant? Duelurile lui rămân în istoric.",
+  confirm_reset:"Resetezi tot clasamentul Elo?",
+  confirm_wipe:"Ștergi TOATE datele locale (modele, chei, clasament)?",
+  imported:"Date importate.", exported:"Export gata.", wiped:"Date șterse.", saved:"Salvat.",
+  err_stream:"Eroare: ", err_cors:"rețea/CORS blocat — serverul nu acceptă apeluri din browser, endpoint-ul e greșit sau ești offline", nostorage:"localStorage indisponibil — datele se pierd la închiderea paginii.",
+  demo_tag:"demo", keyless_tag:"fără cheie", trial_tag:"credite trial", paid_tag:"plătit · cheia ta",
+  cat_title:"Catalog gratuit — 29 iulie 2026",
+  cat_note:"181 AI-uri integrabile la 29 iulie 2026 — 68 de provideri: gratuite (cloud global + China + local + în browser), trial și, marcate explicit, cele plătite cu cheia ta (Claude, GPT-5, Grok, DeepSeek direct, Sonar), de la AI-ul încorporat în browser (Gemini Nano) și motoarele din pagină (WebLLM, Transformers.js) până la toate serverele locale OpenAI-compatible (Ollama, LM Studio, Jan, llama.cpp, GPT4All, KoboldCpp, vLLM, LocalAI, oobabooga, TabbyAPI, SGLang, MLX, Aphrodite, Cortex, Xinference, FastChat, LiteLLM, Docker) de pe toate continentele: SUA, China (8 platforme), UE (Mistral, Scaleway, EuroLLM, Teuken), România (OpenLLM-Ro), India (Sarvam), Singapore (SEA-LION), Qatar (Fanar), Arabia Saudită (ALLaM prin Groq), Israel (AI21), Coreea (Upstage), Brazilia (Maritaca), EAU (Falcon), Vietnam, Africa. Listă verificată pe surse la zi. Butonul ⟳ Sincronizează interoghează live endpoint-ul /models al providerului și adaugă tot ce e gratuit în clipa aceea — lista nu îmbătrânește. Pollinations și Kilo Gateway merg fără nicio cheie. Pentru celelalte îți faci o cheie gratuită (fără card) la providerul respectiv, o lipești în câmpul grupului și adaugi modelele cu un click. Cataloagele gratuite se schimbă lunar — dacă un model dă eroare 404/429, a fost retras sau ai atins limita zilnică.",
+  cat_add_all:"+ Adaugă toate", cat_key_ph:"Cheia API a grupului…",
+  cat_added:"adăugat(e).", cat_key_first:"Lipește întâi cheia API a grupului.",
+  cat_in:"deja în listă",
+  sync:"Sincronizează", sync_tip:"Interoghează live /models la provider și adaugă tot ce e gratuit ACUM",
+  sync_none:"Nimic nou — lista e la zi.", sync_err:"Sincronizare eșuată: ",
+  sync_all:"⟳ Sincronizează tot ce se poate", sync_groups:"grupuri", sync_skipped:"sărite (fără cheie/eroare):",
+  f_search:"Caută model sau provider…", f_prov:"provideri", f_mod:"modele",
+  f_all:"Toate", f_keyless:"Fără cheie", f_free:"Cheie gratuită", f_trial:"Trial", f_paid:"Plătite", f_local:"Locale", f_browser:"În browser",
+  r_all:"Toate regiunile", r_global:"Global/SUA", r_china:"China", r_europa:"Europa", "r_românia":"România", r_asia:"Asia", r_orient:"Orientul Mijlociu", r_americi:"Americi",
+  sug:["Explică entanglementul cuantic unui copil de 10 ani","Scrie un haiku despre Dunăre la Capidava","Ce e mai important: libertatea sau siguranța?","Rezumă teoria relativității în 3 fraze"]
+ },
+ en:{
+  tagline:"blind duels · elo leaderboard · the file is yours",
+  tab_duel:"Duel", tab_cmp:"Compare", tab_board:"Leaderboard", tab_set:"Settings",
+  prompt_ph:"Write a question or task for the two combatants…",
+  fight:"Start the duel", stop:"Stop", compare:"Compare", again:"New duel",
+  duel_hint:"Two anonymous combatants. Vote, then see who they were.",
+  cmp_hint:"You pick the combatants — no vote, no Elo.",
+  v_a:"◀ A is better", v_b:"B is better ▶", v_tie:"Tie", v_bad:"Both bad",
+  cmp_left:"Gold corner", cmp_right:"Teal corner",
+  board_title:"Elo Leaderboard", board_reset:"Reset leaderboard",
+  board_note:"Elo starts at 1000, K=32. Ties and “both bad” count as draws. The leaderboard is local, yours only.",
+  th_rank:"#", th_model:"Model", th_elo:"Elo", th_m:"Duels", th_w:"W", th_d:"D", th_l:"L",
+  empty_board:"No duels yet. The arena awaits its first gladiators.",
+  set_models:"Combatants", add_model:"+ Add model",
+  f_name:"Display name", f_prov:"Provider", f_model:"Model ID", f_url:"Base URL", f_key:"API key",
+  save:"Save", cancel:"Cancel", edit:"Edit", del:"Delete", test:"Test", test_all:"⚡ Test all active models", test_ok_n:"working", test_bad_n:"down/limited", test_quota:"Testing {n} models — each test spends one call from the provider daily quota (e.g. OpenRouter: 50/day). Continue?",
+  mf_new:"New combatant", mf_edit:"Edit combatant",
+  set_data:"Your data",
+  exportd:"Export all (JSON)", importd:"Import", wipe:"Wipe all",
+  set_note:"Everything — models, keys, leaderboard — lives only in your browser (localStorage). Exports include API keys: keep the file safe. Demo models work fully offline, no key needed.",
+  foot:"One HTML file · vanilla JS · zero telemetry · no servers of its own<br>API keys travel only to the provider you chose, straight from your browser.",
+  need2:"You need at least 2 active combatants. See Settings.",
+  need_prompt:"Write a prompt first.",
+  verdict_a:"Victory for the gold corner", verdict_b:"Victory for the teal corner",
+  verdict_tie:"An honorable draw", verdict_bad:"The arena remains unimpressed", verdict_err:"Duel voided — a combatant failed. No Elo.",
+  was:"was", confirm_del:"Delete this combatant? Its duel history is kept.",
+  confirm_reset:"Reset the entire Elo leaderboard?",
+  confirm_wipe:"Wipe ALL local data (models, keys, leaderboard)?",
+  imported:"Data imported.", exported:"Export ready.", wiped:"Data wiped.", saved:"Saved.",
+  err_stream:"Error: ", err_cors:"network/CORS blocked — the server refuses browser calls, the endpoint is wrong, or you are offline", nostorage:"localStorage unavailable — data is lost when the page closes.",
+  demo_tag:"demo", keyless_tag:"no key", trial_tag:"trial credits", paid_tag:"paid · your key",
+  cat_title:"Free catalog — July 29, 2026",
+  cat_note:"181 integrable AIs as of July 29, 2026 — 68 providers: free (global cloud + China + local + in-browser), trial, and, explicitly tagged, paid ones with your own key (Claude, GPT-5, Grok, direct DeepSeek, Sonar), from the browser built-in AI (Gemini Nano) and in-page engines (WebLLM, Transformers.js) to every local OpenAI-compatible server (Ollama, LM Studio, Jan, llama.cpp, GPT4All, KoboldCpp, vLLM, LocalAI, oobabooga, TabbyAPI, SGLang, MLX, Aphrodite, Cortex, Xinference, FastChat, LiteLLM, Docker) across every continent: US, China (8 platforms), EU (Mistral, Scaleway, EuroLLM, Teuken), Romania (OpenLLM-Ro), India (Sarvam), Singapore (SEA-LION), Qatar (Fanar), Saudi Arabia (ALLaM via Groq), Israel (AI21), Korea (Upstage), Brazil (Maritaca), UAE (Falcon), Vietnam, Africa. List verified against live sources. The ⟳ Sync button queries the provider's live /models endpoint and adds everything free at that moment — the list never goes stale. Pollinations and Kilo Gateway need no key at all. For the others, create a free key (no card) at the provider, paste it into the group field, and add models with one click. Free catalogs rotate monthly — if a model returns 404/429, it was delisted or you hit the daily limit.",
+  cat_add_all:"+ Add all", cat_key_ph:"Group API key…",
+  cat_added:"added.", cat_key_first:"Paste the group's API key first.",
+  cat_in:"already added",
+  sync:"Sync", sync_tip:"Queries the provider's /models endpoint live and adds everything free RIGHT NOW",
+  sync_none:"Nothing new — the list is current.", sync_err:"Sync failed: ",
+  sync_all:"⟳ Sync everything possible", sync_groups:"groups", sync_skipped:"skipped (no key/error):",
+  f_search:"Search model or provider…", f_prov:"providers", f_mod:"models",
+  f_all:"All", f_keyless:"No key", f_free:"Free key", f_trial:"Trial", f_paid:"Paid", f_local:"Local", f_browser:"In-browser",
+  r_all:"All regions", r_global:"Global/US", r_china:"China", r_europa:"Europe", "r_românia":"Romania", r_asia:"Asia", r_orient:"Middle East", r_americi:"Americas",
+  sug:["Explain quantum entanglement to a 10-year-old","Write a haiku about the Danube at dusk","Which matters more: freedom or safety?","Summarize relativity in 3 sentences"]
+ }
+};
+let LANG = "ro";
+const t = k => (I18N[LANG] && I18N[LANG][k]) ?? I18N.ro[k] ?? k;
+
+/* ---------------- demo combatants (offline) ---------------- */
+const DEMO_STYLES = {
+ laconic:{ro:{name:"Laconic (demo)",open:["Pe scurt:","Direct:","Esența:"],mid:["Un singur lucru contează aici — miezul întrebării.","Restul e zgomot; păstrează doar ce poți verifica.","Dacă nu încape într-o frază, nu e încă înțeles."],close:["Atât.","Restul e exercițiu pentru cititor.","Simplu."]},
+              en:{name:"Laconic (demo)",open:["In short:","Directly:","The essence:"],mid:["Only one thing matters here — the core of the question.","The rest is noise; keep what you can verify.","If it doesn't fit in one sentence, it isn't understood yet."],close:["That's it.","The rest is left as an exercise.","Simple."]}},
+ rapsod:{ro:{name:"Rapsodul (demo)",open:["Închipuie-ți o clipă:","Ascultă:","E o poveste veche în întrebarea ta —"],mid:["fiecare idee e un fir de nisip în arena timpului, și totuși nisipul ține pași de gladiatori.","ce întrebi tu au întrebat și alții, la lumina altor focuri, și răspunsul s-a schimbat cu fiecare limbă în care a fost rostit.","există o frumusețe discretă în a nu ști încă — spațiul acela e locul unde crește gândirea."],close:["Așa se încheie cântul; al tău începe acum.","Iar arena, ca întotdeauna, aplaudă întrebarea, nu răspunsul.","Punct, și de la capăt."]},
+             en:{name:"The Rhapsode (demo)",open:["Imagine, for a moment:","Listen:","There is an old story inside your question —"],mid:["every idea is a grain of sand in the arena of time, and yet the sand carries the steps of gladiators.","what you ask, others asked by other fires, and the answer changed with every language it was spoken in.","there is a quiet beauty in not knowing yet — that space is where thinking grows."],close:["So ends the song; yours begins now.","And the arena, as always, applauds the question, not the answer.","Full stop, and again from the top."]}},
+ analist:{ro:{name:"Analistul (demo)",open:["Să structurăm.","Descompun problema în trei părți.","Metodic:"],mid:["Întâi definițiile: fără termeni clari, orice concluzie e fragilă. Apoi datele: ce știm sigur, ce doar presupunem. La final, inferența: pasul cel mai mic care leagă una de alta.","Ipoteza de lucru trebuie să fie falsificabilă; altfel discutăm gusturi, nu fapte. Verific premisele una câte una și marchez explicit incertitudinea.","Există cel puțin două interpretări plauzibile. Le compar după predicțiile pe care le fac, nu după cât de elegant sună."],close:["Concluzie provizorie, deschisă la revizuire.","Q.E.D. — cu asterisc.","Datele noi bat opiniile vechi."]},
+              en:{name:"The Analyst (demo)",open:["Let's structure this.","I'll decompose the problem into three parts.","Methodically:"],mid:["First, definitions: without clear terms, any conclusion is fragile. Then the data: what we know, what we merely assume. Finally, inference: the smallest step linking one to the other.","A working hypothesis must be falsifiable; otherwise we're discussing taste, not fact. I check premises one by one and mark uncertainty explicitly.","There are at least two plausible readings. I compare them by the predictions they make, not by how elegant they sound."],close:["Provisional conclusion, open to revision.","Q.E.D. — with an asterisk.","New data beats old opinions."]}},
+ sceptic:{ro:{name:"Scepticul (demo)",open:["Stai puțin.","Înainte de răspuns, o obiecție.","Hm — întrebarea ascunde o premisă."],mid:["Cine spune că întrebarea e pusă corect? De multe ori răspunsul greșit vine dintr-o întrebare acceptată prea repede.","Aș vrea surse, nu impresii. Până atunci, răspunsul cinstit e „nu știm încă destul”.","Atenție la ce pare evident: evidentul e locul unde se ascund cele mai vechi erori."],close:["Îndoiala rămâne cel mai bun instrument din arenă.","Verifică-mă. Serios.","Nu mă crede pe cuvânt — asta e tot mesajul."]},
+              en:{name:"The Skeptic (demo)",open:["Hold on.","Before an answer, an objection.","Hm — the question hides a premise."],mid:["Who says the question is well posed? Wrong answers often come from questions accepted too quickly.","I'd want sources, not impressions. Until then, the honest answer is “we don't know enough yet”.","Beware of the obvious: the obvious is where the oldest errors hide."],close:["Doubt remains the best instrument in the arena.","Check me. Seriously.","Don't take my word for it — that's the whole message."]}}
+};
+
+function defaultModels(){
+  return Object.keys(DEMO_STYLES).map(k=>({id:"demo-"+k,name:DEMO_STYLES[k].ro.name,provider:"demo",style:k,model:"",baseUrl:"",apiKey:"",enabled:true,demo:true}));
+}
+
+/* ---------------- free catalog (verified 2026-07-29) ---------------- */
+const FREE_2026=[
+ {g:"Pollinations",provider:"pollinations",baseUrl:"https://gen.pollinations.ai/v1",needKey:true,freeRule:"all",
+  keyUrl:"https://enter.pollinations.ai",
+  note:"API-ul vechi (text.pollinations.ai) a fost deprecat și dă 402 — cel nou cere cheie GRATUITĂ de la enter.pollinations.ai: folosește o cheie pk_ (publishable), proiectată explicit ca sigură în browser · nivel gratuit cu Pollen reîncărcat periodic · ⟳ merge și fără cheie (catalogul e public).",
+  models:[
+   {id:"openai",n:"GPT-5 Mini · Pollinations"},
+   {id:"gemini",n:"Gemini 3 Flash · Pollinations"},
+   {id:"deepseek",n:"DeepSeek V3.2 · Pollinations"},
+   {id:"mistral",n:"Mistral Small 3.2 · Pollinations"},
+   {id:"qwen-coder",n:"Qwen3 Coder · Pollinations"}]},
+ {g:"Kilo Gateway",provider:"openai",baseUrl:"https://api.kilo.ai/api/gateway",needKey:false,freeRule:"suffix",
+  keyUrl:"https://kilo.ai/docs/gateway",
+  note:"Modelele :free merg fără cont · 200 req/oră per IP · prompturile pot fi folosite la antrenare · dacă primești «rețea/CORS blocat», gateway-ul refuză apeluri din browser pe rețeaua ta — rutează-l prin LiteLLM Proxy local.",
+  models:[
+   {id:"kilo-auto/free",n:"Kilo Auto · router free"},
+   {id:"z-ai/glm-5:free",n:"GLM-5 · Kilo"},
+   {id:"minimax/minimax-m2.5:free",n:"MiniMax M2.5 · Kilo"},
+   {id:"stepfun/step-3.5-flash:free",n:"StepFun Step 3.5 Flash · Kilo"}]},
+ {g:"OpenCode Zen",provider:"openai",baseUrl:"https://opencode.ai/zen/v1",needKey:true,freeRule:"zen",
+  keyUrl:"https://opencode.ai/auth",
+  note:"Cheie gratuită, fără card · modele gratuite curate pentru coding · datele din perioada free pot fi folosite la îmbunătățirea modelelor.",
+  models:[
+   {id:"big-pickle",n:"Big Pickle (stealth) · Zen"},
+   {id:"deepseek-v4-flash-free",n:"DeepSeek V4 Flash · Zen"},
+   {id:"mimo-v2.5-free",n:"MiMo V2.5 · Zen"},
+   {id:"minimax-m2.5-free",n:"MiniMax M2.5 · Zen"},
+   {id:"nemotron-3-ultra-free",n:"Nemotron 3 Ultra · Zen"}]},
+ {g:"OpenRouter",provider:"openai",baseUrl:"https://openrouter.ai/api/v1",needKey:true,freeRule:"pricing",
+  keyUrl:"https://openrouter.ai/keys",
+  note:"Cheie gratuită, fără card · 20 req/min, 50 req/zi (1000/zi după un top-up unic de 10$) · modelele :free se rotesc des.",
+  models:[
+   {id:"openrouter/free",n:"OpenRouter Auto · router free"},
+   {id:"nvidia/nemotron-3-ultra-550b-a55b:free",n:"Nemotron 3 Ultra 550B"},
+   {id:"nvidia/nemotron-3-super-120b-a12b:free",n:"Nemotron 3 Super 120B"},
+   {id:"nvidia/nemotron-3-nano-30b-a3b:free",n:"Nemotron 3 Nano 30B"},
+   {id:"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",n:"Nemotron 3 Nano Omni 30B Reasoning"},
+   {id:"nvidia/nemotron-nano-12b-v2-vl:free",n:"Nemotron Nano 12B v2 VL"},
+   {id:"nvidia/nemotron-nano-9b-v2:free",n:"Nemotron Nano 9B v2"},
+   {id:"google/gemma-4-31b-it:free",n:"Gemma 4 31B"},
+   {id:"google/gemma-4-26b-a4b-it:free",n:"Gemma 4 26B A4B"},
+   {id:"openai/gpt-oss-20b:free",n:"GPT-OSS 20B"},
+   {id:"inclusionai/ling-3.0-flash:free",n:"Ling 3.0 Flash"},
+   {id:"poolside/laguna-s-2.1:free",n:"Poolside Laguna S 2.1"},
+   {id:"poolside/laguna-xs-2.1:free",n:"Poolside Laguna XS 2.1"},
+   {id:"poolside/laguna-m.1:free",n:"Poolside Laguna M.1"},
+   {id:"cohere/north-mini-code:free",n:"Cohere North Mini Code"}]},
+ {g:"Groq",provider:"openai",baseUrl:"https://api.groq.com/openai/v1",needKey:true,
+  keyUrl:"https://console.groq.com/keys",
+  note:"Free tier, fără card · foarte rapid (LPU) · ~1000 req/zi pe modelele mari (limite reduse în 2026).",
+  models:[
+   {id:"llama-3.3-70b-versatile",n:"Llama 3.3 70B · Groq"},
+   {id:"llama-3.1-8b-instant",n:"Llama 3.1 8B Instant · Groq"},
+   {id:"openai/gpt-oss-120b",n:"GPT-OSS 120B · Groq"},
+   {id:"openai/gpt-oss-20b",n:"GPT-OSS 20B · Groq"},
+   {id:"qwen/qwen3.6-27b",n:"Qwen3.6 27B · Groq"},
+   {id:"groq/compound",n:"Groq Compound · agentic"},
+   {id:"groq/compound-mini",n:"Groq Compound Mini"},
+   {id:"allam-2-7b",n:"ALLaM 2 7B (Arabia Saudită) · Groq"}]},
+ {g:"Cerebras",provider:"openai",baseUrl:"https://api.cerebras.ai/v1",needKey:true,
+  keyUrl:"https://cloud.cerebras.ai",
+  note:"Free tier · cel mai rapid throughput (~2000 tok/s) · ~1M tokeni/zi per model.",
+  models:[
+   {id:"gpt-oss-120b",n:"GPT-OSS 120B · Cerebras"},
+   {id:"zai-glm-4.7",n:"GLM-4.7 · Cerebras"},
+   {id:"gemma-4-31b",n:"Gemma 4 31B · Cerebras"}]},
+ {g:"Google AI Studio",provider:"openai",baseUrl:"https://generativelanguage.googleapis.com/v1beta/openai",needKey:true,
+  keyUrl:"https://aistudio.google.com/apikey",
+  note:"Free tier · Gemini Flash ~20 req/zi, Flash-Lite ~500/zi, Gemma ~14400/zi · în afara UE datele pot fi folosite la antrenare · verifică ID-urile exacte în AI Studio.",
+  models:[
+   {id:"gemini-3.6-flash",n:"Gemini 3.6 Flash · Google"},
+   {id:"gemini-3.5-flash",n:"Gemini 3.5 Flash · Google"},
+   {id:"gemini-3-flash",n:"Gemini 3 Flash · Google"},
+   {id:"gemini-3.5-flash-lite",n:"Gemini 3.5 Flash-Lite · Google"},
+   {id:"gemini-2.5-flash",n:"Gemini 2.5 Flash · Google"},
+   {id:"gemma-4-31b-it",n:"Gemma 4 31B · Google"},
+   {id:"gemma-3-27b-it",n:"Gemma 3 27B · Google"}]},
+ {g:"Mistral La Plateforme",provider:"openai",baseUrl:"https://api.mistral.ai/v1",needKey:true,
+  keyUrl:"https://console.mistral.ai",
+  note:"Free tier (Experiment) · cere verificare telefon și acord de antrenare pe date · limite generoase per model.",
+  models:[
+   {id:"mistral-small-latest",n:"Mistral Small · Mistral"},
+   {id:"mistral-medium-latest",n:"Mistral Medium · Mistral"},
+   {id:"magistral-small-latest",n:"Magistral Small · Mistral"},
+   {id:"codestral-latest",n:"Codestral · Mistral"}]},
+ {g:"GitHub Models",provider:"openai",baseUrl:"https://models.github.ai/inference",needKey:true,
+  keyUrl:"https://github.com/settings/tokens",
+  note:"Gratuit cu un Personal Access Token GitHub (scope models) · limite per model · include modele închise.",
+  models:[
+   {id:"openai/gpt-4.1",n:"GPT-4.1 · GitHub"},
+   {id:"deepseek/deepseek-r1",n:"DeepSeek R1 · GitHub"},
+   {id:"meta/llama-3.3-70b-instruct",n:"Llama 3.3 70B · GitHub"},
+   {id:"microsoft/phi-4",n:"Phi-4 · GitHub"},
+   {id:"xai/grok-3-mini",n:"Grok 3 Mini · GitHub"}]},
+ {g:"NVIDIA NIM",provider:"openai",baseUrl:"https://integrate.api.nvidia.com/v1",needKey:true,
+  keyUrl:"https://build.nvidia.com",
+  note:"Gratuit cu cont NVIDIA (verificare telefon) · 40 req/min · context uneori limitat.",
+  models:[
+   {id:"deepseek-ai/deepseek-r1",n:"DeepSeek R1 · NVIDIA"},
+   {id:"meta/llama-3.3-70b-instruct",n:"Llama 3.3 70B · NVIDIA"},
+   {id:"moonshotai/kimi-k2-instruct",n:"Kimi K2 · NVIDIA"},
+   {id:"nvidia/llama-3.3-nemotron-super-49b-v1",n:"Nemotron Super 49B · NVIDIA"}]},
+ {g:"Cohere",provider:"openai",baseUrl:"https://api.cohere.ai/compatibility/v1",needKey:true,
+  keyUrl:"https://dashboard.cohere.com/api-keys",
+  note:"Cheie trial gratuită · 20 req/min, 1000 req/lună (cotă comună).",
+  models:[
+   {id:"command-a-plus-05-2026",n:"Command A+ (05-2026) · Cohere"},
+   {id:"command-a-03-2025",n:"Command A · Cohere"},
+   {id:"command-a-reasoning-08-2025",n:"Command A Reasoning · Cohere"},
+   {id:"command-r7b-12-2024",n:"Command R7B · Cohere"},
+   {id:"c4ai-aya-expanse-32b",n:"Aya Expanse 32B · Cohere"}]},
+ {g:"HuggingFace Inference",provider:"openai",baseUrl:"https://router.huggingface.co/v1",needKey:true,
+  keyUrl:"https://huggingface.co/settings/tokens",
+  note:"Token HF gratuit · ~0,10$/lună credite pe Inference Providers · ID-urile sunt repo-uri HF.",
+  models:[
+   {id:"openai/gpt-oss-120b",n:"GPT-OSS 120B · HuggingFace"},
+   {id:"deepseek-ai/DeepSeek-V3.2",n:"DeepSeek V3.2 · HuggingFace"},
+   {id:"moonshotai/Kimi-K2-Instruct",n:"Kimi K2 · HuggingFace"}]},
+ {g:"Cloudflare Workers AI",provider:"openai",baseUrl:"https://api.cloudflare.com/client/v4/accounts/CONT_ID/ai/v1",needKey:true,
+  keyUrl:"https://dash.cloudflare.com",
+  note:"10.000 neuroni/zi gratuit · IMPORTANT: după adăugare, editează modelul și înlocuiește CONT_ID din Base URL cu Account ID-ul tău Cloudflare.",
+  models:[
+   {id:"@cf/zai-org/glm-5.2",n:"GLM-5.2 · Cloudflare"},
+   {id:"@cf/moonshotai/kimi-k2.6",n:"Kimi K2.6 · Cloudflare"},
+   {id:"@cf/openai/gpt-oss-120b",n:"GPT-OSS 120B · Cloudflare"},
+   {id:"@cf/google/gemma-4-26b-a4b-it",n:"Gemma 4 26B A4B · Cloudflare"},
+   {id:"@cf/qwen/qwen3-30b-a3b-fp8",n:"Qwen3 30B A3B · Cloudflare"},
+   {id:"@cf/meta/llama-3.3-70b-instruct-fp8-fast",n:"Llama 3.3 70B · Cloudflare"}]},
+ {g:"Z.ai (Zhipu)",provider:"openai",baseUrl:"https://api.z.ai/api/paas/v4",needKey:true,
+  keyUrl:"https://z.ai/model-api",
+  note:"Modelele Flash sunt gratuite cu cheie · limite per model.",
+  models:[
+   {id:"glm-4.7-flash",n:"GLM-4.7 Flash · Z.ai"},
+   {id:"glm-4.5-flash",n:"GLM-4.5 Flash · Z.ai"}]},
+ {g:"ModelScope · 魔搭 (Alibaba)",provider:"openai",baseUrl:"https://api-inference.modelscope.cn/v1",needKey:true,
+  keyUrl:"https://modelscope.cn",
+  note:"Gratuit: 2000 apeluri/zi total, max 500/model (100/zi la DeepSeek mari) · cere cont Alibaba cu verificare de identitate · Qwen3.5 apare aici primul — folosește ⟳ pentru lista completă.",
+  models:[
+   {id:"deepseek-ai/DeepSeek-V3.2-Exp",n:"DeepSeek V3.2 Exp · ModelScope"},
+   {id:"deepseek-ai/DeepSeek-R1-0528",n:"DeepSeek R1 · ModelScope"}]},
+ {g:"SiliconFlow · 硅基流动",provider:"openai",baseUrl:"https://api.siliconflow.cn/v1",needKey:true,
+  keyUrl:"https://siliconflow.cn",
+  note:"Modele mici gratuite permanent + ~20M tokeni la înregistrare (cont CN; internațional: api.siliconflow.com, ~1$ credit) · lista de modele 0¥ se rotește — folosește ⟳.",
+  models:[
+   {id:"Qwen/Qwen3-8B",n:"Qwen3 8B · SiliconFlow"},
+   {id:"deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",n:"DeepSeek R1 Distill 7B · SiliconFlow"}]},
+ {g:"Tencent Hunyuan · 腾讯混元",provider:"openai",baseUrl:"https://api.hunyuan.cloud.tencent.com/v1",needKey:true,
+  keyUrl:"https://cloud.tencent.com/product/hunyuan",
+  note:"hunyuan-lite gratuit + ~100M tokeni la activarea serviciului · cont Tencent Cloud.",
+  models:[
+   {id:"hunyuan-lite",n:"Hunyuan Lite · Tencent"}]},
+ {g:"Baidu Qianfan · 百度千帆",provider:"openai",baseUrl:"https://qianfan.baidubce.com/v2",needKey:true,
+  keyUrl:"https://console.bce.baidu.com/qianfan",
+  note:"ERNIE Speed și Lite gratuite · cont Baidu Cloud.",
+  models:[
+   {id:"ernie-speed-8k",n:"ERNIE Speed 8K · Baidu"},
+   {id:"ernie-lite-8k",n:"ERNIE Lite 8K · Baidu"}]},
+ {g:"iFlytek Spark · 讯飞星火",provider:"openai",baseUrl:"https://spark-api-open.xf-yun.com/v1",needKey:true,
+  keyUrl:"https://console.xfyun.cn",
+  note:"Spark Lite gratuit nelimitat · cheia se scrie APIKey:APISecret (cu două puncte între ele).",
+  models:[
+   {id:"lite",n:"Spark Lite · iFlytek"}]},
+ {g:"Moonshot Kimi · 月之暗面",trial:true,provider:"openai",baseUrl:"https://api.moonshot.ai/v1",needKey:true,
+  keyUrl:"https://platform.moonshot.ai",
+  note:"Credite trial la înregistrare · endpoint CN: api.moonshot.cn/v1.",
+  models:[
+   {id:"kimi-latest",n:"Kimi (latest) · Moonshot"}]},
+ {g:"Alibaba Model Studio · 通义",trial:true,provider:"openai",baseUrl:"https://dashscope-intl.aliyuncs.com/compatible-mode/v1",needKey:true,
+  keyUrl:"https://bailian.console.alibabacloud.com",
+  note:"Trial: 1.000.000 tokeni per model, 90 de zile (endpoint Singapore).",
+  models:[
+   {id:"qwen-plus",n:"Qwen Plus · Alibaba"},
+   {id:"qwen-turbo",n:"Qwen Turbo · Alibaba"},
+   {id:"qwen-flash",n:"Qwen Flash · Alibaba"}]},
+ {g:"În browser · WebLLM (WebGPU)",provider:"browser",baseUrl:"",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://webllm.mlc.ai",
+  note:"AI-ul rulează chiar în această pagină, pe GPU-ul tău, prin WebGPU — zero server, zero cheie. La prima folosire descarcă modelul (0,6–2 GB, apoi rămâne în cache-ul browserului) și biblioteca WebLLM de pe esm.run — singura excepție de la «zero dependențe», opțională și declanșată doar de tine.",
+  models:[
+   {id:"Llama-3.2-1B-Instruct-q4f16_1-MLC",n:"Llama 3.2 1B · în browser"},
+   {id:"Llama-3.2-3B-Instruct-q4f16_1-MLC",n:"Llama 3.2 3B · în browser"},
+   {id:"Qwen2.5-1.5B-Instruct-q4f16_1-MLC",n:"Qwen2.5 1.5B · în browser"},
+   {id:"Phi-3.5-mini-instruct-q4f16_1-MLC",n:"Phi 3.5 Mini · în browser"},
+   {id:"gemma-2-2b-it-q4f16_1-MLC",n:"Gemma 2 2B · în browser"}]},
+ {g:"LM Studio (local)",provider:"openai",baseUrl:"http://localhost:1234/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://lmstudio.ai",
+  note:"Pornește serverul din tabul Developer și activează CORS în setările serverului · ⟳ listează modelele încărcate — folosește-l, ID-ul static de mai jos e doar orientativ.",
+  models:[
+   {id:"local-model",n:"Modelul încărcat · LM Studio"}]},
+ {g:"Jan (local)",provider:"openai",baseUrl:"http://localhost:1337/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://jan.ai",
+  note:"Activează API Server în setările Jan (cu CORS) · ⟳ listează modelele instalate.",
+  models:[
+   {id:"jan-local",n:"Modelul încărcat · Jan"}]},
+ {g:"llama.cpp / llamafile (local)",provider:"openai",baseUrl:"http://localhost:8080/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://github.com/ggml-org/llama.cpp",
+  note:"«llama-server -m model.gguf» sau dublu-click pe un llamafile · serverul acceptă orice ID de model · CORS e permis implicit.",
+  models:[
+   {id:"llamacpp",n:"Modelul încărcat · llama.cpp"}]},
+ {g:"GPT4All (local)",provider:"openai",baseUrl:"http://localhost:4891/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://gpt4all.io",
+  note:"Activează «Local API Server» din Settings · ⟳ listează modelele.",
+  models:[
+   {id:"gpt4all-local",n:"Modelul încărcat · GPT4All"}]},
+ {g:"KoboldCpp (local)",provider:"openai",baseUrl:"http://localhost:5001/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://github.com/LostRuins/koboldcpp",
+  note:"Endpoint OpenAI-compatible activ implicit pe portul 5001.",
+  models:[
+   {id:"koboldcpp",n:"Modelul încărcat · KoboldCpp"}]},
+ {g:"vLLM (local/server)",provider:"openai",baseUrl:"http://localhost:8000/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://docs.vllm.ai",
+  note:"«vllm serve <model>» · pentru acces din browser pornește cu --allowed-origins '[\"*\"]'.",
+  models:[
+   {id:"vllm-local",n:"Modelul servit · vLLM"}]},
+ {g:"AI încorporat în browser · Gemini Nano",provider:"chromeai",baseUrl:"",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://developer.chrome.com/docs/ai/prompt-api",
+  note:"Prompt API din Chrome/Edge — modelul e gestionat și descărcat o singură dată de browser, rulează complet local, zero biblioteci externe. Dacă badge-ul ⚡ arată ✗, activează AI-ul încorporat din setările/flag-urile browserului.",
+  models:[
+   {id:"gemini-nano",n:"Gemini Nano · încorporat în browser"}]},
+ {g:"Transformers.js · WASM/WebGPU",provider:"transformersjs",baseUrl:"",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://huggingface.co/docs/transformers.js",
+  note:"Rulează ONNX în pagină — inclusiv FĂRĂ WebGPU (cade pe WASM), deci merge pe aproape orice browser. Prima folosire descarcă biblioteca (esm.run) și modelul de pe HuggingFace, apoi cache.",
+  models:[
+   {id:"onnx-community/Qwen2.5-0.5B-Instruct",n:"Qwen2.5 0.5B · Transformers.js"},
+   {id:"onnx-community/Llama-3.2-1B-Instruct",n:"Llama 3.2 1B · Transformers.js"},
+   {id:"HuggingFaceTB/SmolLM2-1.7B-Instruct",n:"SmolLM2 1.7B · Transformers.js"}]},
+ {g:"LocalAI (local)",provider:"openai",baseUrl:"http://localhost:8080/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://localai.io",
+  note:"Server OpenAI-compatible complet (text/imagine/audio) · ATENȚIE: portul 8080 e implicit și la llama.cpp — schimbă unul dintre ele dacă rulezi ambele · ⟳ listează galeria instalată.",
+  models:[{id:"localai-model",n:"Modelul încărcat · LocalAI"}]},
+ {g:"Text Generation WebUI · oobabooga (local)",provider:"openai",baseUrl:"http://localhost:5000/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://github.com/oobabooga/text-generation-webui",
+  note:"Pornește cu --api (și --api-cors dacă e cazul) · port implicit 5000.",
+  models:[{id:"ooba-local",n:"Modelul încărcat · oobabooga"}]},
+ {g:"TabbyAPI · ExLlamaV2 (local)",provider:"openai",baseUrl:"http://localhost:5000/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://github.com/theroyallab/tabbyAPI",
+  note:"Inferență EXL2 rapidă pe GPU · același port 5000 ca oobabooga — rulează doar unul sau schimbă portul.",
+  models:[{id:"tabby-local",n:"Modelul încărcat · TabbyAPI"}]},
+ {g:"SGLang (local/server)",provider:"openai",baseUrl:"http://localhost:30000/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://docs.sglang.ai",
+  note:"«python -m sglang.launch_server --model-path <model>» · port implicit 30000.",
+  models:[{id:"sglang-local",n:"Modelul servit · SGLang"}]},
+ {g:"MLX · Apple Silicon (local)",provider:"openai",baseUrl:"http://localhost:8080/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://github.com/ml-explore/mlx-lm",
+  note:"«mlx_lm.server --model <model>» pe Mac M1–M4 · port implicit 8080 (conflict cu llama.cpp/LocalAI dacă rulează simultan).",
+  models:[{id:"mlx-local",n:"Modelul servit · MLX"}]},
+ {g:"Aphrodite Engine (local/server)",provider:"openai",baseUrl:"http://localhost:2242/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://github.com/aphrodite-engine/aphrodite-engine",
+  note:"Motor de servire cu debit mare · port implicit 2242.",
+  models:[{id:"aphrodite-local",n:"Modelul servit · Aphrodite"}]},
+ {g:"Cortex (local)",provider:"openai",baseUrl:"http://localhost:39281/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://cortex.so",
+  note:"Motorul din spatele Jan, utilizabil standalone («cortex run <model>») · port implicit 39281.",
+  models:[{id:"cortex-local",n:"Modelul încărcat · Cortex"}]},
+ {g:"Xinference (local/server)",provider:"openai",baseUrl:"http://localhost:9997/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://inference.readthedocs.io",
+  note:"«xinference-local» · port implicit 9997 · servește LLM/embeddings/rerank.",
+  models:[{id:"xinference-local",n:"Modelul lansat · Xinference"}]},
+ {g:"FastChat (local/server)",provider:"openai",baseUrl:"http://localhost:8000/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://github.com/lm-sys/FastChat",
+  note:"Serverul OpenAI-compatible al echipei LMSYS (creatorii arenei originale) · port 8000 — conflict cu vLLM dacă rulează ambele.",
+  models:[{id:"fastchat-local",n:"Modelul servit · FastChat"}]},
+ {g:"LiteLLM Proxy (local · ruter)",provider:"openai",baseUrl:"http://localhost:4000/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://docs.litellm.ai",
+  note:"Ruter local spre 100+ provideri — orice ai configurat în litellm apare aici prin ⟳ · port implicit 4000.",
+  models:[{id:"litellm-router",n:"Rutele configurate · LiteLLM"}]},
+ {g:"Docker Model Runner (local)",provider:"openai",baseUrl:"http://localhost:12434/engines/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://docs.docker.com/ai/model-runner/",
+  note:"«docker model run ai/<model>» din Docker Desktop · endpoint OpenAI-compatible pe 12434 · activează TCP host access din setările Docker.",
+  models:[{id:"ai/smollm2",n:"Modelul rulat · Docker"}]},
+ {g:"Foundry Local · Microsoft (local)",provider:"openai",baseUrl:"http://localhost:5273/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://learn.microsoft.com/azure/ai-foundry/foundry-local/",
+  note:"«foundry model run <model>» — rulează local modele din catalogul Foundry (Phi, Qwen, DeepSeek…) cu accelerare NPU/GPU · portul e dinamic: verifică-l cu «foundry service status» și corectează Base URL dacă diferă.",
+  models:[{id:"foundry-local",n:"Modelul rulat · Foundry Local"}]},
+ {g:"Lemonade · AMD (local · GPU+NPU)",provider:"openai",baseUrl:"http://localhost:13305/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://github.com/lemonade-sdk/lemonade",
+  note:"Serverul local AMD: LLM + Stable Diffusion + Whisper + TTS sub un singur endpoint OpenAI-compatible, cu execuție hibridă GPU+NPU (Ryzen AI) · verifică portul afișat la pornire.",
+  models:[{id:"lemonade-local",n:"Modelul încărcat · Lemonade"}]},
+ {g:"Ollama · biblioteca 2026 (local)",provider:"ollama",baseUrl:"http://localhost:11434/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://ollama.com/library",
+  note:"Cele mai noi modele open-weight rulabile local prin «ollama pull <id>» (Ollama pornit cu OLLAMA_ORIGINS=*) · pe Apple Silicon Ollama folosește acum nativ MLX · chips-urile presupun modelul deja tras — ⚡ îți confirmă.",
+  models:[
+   {id:"gpt-oss:20b",n:"GPT-OSS 20B · Ollama"},
+   {id:"gemma4",n:"Gemma 4 · Ollama"},
+   {id:"gemma3n",n:"Gemma 3n (on-device) · Ollama"},
+   {id:"qwen3",n:"Qwen3 · Ollama"},
+   {id:"phi4-mini",n:"Phi-4 Mini · Ollama"},
+   {id:"deepseek-r1:8b",n:"DeepSeek R1 8B · Ollama"},
+   {id:"devstral",n:"Devstral (coding) · Ollama"},
+   {id:"granite4",n:"Granite 4 · Ollama"},
+   {id:"smollm2",n:"SmolLM2 · Ollama"},
+   {id:"nemotron-mini",n:"Nemotron Mini · Ollama"}]},
+ {g:"România · OpenLLM-Ro (local)",provider:"ollama",baseUrl:"http://localhost:11434/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://openllm.ro",
+  note:"Singurele LLM-uri românești sunt open-source, fără API găzduit — le rulezi local: instalează Ollama, apoi «ollama pull hf.co/<repo>» (merge dacă repo-ul are GGUF; RoLlama-3.2-1B e cuantizat 4-bit exact pentru asta; pentru celelalte caută conversia GGUF comunitară pe HuggingFace). IMPORTANT pentru browser: pornește Ollama cu OLLAMA_ORIGINS=* (altfel CORS blochează pagina). ⟳ listează ce ai deja instalat local.",
+  models:[
+   {id:"hf.co/OpenLLM-Ro/RoLlama-3.2-1B",n:"RoLlama 3.2 1B (iun 2026) · OpenLLM-Ro"},
+   {id:"hf.co/OpenLLM-Ro/RoLlama3.1-8b-Instruct",n:"RoLlama 3.1 8B Instruct · OpenLLM-Ro"},
+   {id:"hf.co/OpenLLM-Ro/RoGemma2-9b-Instruct",n:"RoGemma2 9B Instruct · OpenLLM-Ro"},
+   {id:"hf.co/OpenLLM-Ro/RoMistral-7b-Instruct",n:"RoMistral 7B Instruct · OpenLLM-Ro"},
+   {id:"hf.co/faur-ai/LLMic",n:"LLMic (Faur AI, Ro-En) · România"}]},
+ {g:"SEA-LION · Singapore (AI Singapore)",provider:"openai",baseUrl:"https://api.sea-lion.ai/v1",needKey:true,
+  keyUrl:"https://playground.sea-lion.ai",
+  note:"Cheie gratuită · 10 req/min · modele suverane pentru limbile Asiei de Sud-Est.",
+  models:[
+   {id:"aisingapore/Gemma-SEA-LION-v4-27B-IT",n:"Gemma SEA-LION v4 27B · Singapore"},
+   {id:"aisingapore/Llama-SEA-LION-v3.5-70B-R",n:"Llama SEA-LION v3.5 70B R · Singapore"}]},
+ {g:"Sarvam · India",provider:"openai",baseUrl:"https://api.sarvam.ai/v1",needKey:true,
+  keyUrl:"https://dashboard.sarvam.ai",
+  note:"₹1000 credite gratuite la înregistrare, fără card, nu expiră · 22 de limbi indiene · Sarvam-30B/105B (2026) apar prin ⟳.",
+  models:[
+   {id:"sarvam-m",n:"Sarvam-M · India"}]},
+ {g:"Fanar · Qatar (QCRI)",provider:"openai",baseUrl:"https://api.fanar.qa/v1",needKey:true,
+  keyUrl:"https://fanar.qa",
+  note:"API gratuit pe bază de cerere (formular pentru dezvoltatori) · primul AI generativ arab al Qatarului.",
+  models:[
+   {id:"Fanar",n:"Fanar · Qatar"}]},
+ {g:"AI21 · Israel",trial:true,provider:"openai",baseUrl:"https://api.ai21.com/studio/v1",needKey:true,
+  keyUrl:"https://studio.ai21.com",
+  note:"Credite trial: 10$ / 3 luni · familia Jamba (SSM-Transformer).",
+  models:[
+   {id:"jamba-large",n:"Jamba Large · AI21"},
+   {id:"jamba-mini",n:"Jamba Mini · AI21"}]},
+ {g:"Upstage · Coreea de Sud",trial:true,provider:"openai",baseUrl:"https://api.upstage.ai/v1",needKey:true,
+  keyUrl:"https://console.upstage.ai",
+  note:"Credite trial: 10$ / 3 luni · modelele Solar.",
+  models:[
+   {id:"solar-pro2",n:"Solar Pro 2 · Upstage"},
+   {id:"solar-mini",n:"Solar Mini · Upstage"}]},
+ {g:"Maritaca · Brazilia",trial:true,provider:"openai",baseUrl:"https://chat.maritaca.ai/api",needKey:true,
+  keyUrl:"https://plataforma.maritaca.ai",
+  note:"Credite gratuite la înregistrare · familia Sabiá, specializată pe portugheză.",
+  models:[
+   {id:"sabia-4",n:"Sabiá 4 · Maritaca"},
+   {id:"sabia-4-thinking",n:"Sabiá 4 Thinking · Maritaca"}]},
+ {g:"Lume · modele naționale open-source (local)",provider:"ollama",baseUrl:"http://localhost:11434/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://ollama.com/library",
+  note:"Modele suverane fără API găzduit gratuit — le rulezi local cu Ollama (pornit cu OLLAMA_ORIGINS=*): «ollama pull falcon3» sau «ollama pull hf.co/<repo>» (cere GGUF; altfel caută conversia comunitară). ⟳ listează ce ai instalat.",
+  models:[
+   {id:"falcon3",n:"Falcon 3 (EAU · TII) · local"},
+   {id:"hf.co/utter-project/EuroLLM-9B-Instruct",n:"EuroLLM 9B (UE) · local"},
+   {id:"hf.co/openGPT-X/Teuken-7B-instruct-commercial-v0.4",n:"Teuken 7B (Germania) · local"},
+   {id:"hf.co/vinai/PhoGPT-4B-Chat",n:"PhoGPT 4B (Vietnam) · local"},
+   {id:"hf.co/lelapa/InkubaLM-0.4B",n:"InkubaLM 0.4B (Africa) · local"}]},
+ {g:"Anthropic · Claude",paid:true,provider:"anthropic",baseUrl:"https://api.anthropic.com",needKey:true,
+  keyUrl:"https://console.anthropic.com",
+  note:"Plătit, cu cheia ta · CORS suportat oficial din browser (header dedicat, deja inclus în aplicație).",
+  models:[
+   {id:"claude-opus-4-8",n:"Claude Opus 4.8 · Anthropic"},
+   {id:"claude-sonnet-4-6",n:"Claude Sonnet 4.6 · Anthropic"},
+   {id:"claude-haiku-4-5",n:"Claude Haiku 4.5 · Anthropic"}]},
+ {g:"OpenAI",paid:true,provider:"openai",baseUrl:"https://api.openai.com/v1",needKey:true,
+  keyUrl:"https://platform.openai.com/api-keys",
+  note:"Plătit, cu cheia ta · verifică ID-urile exacte cu ⟳ după ce pui cheia.",
+  models:[
+   {id:"gpt-5.1",n:"GPT-5.1 · OpenAI"},
+   {id:"gpt-5-mini",n:"GPT-5 Mini · OpenAI"},
+   {id:"gpt-5-nano",n:"GPT-5 Nano · OpenAI"}]},
+ {g:"xAI · Grok",paid:true,provider:"openai",baseUrl:"https://api.x.ai/v1",needKey:true,
+  keyUrl:"https://console.x.ai",
+  note:"Plătit, cu cheia ta · ⟳ pentru lista exactă.",
+  models:[
+   {id:"grok-4",n:"Grok 4 · xAI"},
+   {id:"grok-3-mini",n:"Grok 3 Mini · xAI"}]},
+ {g:"DeepSeek (direct)",paid:true,provider:"openai",baseUrl:"https://api.deepseek.com/v1",needKey:true,
+  keyUrl:"https://platform.deepseek.com",
+  note:"Plătit dar foarte ieftin — cel mai accesibil pas dincolo de gratuit.",
+  models:[
+   {id:"deepseek-chat",n:"DeepSeek Chat (V-serie) · direct"},
+   {id:"deepseek-reasoner",n:"DeepSeek Reasoner (R-serie) · direct"}]},
+ {g:"Perplexity · Sonar",paid:true,provider:"openai",baseUrl:"https://api.perplexity.ai",needKey:true,
+  keyUrl:"https://www.perplexity.ai/settings/api",
+  note:"Plătit, cu cheia ta · modele cu căutare web integrată în răspuns.",
+  models:[
+   {id:"sonar",n:"Sonar · Perplexity"},
+   {id:"sonar-pro",n:"Sonar Pro · Perplexity"}]},
+ {g:"LLM7.io",provider:"openai",baseUrl:"https://api.llm7.io/v1",needKey:false,noAuto:true,freeRule:"all",
+  keyUrl:"https://llm7.io",
+  note:"Gateway gratuit fără cheie (token opțional pentru limite mai mari) · fiabilitate variabilă — verifică cu ⚡ și folosește ⟳ pentru lista reală.",
+  models:[
+   {id:"gpt-4o-mini",n:"GPT-4o Mini · LLM7"}]},
+ {g:"Together AI",trial:true,provider:"openai",baseUrl:"https://api.together.xyz/v1",needKey:true,
+  keyUrl:"https://api.together.ai",
+  note:"Credite trial la înregistrare · catalog mare open-weight — ⟳ după cheie.",
+  models:[
+   {id:"meta-llama/Llama-3.3-70B-Instruct-Turbo",n:"Llama 3.3 70B Turbo · Together"},
+   {id:"deepseek-ai/DeepSeek-V3",n:"DeepSeek V3 · Together"}]},
+ {g:"Fireworks AI",trial:true,provider:"openai",baseUrl:"https://api.fireworks.ai/inference/v1",needKey:true,
+  keyUrl:"https://fireworks.ai",
+  note:"Credite trial: 1$ · ID-urile au prefixul accounts/fireworks/models/.",
+  models:[
+   {id:"accounts/fireworks/models/gpt-oss-120b",n:"GPT-OSS 120B · Fireworks"},
+   {id:"accounts/fireworks/models/llama-v3p3-70b-instruct",n:"Llama 3.3 70B · Fireworks"}]},
+ {g:"Nebius Token Factory",trial:true,provider:"openai",baseUrl:"https://api.studio.nebius.com/v1",needKey:true,
+  keyUrl:"https://tokenfactory.nebius.com",
+  note:"Credite trial: 1$ · dacă endpoint-ul diferă, ia-l din consolă și corectează Base URL.",
+  models:[
+   {id:"deepseek-ai/DeepSeek-V3",n:"DeepSeek V3 · Nebius"}]},
+ {g:"Novita AI",trial:true,provider:"openai",baseUrl:"https://api.novita.ai/v3/openai",needKey:true,
+  keyUrl:"https://novita.ai",
+  note:"Credite trial: 0,5$ valabile un an.",
+  models:[
+   {id:"deepseek/deepseek-v3",n:"DeepSeek V3 · Novita"}]},
+ {g:"Hyperbolic",trial:true,provider:"openai",baseUrl:"https://api.hyperbolic.xyz/v1",needKey:true,
+  keyUrl:"https://app.hyperbolic.ai",
+  note:"Credite trial: 1$.",
+  models:[
+   {id:"deepseek-ai/DeepSeek-V3-0324",n:"DeepSeek V3 · Hyperbolic"},
+   {id:"meta-llama/Llama-3.3-70B-Instruct",n:"Llama 3.3 70B · Hyperbolic"},
+   {id:"Qwen/Qwen3-Coder-480B-A35B-Instruct",n:"Qwen3 Coder 480B · Hyperbolic"}]},
+ {g:"Inference.net",trial:true,provider:"openai",baseUrl:"https://api.inference.net/v1",needKey:true,
+  keyUrl:"https://inference.net",
+  note:"Credite trial: 1$ (25$ cu chestionarul pe email) · ⟳ pentru ID-urile exacte.",
+  models:[
+   {id:"inference-net-model",n:"Modelele găzduite · Inference.net"}]},
+ {g:"SambaNova",trial:true,provider:"openai",baseUrl:"https://api.sambanova.ai/v1",needKey:true,
+  keyUrl:"https://cloud.sambanova.ai",
+  note:"Credite trial: 5$ / 3 luni · inferență foarte rapidă.",
+  models:[
+   {id:"deepseek-v3.2",n:"DeepSeek V3.2 · SambaNova"},
+   {id:"minimax-m2.7",n:"MiniMax M2.7 · SambaNova"},
+   {id:"gemma-4-31b-it",n:"Gemma 4 31B · SambaNova"},
+   {id:"gpt-oss-120b",n:"GPT-OSS 120B · SambaNova"},
+   {id:"meta-llama-3.3-70b-instruct",n:"Llama 3.3 70B · SambaNova"}]},
+ {g:"Scaleway",trial:true,provider:"openai",baseUrl:"https://api.scaleway.ai/v1",needKey:true,
+  keyUrl:"https://console.scaleway.com/generative-api/models",
+  note:"Credite trial: 1.000.000 tokeni gratuit · găzduire UE.",
+  models:[
+   {id:"glm-5.2",n:"GLM-5.2 · Scaleway"},
+   {id:"qwen3.5-397b-a17b",n:"Qwen3.5 397B A17B · Scaleway"},
+   {id:"qwen3.6-35b-a3b",n:"Qwen3.6 35B A3B · Scaleway"},
+   {id:"gpt-oss-120b",n:"GPT-OSS 120B · Scaleway"},
+   {id:"mistral-small-3.2-24b-instruct-2506",n:"Mistral Small 3.2 · Scaleway"}]}
+];
+
+/* ---------------- state & storage ---------------- */
+const SKEY="arena-ff-v1";
+let memStore=null, storageOK=true;
+function loadState(){
+  try{const raw=localStorage.getItem(SKEY); if(raw) return JSON.parse(raw);}
+  catch(e){storageOK=false;}
+  return null;
+}
+function saveState(){
+  const data=JSON.stringify(S);
+  try{localStorage.setItem(SKEY,data);}
+  catch(e){storageOK=false;memStore=data;}
+}
+let S = loadState() || {lang:"ro",models:defaultModels(),ratings:{},history:[]};
+if(!S.models||!S.models.length) S.models=defaultModels();
+LANG = S.lang||"ro";
+/* migrare 2026-07: pre-populez modelele fără cheie (Pollinations), o singură dată */
+function ensureKeyless(st){
+  if(st.cat26===2)return;
+  FREE_2026.filter(g=>!g.needKey&&!g.noAuto).forEach(g=>{
+    g.models.forEach(pm=>{
+      if(!st.models.some(m=>m.baseUrl===g.baseUrl&&m.model===pm.id))
+        st.models.push({id:"cat-k-"+pm.id.replace(/[^a-z0-9]/gi,""),name:pm.n,provider:g.provider,model:pm.id,
+          baseUrl:g.baseUrl,apiKey:"",enabled:true,demo:false});
+    });
+  });
+  st.cat26=2;
+}
+function migrateV4(st){
+  if(st.cat26v4)return;
+  st.models.forEach(m=>{
+    if((m.baseUrl||"").includes("text.pollinations.ai")){
+      m.baseUrl="https://gen.pollinations.ai/v1";
+      if(!m.apiKey){m.enabled=false;m.lastTest={ok:false,ms:0,code:"cheie pk_",ts:Date.now()};}
+    }
+  });
+  st.cat26v4=1;
+}
+ensureKeyless(S);migrateV4(S);saveState();
+function rating(id){ if(!S.ratings[id]) S.ratings[id]={elo:1000,w:0,d:0,l:0,m:0}; return S.ratings[id]; }
+
+/* ---------------- helpers ---------------- */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(msg){const el=$("toast");el.textContent=msg;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),2600);}
+function hash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h;}
+function pick(arr,seed){return arr[seed%arr.length];}
+function modelById(id){return S.models.find(m=>m.id===id);}
+function enabledModels(){return S.models.filter(m=>m.enabled);}
+function nameOf(id){const m=modelById(id);return m?m.name:id;}
+
+/* ---------------- i18n render ---------------- */
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{el.innerHTML=t(el.dataset.i18n);});
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{el.placeholder=t(el.dataset.i18nPh);});
+  const L=$("langs");L.innerHTML="";
+  ["ro","en"].forEach(code=>{
+    const b=document.createElement("button");b.textContent=code.toUpperCase();
+    if(code===LANG)b.classList.add("on");
+    b.onclick=()=>{LANG=code;S.lang=code;saveState();applyLang();renderBoard();renderModels();renderCatalog();renderSuggest();fillCmpSelects();};
+    L.appendChild(b);
+  });
+}
+function renderSuggest(){
+  const box=$("d-suggest");box.innerHTML="";
+  t("sug").forEach(s=>{const b=document.createElement("button");b.textContent=s;b.onclick=()=>{$("d-prompt").value=s;};box.appendChild(b);});
+}
+
+/* ---------------- tabs ---------------- */
+$("nav").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll("main section").forEach(s=>s.classList.remove("on"));
+  $("tab-"+b.dataset.tab).classList.add("on");
+  if(b.dataset.tab==="board")renderBoard();
+  if(b.dataset.tab==="cmp")fillCmpSelects();
+});
+
+/* ---------------- streaming: demo ---------------- */
+async function* demoStream(model,prompt,signal){
+  const st=DEMO_STYLES[model.style][LANG]||DEMO_STYLES[model.style].ro;
+  const seed=hash(prompt+"|"+model.id);
+  const topic=prompt.trim().split(/\s+/).slice(0,7).join(" ");
+  const parts=[pick(st.open,seed)+" ",
+    (LANG==="ro"?"Despre „":"On “")+topic+(LANG==="ro"?"” — ":"” — "),
+    pick(st.mid,seed>>3)+" ",
+    pick(st.mid,(seed>>7)+1)+"\n\n",
+    pick(st.close,seed>>11)];
+  const text=parts.join("");
+  const words=text.split(/(\s+)/);
+  for(const w of words){
+    if(signal.aborted)return;
+    yield w;
+    await new Promise(r=>setTimeout(r,12+ (hash(w)%28)));
+  }
+}
+
+/* ---------------- streaming: real providers ---------------- */
+async function* sseLines(resp,signal){
+  const reader=resp.body.getReader();const dec=new TextDecoder();let buf="";
+  while(true){
+    if(signal.aborted){reader.cancel();return;}
+    const {done,value}=await reader.read();
+    if(done)break;
+    buf+=dec.decode(value,{stream:true});
+    let idx;
+    while((idx=buf.indexOf("\n"))>=0){
+      const line=buf.slice(0,idx).trim();buf=buf.slice(idx+1);
+      if(line.startsWith("data:"))yield line.slice(5).trim();
+    }
+  }
+}
+async function* openaiStream(model,prompt,signal){
+  const url=(model.baseUrl||"https://api.openai.com/v1").replace(/\/+$/,"")+"/chat/completions";
+  const headers={"Content-Type":"application/json"};
+  if(model.apiKey)headers["Authorization"]="Bearer "+model.apiKey;
+  const resp=await fetch(url,{method:"POST",headers,signal,
+    body:JSON.stringify({model:model.model,stream:true,messages:[{role:"user",content:prompt}]})});
+  if(!resp.ok)throw new Error(resp.status+" "+(await resp.text()).slice(0,200));
+  for await(const d of sseLines(resp,signal)){
+    if(d==="[DONE]")return;
+    try{const j=JSON.parse(d);const c=j.choices?.[0]?.delta?.content;if(c)yield c;}catch(e){}
+  }
+}
+async function* anthropicStream(model,prompt,signal){
+  const url=(model.baseUrl||"https://api.anthropic.com").replace(/\/+$/,"")+"/v1/messages";
+  const resp=await fetch(url,{method:"POST",signal,
+    headers:{"Content-Type":"application/json","x-api-key":model.apiKey||"",
+      "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+    body:JSON.stringify({model:model.model,max_tokens:2048,stream:true,messages:[{role:"user",content:prompt}]})});
+  if(!resp.ok)throw new Error(resp.status+" "+(await resp.text()).slice(0,200));
+  for await(const d of sseLines(resp,signal)){
+    try{const j=JSON.parse(d);
+      if(j.type==="content_block_delta"&&j.delta?.text)yield j.delta.text;
+    }catch(e){}
+  }
+}
+/* ---------------- WebLLM: AI local în browser (WebGPU) ---------------- */
+const WLLM={mod:null,engines:{}};
+async function* webllmStream(model,prompt,signal){
+  if(!navigator.gpu)throw new Error("WebGPU indisponibil — folosește Chrome/Edge recent");
+  if(!WLLM.mod)WLLM.mod=await import("https://esm.run/@mlc-ai/web-llm");
+  let eng=WLLM.engines[model.model];
+  if(!eng){
+    const el=model._progressEl;
+    eng=await WLLM.mod.CreateMLCEngine(model.model,{initProgressCallback:p=>{if(el)el.textContent="⬇ "+p.text;}});
+    WLLM.engines[model.model]=eng;
+    if(el)el.textContent="";
+  }
+  const chunks=await eng.chat.completions.create({stream:true,messages:[{role:"user",content:prompt}]});
+  for await(const c of chunks){
+    if(signal.aborted)return;
+    const d=c.choices?.[0]?.delta?.content;
+    if(d)yield d;
+  }
+}
+
+/* ---------------- AI încorporat în browser (Prompt API · Gemini Nano) ---------------- */
+async function* chromeAIStream(model,prompt,signal){
+  const LM=(typeof LanguageModel!=="undefined"?LanguageModel:null)||(typeof window!=="undefined"&&window.ai&&window.ai.languageModel);
+  if(!LM)throw new Error("Prompt API indisponibil — cere Chrome/Edge recent cu AI încorporat");
+  /* sesiunile Prompt API sunt statefule — una nouă per duel, altfel contextul se scurge între dueluri */
+  const session=await LM.create();
+  try{
+    const stream=session.promptStreaming(prompt);
+    let prev="";
+    for await(const chunk of stream){
+      if(signal.aborted)return;
+      /* API veche livrează text cumulat, cea nouă delte — le tratez pe ambele */
+      if(chunk.startsWith(prev)){yield chunk.slice(prev.length);prev=chunk;}
+      else{yield chunk;prev+=chunk;}
+    }
+  }finally{if(session.destroy)session.destroy();}
+}
+
+/* ---------------- Transformers.js (WASM/WebGPU) — merge și fără WebGPU ---------------- */
+const TJS={mod:null,pipes:{}};
+async function* tjsStream(model,prompt,signal){
+  if(!TJS.mod)TJS.mod=await import("https://esm.run/@huggingface/transformers");
+  let pipe=TJS.pipes[model.model];
+  if(!pipe){
+    const el=model._progressEl;
+    pipe=await TJS.mod.pipeline("text-generation",model.model,{
+      dtype:"q4",device:(typeof navigator!=="undefined"&&navigator.gpu)?"webgpu":"wasm",
+      progress_callback:p=>{if(el&&p.status==="progress")el.textContent="⬇ "+(p.file||"")+" "+Math.round(p.progress||0)+"%";}});
+    TJS.pipes[model.model]=pipe;
+    if(el)el.textContent="";
+  }
+  const q=[];let done=false,err=null,wake=null;
+  const streamer=new TJS.mod.TextStreamer(pipe.tokenizer,{skip_prompt:true,skip_special_tokens:true,
+    callback_function:t=>{q.push(t);if(wake)wake();}});
+  pipe([{role:"user",content:prompt}],{max_new_tokens:512,streamer})
+    .then(()=>{done=true;if(wake)wake();})
+    .catch(e=>{err=e;done=true;if(wake)wake();});
+  while(!done||q.length){
+    if(signal.aborted)return;
+    if(q.length)yield q.shift();
+    else await new Promise(r=>{wake=r;setTimeout(r,60);});
+  }
+  if(err)throw err;
+}
+function streamFor(model,prompt,signal){
+  if(model.provider==="browser")return webllmStream(model,prompt,signal);
+  if(model.provider==="chromeai")return chromeAIStream(model,prompt,signal);
+  if(model.provider==="transformersjs")return tjsStream(model,prompt,signal);
+  if(model.provider==="demo")return demoStream(model,prompt,signal);
+  if(model.provider==="anthropic")return anthropicStream(model,prompt,signal);
+  // openai + pollinations + ollama share the OpenAI-compatible schema
+  let m=model;
+  if(model.provider==="ollama"&&!model.baseUrl)m={...model,baseUrl:"http://localhost:11434/v1"};
+  if(model.provider==="pollinations"&&!model.baseUrl)m={...model,baseUrl:"https://gen.pollinations.ai/v1"};
+  return openaiStream(m,prompt,signal);
+}
+async function runInto(model,prompt,el,signal){
+  el.textContent="";el.classList.remove("err");el.classList.add("cursor");
+  if(model.provider==="browser"||model.provider==="transformersjs")model._progressEl=el;
+  try{
+    for await(const chunk of streamFor(model,prompt,signal)){
+      el.textContent+=chunk;
+    }
+    return true;
+  }catch(e){
+    if(signal.aborted)return true;
+    let msg=String(e.message||e);
+    if(/failed to fetch|networkerror|load failed/i.test(msg))msg=t("err_cors");
+    if(msg.length>180)msg=msg.slice(0,180)+"…";
+    el.classList.add("err");el.textContent=t("err_stream")+msg;
+    /* badge automat: duelul eșuat devine ✗ vizibil în lista de combatanți */
+    const real=S.models.find(x=>x.id===model.id);
+    if(real){
+      const code=(String(e.message||"").match(/^(\d{3})/)||[])[1]||"rețea/CORS";
+      real.lastTest={ok:false,ms:0,code,ts:Date.now()};
+      saveState();
+    }
+    return false;
+  }finally{el.classList.remove("cursor");}
+}
+
+/* ---------------- verificare live (ping 1 token) ---------------- */
+async function pingModel(m){
+  if(m.provider==="demo")return{ok:true,ms:0};
+  if(m.provider==="browser")return navigator.gpu?{ok:true,ms:0}:{ok:false,ms:0,code:"WebGPU"};
+  if(m.provider==="chromeai"){const LM=(typeof LanguageModel!=="undefined")||(typeof window!=="undefined"&&window.ai&&window.ai.languageModel);return LM?{ok:true,ms:0}:{ok:false,ms:0,code:"Prompt API"};}
+  if(m.provider==="transformersjs")return{ok:true,ms:0};
+  const t0=performance.now();
+  try{
+    let url,opts;
+    const msg=[{role:"user",content:"ping"}];
+    if(m.provider==="anthropic"){
+      url=(m.baseUrl||"https://api.anthropic.com").replace(/\/+$/,"")+"/v1/messages";
+      opts={method:"POST",headers:{"Content-Type":"application/json","x-api-key":m.apiKey||"",
+        "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:m.model,max_tokens:1,messages:msg})};
+    }else{
+      let base=m.baseUrl;
+      if(m.provider==="ollama"&&!base)base="http://localhost:11434/v1";
+      if(m.provider==="pollinations"&&!base)base="https://gen.pollinations.ai/v1";
+      url=base.replace(/\/+$/,"")+"/chat/completions";
+      const h={"Content-Type":"application/json"};
+      if(m.apiKey)h["Authorization"]="Bearer "+m.apiKey;
+      opts={method:"POST",headers:h,body:JSON.stringify({model:m.model,max_tokens:1,messages:msg})};
+    }
+    if(typeof AbortSignal!=="undefined"&&AbortSignal.timeout)opts.signal=AbortSignal.timeout(20000);
+    let r=await fetch(url,opts);
+    if(r.status===400&&m.provider!=="anthropic"){
+      const b=JSON.parse(opts.body);delete b.max_tokens;b.max_completion_tokens=16;
+      r=await fetch(url,{...opts,body:JSON.stringify(b)});
+    }
+    const ms=Math.round(performance.now()-t0);
+    return r.ok?{ok:true,ms}:{ok:false,ms,code:r.status};
+  }catch(e){return{ok:false,ms:Math.round(performance.now()-t0),code:e.name==="TimeoutError"?"timeout":"rețea"};}
+}
+async function testAll(){
+  const list=S.models.filter(m=>m.enabled&&m.provider!=="demo");
+  if(list.length>25&&!confirm(t("test_quota").replace("{n}",list.length)))return;
+  const btn=$("m-testall");btn.disabled=true;
+  let okN=0,badN=0,i=0;
+  const worker=async()=>{
+    while(i<list.length){
+      const m=list[i++];
+      const r=await pingModel(m);
+      m.lastTest={ok:r.ok,ms:r.ms,code:r.code||"",ts:Date.now()};
+      r.ok?okN++:badN++;
+      renderModels();
+    }
+  };
+  await Promise.all([worker(),worker(),worker()]);
+  saveState();renderModels();
+  toast(okN+" "+t("test_ok_n")+" · "+badN+" "+t("test_bad_n"));
+  btn.disabled=false;
+}
+
+/* ---------------- Elo ---------------- */
+function eloUpdate(idA,idB,scoreA){ // scoreA: 1 / 0.5 / 0
+  const A=rating(idA),B=rating(idB);
+  const expA=1/(1+Math.pow(10,(B.elo-A.elo)/400));
+  const K=32;
+  const dA=Math.round(K*(scoreA-expA));
+  A.elo+=dA;B.elo-=dA;
+  A.m++;B.m++;
+  if(scoreA===1){A.w++;B.l++;}else if(scoreA===0){A.l++;B.w++;}else{A.d++;B.d++;}
+  return dA;
+}
+
+/* ---------------- duel flow ---------------- */
+let duel=null; // {a,b,prompt,ctrl,done}
+function setVote(on){["v-a","v-b","v-tie","v-bad"].forEach(id=>$(id).disabled=!on);}
+function resetDuelUI(){
+  $("d-pa").textContent="";$("d-pb").textContent="";
+  $("d-ra").textContent="";$("d-rb").textContent="";
+  $("d-da").textContent="";$("d-db").textContent="";
+  $("d-da").className="delta";$("d-db").className="delta";
+  $("d-wa").textContent="⚔ A";$("d-wb").textContent="⚔ B";
+  $("d-verdict").classList.remove("on");$("d-post").classList.remove("on");
+  setVote(false);
+}
+async function startDuel(){
+  const prompt=$("d-prompt").value.trim();
+  if(!prompt){toast(t("need_prompt"));return;}
+  const pool=enabledModels();
+  if(pool.length<2){toast(t("need2"));return;}
+  if(duel?.ctrl)duel.ctrl.abort();
+  resetDuelUI();
+  const i=Math.floor(Math.random()*pool.length);
+  let j=Math.floor(Math.random()*(pool.length-1));if(j>=i)j++;
+  const ctrl=new AbortController();
+  duel={a:pool[i],b:pool[j],prompt,ctrl,done:false};
+  $("d-go").disabled=true;$("d-stop").style.display="";
+  const [okA,okB]=await Promise.all([
+    runInto(duel.a,prompt,$("d-pa"),ctrl.signal),
+    runInto(duel.b,prompt,$("d-pb"),ctrl.signal)
+  ]);
+  $("d-go").disabled=false;$("d-stop").style.display="none";
+  if(ctrl.signal.aborted){resetDuelUI();duel=null;return;}
+  if(!(okA&&okB)){
+    $("d-verdict").textContent=t("verdict_err");$("d-verdict").classList.add("on");
+    $("d-post").classList.add("on");
+    duel=null;return;
+  }
+  duel.done=true;
+  setVote(true);
+}
+function reveal(scoreA,verdictKey){
+  if(!duel||!duel.done)return;
+  setVote(false);
+  const dA=eloUpdate(duel.a.id,duel.b.id,scoreA);
+  S.history.push({ts:Date.now(),a:duel.a.id,b:duel.b.id,s:scoreA,p:duel.prompt.slice(0,140)});
+  if(S.history.length>500)S.history=S.history.slice(-500);
+  saveState();
+  $("d-wa").textContent=duel.a.name;$("d-wb").textContent=duel.b.name;
+  $("d-ra").textContent=t("was")+" A";$("d-rb").textContent=t("was")+" B";
+  const da=$("d-da"),db=$("d-db");
+  da.textContent=(dA>=0?"+":"")+dA+" Elo";db.textContent=(dA<=0?"+":"")+(-dA)+" Elo";
+  da.className="delta "+(dA>0?"up":dA<0?"down":"");
+  db.className="delta "+(dA<0?"up":dA>0?"down":"");
+  $("d-verdict").textContent=t(verdictKey);$("d-verdict").classList.add("on");
+  $("d-post").classList.add("on");
+}
+$("d-go").onclick=startDuel;
+$("d-stop").onclick=()=>{if(duel?.ctrl)duel.ctrl.abort();$("d-go").disabled=false;$("d-stop").style.display="none";};
+$("d-again").onclick=()=>{resetDuelUI();duel=null;$("d-prompt").focus();};
+$("v-a").onclick=()=>reveal(1,"verdict_a");
+$("v-b").onclick=()=>reveal(0,"verdict_b");
+$("v-tie").onclick=()=>reveal(0.5,"verdict_tie");
+$("v-bad").onclick=()=>reveal(0.5,"verdict_bad");
+
+/* ---------------- compare ---------------- */
+let cmpCtrl=null;
+function fillCmpSelects(){
+  const opts=enabledModels().map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join("");
+  const a=$("c-selA"),b=$("c-selB");
+  const pa=a.value,pb=b.value;
+  a.innerHTML=opts;b.innerHTML=opts;
+  if(pa&&modelById(pa))a.value=pa;
+  if(pb&&modelById(pb))b.value=pb;else if(b.options.length>1)b.selectedIndex=1;
+}
+$("c-go").onclick=async()=>{
+  const prompt=$("c-prompt").value.trim();
+  if(!prompt){toast(t("need_prompt"));return;}
+  const A=modelById($("c-selA").value),B=modelById($("c-selB").value);
+  if(!A||!B){toast(t("need2"));return;}
+  if(cmpCtrl)cmpCtrl.abort();
+  cmpCtrl=new AbortController();
+  $("c-wa").textContent=A.name;$("c-wb").textContent=B.name;
+  $("c-go").disabled=true;
+  await Promise.all([
+    runInto(A,prompt,$("c-pa"),cmpCtrl.signal),
+    runInto(B,prompt,$("c-pb"),cmpCtrl.signal)
+  ]);
+  $("c-go").disabled=false;
+};
+
+/* ---------------- leaderboard ---------------- */
+function renderBoard(){
+  const rows=S.models
+    .map(m=>({m,r:S.ratings[m.id]}))
+    .filter(x=>x.r&&x.r.m>0)
+    .sort((x,y)=>y.r.elo-x.r.elo);
+  const wrap=$("board-wrap");
+  if(!rows.length){wrap.innerHTML=`<div class="empty">${t("empty_board")}</div>`;return;}
+  const maxElo=Math.max(...rows.map(x=>x.r.elo));
+  wrap.innerHTML=`<table><thead><tr>
+    <th>${t("th_rank")}</th><th>${t("th_model")}</th>
+    <th class="num">${t("th_elo")}</th><th class="num">${t("th_m")}</th>
+    <th class="num">${t("th_w")}</th><th class="num">${t("th_d")}</th><th class="num">${t("th_l")}</th>
+  </tr></thead><tbody>`+
+  rows.map((x,i)=>`<tr>
+    <td><span class="rk">${i+1}</span></td>
+    <td>${esc(x.m.name)}${x.m.demo?` <span class="tag demo">${t("demo_tag")}</span>`:""}
+      <div class="bar"><i style="width:${Math.round(x.r.elo/maxElo*100)}%"></i></div></td>
+    <td class="num">${x.r.elo}</td><td class="num">${x.r.m}</td>
+    <td class="num">${x.r.w}</td><td class="num">${x.r.d}</td><td class="num">${x.r.l}</td>
+  </tr>`).join("")+"</tbody></table>";
+}
+$("b-reset").onclick=()=>{if(confirm(t("confirm_reset"))){S.ratings={};S.history=[];saveState();renderBoard();}};
+
+/* ---------------- settings: models ---------------- */
+let editId=null;
+function renderModels(){
+  const list=$("mlist");list.innerHTML="";
+  S.models.forEach(m=>{
+    const card=document.createElement("div");card.className="mcard";
+    const meta=m.provider==="demo"?"offline":`${m.provider} · ${m.model||"?"}`;
+    card.innerHTML=`
+      <button class="toggle ${m.enabled?"on":""}" aria-label="toggle" data-act="toggle"></button>
+      <div><div class="nm">${esc(m.name)} ${m.demo?`<span class="tag demo">${t("demo_tag")}</span>`:""}</div>
+      <div class="meta">${esc(meta)}</div></div>
+      <div class="sp"></div>
+      ${m.lastTest?`<span class="st ${m.lastTest.ok?"ok":"bad"}" title="${new Date(m.lastTest.ts).toLocaleString()}">${m.lastTest.ok?"✓ "+m.lastTest.ms+"ms":"✗ "+esc(String(m.lastTest.code))}</span>`:""}
+      ${m.demo?"":`<button class="mini" data-act="test">${t("test")}</button>
+      <button class="mini" data-act="edit">${t("edit")}</button>
+      <button class="mini danger" data-act="del">${t("del")}</button>`}`;
+    card.addEventListener("click",e=>{
+      const act=e.target.closest("[data-act]")?.dataset.act;if(!act)return;
+      if(act==="toggle"){m.enabled=!m.enabled;saveState();renderModels();fillCmpSelects();}
+      if(act==="test"){
+        const b=e.target.closest("[data-act=test]");b.disabled=true;b.textContent="…";
+        pingModel(m).then(r=>{m.lastTest={ok:r.ok,ms:r.ms,code:r.code||"",ts:Date.now()};saveState();renderModels();});
+      }
+      if(act==="edit"){openForm(m.id);}
+      if(act==="del"){if(confirm(t("confirm_del"))){S.models=S.models.filter(x=>x.id!==m.id);saveState();renderModels();renderCatalog();fillCmpSelects();}}
+    });
+    list.appendChild(card);
+  });
+}
+function openForm(id){
+  editId=id;
+  const m=id?modelById(id):null;
+  $("mf-title").textContent=id?t("mf_edit"):t("mf_new");
+  $("f-name").value=m?.name||"";
+  $("f-prov").value=m?.provider||"openai";
+  $("f-model").value=m?.model||"";
+  $("f-url").value=m?.baseUrl||"";
+  $("f-key").value=m?.apiKey||"";
+  $("mform").classList.add("on");
+  $("f-name").focus();
+}
+$("m-add").onclick=()=>openForm(null);
+$("m-testall").onclick=testAll;
+$("mf-cancel").onclick=()=>$("mform").classList.remove("on");
+$("mf-save").onclick=()=>{
+  const name=$("f-name").value.trim();
+  if(!name){$("f-name").focus();return;}
+  const data={name,provider:$("f-prov").value,model:$("f-model").value.trim(),
+    baseUrl:$("f-url").value.trim(),apiKey:$("f-key").value.trim()};
+  if(editId){Object.assign(modelById(editId),data);}
+  else{S.models.push({id:"m-"+Date.now().toString(36),enabled:true,demo:false,...data});}
+  saveState();$("mform").classList.remove("on");renderModels();fillCmpSelects();toast(t("saved"));
+};
+
+/* ---------------- live sync (interoghează /models la provider) ---------------- */
+const SYNC_CAP=40;
+const NON_CHAT=/whisper|guard|embed|rerank|-tts|audio|moderation|safety|-ocr|image|vision-encoder|prompt-guard/i;
+function isFreeModel(g,m){
+  const id=m.id||m.name||"";
+  if(NON_CHAT.test(id))return false;
+  const rule=g.freeRule||"all";
+  if(rule==="pricing")return (m.pricing&&parseFloat(m.pricing.prompt||"1")===0&&parseFloat(m.pricing.completion||"1")===0)||/:free$/.test(id);
+  if(rule==="suffix")return /:free$/.test(id);
+  if(rule==="zen")return /-free$/.test(id)||id==="big-pickle"||(m.cost&&parseFloat(m.cost.input||"1")===0);
+  return true; // "all": pe free tier, tot ce listează providerul e apelabil
+}
+async function syncGroup(g,key){
+  const base=g.baseUrl.replace(/\/+$/,"");
+  let url=base+"/models";
+  let headers={};
+  if(g.provider==="anthropic"){
+    url=base+"/v1/models";
+    headers={"x-api-key":key||"","anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"};
+  }else if(key)headers["Authorization"]="Bearer "+key;
+  const resp=await fetch(url,{headers});
+  if(!resp.ok)throw new Error(resp.status+"");
+  const j=await resp.json();
+  const arr=Array.isArray(j)?j:(j.data||j.models||[]);
+  let n=0;
+  for(const m of arr){
+    if(n>=SYNC_CAP)break;
+    const id=typeof m==="string"?m:(m.id||m.name);
+    if(!id)continue;
+    const mm=typeof m==="string"?{id}:m;
+    if(!isFreeModel(g,mm))continue;
+    if(addFromCat(g,{id,n:(mm.name&&mm.name!==id?mm.name:id)+" · "+g.g},key))n++;
+  }
+  return n;
+}
+
+function storedKeyFor(g){const m=S.models.find(x=>x.baseUrl===g.baseUrl&&x.apiKey);return m?m.apiKey:"";}
+async function syncAll(){
+  const btn=$("sync-all");btn.disabled=true;
+  let total=0,done=0,skipped=[];
+  for(const g of FREE_2026){
+    const key=g.needKey?storedKeyFor(g):"";
+    if(g.needKey&&!key){skipped.push(g.g);continue;}
+    try{total+=await syncGroup(g,key);done++;}catch(e){skipped.push(g.g);}
+  }
+  if(total){saveState();renderModels();renderCatalog();fillCmpSelects();}
+  toast(total+" "+t("cat_added")+" ("+done+" "+t("sync_groups")+(skipped.length?", "+t("sync_skipped")+" "+skipped.length:"")+")");
+  btn.disabled=false;
+}
+
+/* ---------------- free catalog UI ---------------- */
+/* categorii calculate + regiuni pe grup */
+function catOf(g){
+  if(g.provider==="browser"||g.provider==="chromeai"||g.provider==="transformersjs")return"browser";
+  if(g.baseUrl&&g.baseUrl.includes("localhost"))return"local";
+  if(g.paid)return"paid";
+  if(g.trial)return"trial";
+  if(!g.needKey)return"keyless";
+  return"free";
+}
+const REGIONS={"ModelScope":"china","SiliconFlow":"china","Tencent":"china","Baidu":"china","iFlytek":"china","Moonshot":"china","Alibaba":"china","Z.ai":"china","DeepSeek (direct)":"china",
+"Mistral":"europa","Scaleway":"europa","România":"românia","SEA-LION":"asia","Sarvam":"asia","Upstage":"asia","Fanar":"orient","AI21":"orient","Maritaca":"americi","Cohere":"americi"};
+function regOf(g){for(const k in REGIONS)if(g.g.startsWith(k)||g.g.includes(k))return REGIONS[k];return"global";}
+const FILT={cat:"all",reg:"all",q:""};
+const GK={}; /* cheile tastate per grup — persistă peste re-randări */
+function groupVisible(g){
+  if(FILT.cat!=="all"&&catOf(g)!==FILT.cat)return false;
+  if(FILT.reg!=="all"&&regOf(g)!==FILT.reg)return false;
+  if(FILT.q){
+    const q=FILT.q.toLowerCase();
+    if(!g.g.toLowerCase().includes(q)&&!g.models.some(pm=>(pm.n+" "+pm.id).toLowerCase().includes(q)))return false;
+  }
+  return true;
+}
+function renderFilterBar(){
+  const cats=["all","keyless","free","trial","paid","local","browser"];
+  $("f-cats").innerHTML=cats.map(c=>`<button class="fchip ${FILT.cat===c?"on":""}" data-fc="${c}">${t("f_"+c)}</button>`).join(" ");
+  const regs=["all","global","china","europa","românia","asia","orient","americi"];
+  $("f-reg").innerHTML=regs.map(r=>`<option value="${r}" ${FILT.reg===r?"selected":""}>${t("r_"+r)}</option>`).join("");
+}
+function inList(g,pm){return S.models.some(m=>m.baseUrl===g.baseUrl&&m.model===pm.id);}
+function addFromCat(g,pm,key){
+  if(inList(g,pm))return false;
+  S.models.push({id:"cat-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,6),
+    name:pm.n,provider:g.provider,model:pm.id,baseUrl:g.baseUrl,
+    apiKey:key||"",enabled:true,demo:false});
+  return true;
+}
+function renderCatalog(){
+  renderFilterBar();
+  const box=$("catlist");box.innerHTML="";
+  const vis=FREE_2026.filter(groupVisible);
+  const q=FILT.q.toLowerCase();
+  $("f-count").textContent=vis.length+" / "+FREE_2026.length+" "+t("f_prov")+" · "+
+    vis.reduce((s,g)=>s+g.models.filter(pm=>!q||(pm.n+" "+pm.id).toLowerCase().includes(q)||g.g.toLowerCase().includes(q)).length,0)+" "+t("f_mod");
+  vis.forEach((g,gi)=>{
+    const card=document.createElement("div");card.className="gcard";
+    const kh=(g.needKey
+      ?`<div class="gk"><input type="password" autocomplete="off" data-gk="${esc(g.g)}" value="${esc(GK[g.g]||"")}" placeholder="${esc(t("cat_key_ph"))}"></div>`
+      :`<span class="tag demo">${t("keyless_tag")}</span>`)
+      +(g.trial?`<span class="tag">${t("trial_tag")}</span>`:"")
+      +(g.paid?`<span class="tag">${t("paid_tag")}</span>`:"");
+    card.innerHTML=`<div class="gh">
+        <span class="gn">${esc(g.g)}</span>${kh}
+        <button class="mini" data-all="1">${t("cat_add_all")}</button>
+        <button class="mini" data-sync="1" title="${esc(t("sync_tip"))}">⟳ ${t("sync")}</button>
+      </div>
+      <div class="chips">${g.models.map((pm,mi)=>({pm,mi})).filter(x=>!q||(x.pm.n+" "+x.pm.id).toLowerCase().includes(q)||g.g.toLowerCase().includes(q)).map(({pm,mi})=>
+        inList(g,pm)
+          ?`<span class="chip in">${esc(pm.n)} ✓</span>`
+          :`<button class="chip" data-mi="${mi}">+ ${esc(pm.n)}</button>`).join("")}
+      </div>
+      <div class="gnote">${esc(g.note)} · <a href="${esc(g.keyUrl)}" target="_blank" rel="noopener">${esc(g.keyUrl.replace("https://",""))}</a></div>`;
+    const ki=card.querySelector("input[data-gk]");
+    if(ki)ki.addEventListener("input",()=>{GK[g.g]=ki.value.trim();});
+    card.addEventListener("click",e=>{
+      const key=g.needKey?(GK[g.g]||card.querySelector("input")?.value.trim()||""):"";
+      if(e.target.closest("[data-sync]")){
+        if(g.needKey&&!key){toast(t("cat_key_first"));return;}
+        const btn=e.target.closest("[data-sync]");btn.disabled=true;btn.textContent="⟳ …";
+        syncGroup(g,key).then(n=>{
+          if(n){saveState();renderModels();renderCatalog();fillCmpSelects();}
+          toast(n?n+" "+t("cat_added"):t("sync_none"));
+        }).catch(err=>{toast(t("sync_err")+err.message);btn.disabled=false;btn.textContent="⟳ "+t("sync");});
+        return;
+      }
+      if(e.target.closest("[data-all]")){
+        if(g.needKey&&!key){toast(t("cat_key_first"));return;}
+        let n=0;g.models.forEach(pm=>{if(addFromCat(g,pm,key))n++;});
+        if(n){saveState();renderModels();renderCatalog();fillCmpSelects();toast(n+" "+t("cat_added"));}
+        return;
+      }
+      const b=e.target.closest("[data-mi]");if(!b)return;
+      if(g.needKey&&!key){toast(t("cat_key_first"));return;}
+      if(addFromCat(g,g.models[+b.dataset.mi],key)){
+        saveState();renderModels();renderCatalog();fillCmpSelects();toast("1 "+t("cat_added"));
+      }
+    });
+    box.appendChild(card);
+  });
+}
+
+$("sync-all").onclick=syncAll;
+$("f-q").addEventListener("input",()=>{FILT.q=$("f-q").value.trim();renderCatalog();$("f-q").focus();});
+$("f-cats").addEventListener("click",e=>{const b=e.target.closest("[data-fc]");if(b){FILT.cat=b.dataset.fc;renderCatalog();}});
+$("f-reg").addEventListener("change",()=>{FILT.reg=$("f-reg").value;renderCatalog();});
+
+/* ---------------- data io ---------------- */
+$("io-export").onclick=()=>{
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="arena-fara-frontiere-"+new Date().toISOString().slice(0,10)+".json";
+  a.click();URL.revokeObjectURL(a.href);toast(t("exported"));
+};
+$("io-import").onclick=()=>$("io-file").click();
+$("io-file").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const j=JSON.parse(r.result);
+    if(!j.models||!Array.isArray(j.models))throw new Error("format");
+    S=j;LANG=S.lang||"ro";saveState();
+    applyLang();renderModels();renderCatalog();renderBoard();fillCmpSelects();renderSuggest();
+    toast(t("imported"));
+  }catch(err){toast("JSON invalid");}};
+  r.readAsText(f);e.target.value="";
+};
+$("io-wipe").onclick=()=>{
+  if(!confirm(t("confirm_wipe")))return;
+  try{localStorage.removeItem(SKEY);}catch(e){}
+  S={lang:LANG,models:defaultModels(),ratings:{},history:[]};
+  ensureKeyless(S);migrateV4(S);saveState();applyLang();renderModels();renderCatalog();renderBoard();fillCmpSelects();toast(t("wiped"));
+};
+
+/* ---------------- boot ---------------- */
+applyLang();renderSuggest();renderModels();renderCatalog();renderBoard();fillCmpSelects();
+if(!storageOK)toast(t("nostorage"));
+</script>
+</body>
+</html>
