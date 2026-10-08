@@ -230,8 +230,8 @@ footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
 <!-- ============ COMPARE ============ -->
 <section id="tab-cmp">
   <div class="cmp-sel">
-    <div><label data-i18n="cmp_left"></label><select id="c-selA"></select></div>
-    <div><label data-i18n="cmp_right"></label><select id="c-selB"></select></div>
+    <div><label for="c-selA" data-i18n="cmp_left"></label><select id="c-selA"></select></div>
+    <div><label for="c-selB" data-i18n="cmp_right"></label><select id="c-selB"></select></div>
   </div>
   <div class="promptbox">
     <textarea id="c-prompt" data-i18n-ph="prompt_ph"></textarea>
@@ -274,8 +274,8 @@ footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
   <div class="form" id="mform">
     <h3 id="mf-title"></h3>
     <div class="grid2">
-      <div class="full"><label data-i18n="f_name"></label><input id="f-name" placeholder="ex: Claude Sonnet 4.6"></div>
-      <div><label data-i18n="f_prov"></label>
+      <div class="full"><label for="f-name" data-i18n="f_name"></label><input id="f-name" placeholder="ex: Claude Sonnet 4.6"></div>
+      <div><label for="f-prov" data-i18n="f_prov"></label>
         <select id="f-prov">
           <option value="openai">OpenAI-compatible</option>
           <option value="pollinations">Pollinations (cheie opțională)</option>
@@ -286,9 +286,9 @@ footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
           <option value="ollama">Ollama (local)</option>
         </select>
       </div>
-      <div><label data-i18n="f_model"></label><input id="f-model" placeholder="ex: claude-sonnet-4-6"></div>
-      <div class="full"><label data-i18n="f_url"></label><input id="f-url" placeholder="https://api.openai.com/v1"></div>
-      <div class="full"><label data-i18n="f_key"></label><input id="f-key" type="password" autocomplete="off" placeholder="sk-…"></div>
+      <div><label for="f-model" data-i18n="f_model"></label><input id="f-model" placeholder="ex: claude-sonnet-4-6"></div>
+      <div class="full"><label for="f-url" data-i18n="f_url"></label><input id="f-url" placeholder="https://api.openai.com/v1"></div>
+      <div class="full"><label for="f-key" data-i18n="f_key"></label><input id="f-key" type="password" autocomplete="off" placeholder="sk-…"></div>
     </div>
     <div class="pb-row">
       <button class="btn primary" id="mf-save" data-i18n="save"></button>
@@ -325,7 +325,7 @@ footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
 </footer>
 </div>
 
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 "use strict";
@@ -791,6 +791,7 @@ const FREE_2026=[
   keyUrl:"https://console.anthropic.com",
   note:"Plătit, cu cheia ta · CORS suportat oficial din browser (header dedicat, deja inclus în aplicație).",
   models:[
+   {id:"claude-sonnet-5-5",n:"Claude Sonnet 5.5 · Anthropic"},
    {id:"claude-opus-4-8",n:"Claude Opus 4.8 · Anthropic"},
    {id:"claude-sonnet-4-6",n:"Claude Sonnet 4.6 · Anthropic"},
    {id:"claude-haiku-4-5",n:"Claude Haiku 4.5 · Anthropic"}]},
@@ -881,8 +882,37 @@ const FREE_2026=[
 /* ---------------- state & storage ---------------- */
 const SKEY="arena-ff-v1";
 let memStore=null, storageOK=true;
+/* sanitizare: starea vine din localStorage sau dintr-un fișier importat (neîncredere) — valorile ajung în innerHTML */
+function sanitizeState(j){
+  if(!j||typeof j!=="object"||!Array.isArray(j.models))return null;
+  const num=(v,d)=>{v=Number(v);return Number.isFinite(v)?v:d;};
+  const str=v=>v==null?"":String(v);
+  const PROVS=["openai","pollinations","browser","chromeai","transformersjs","anthropic","ollama","demo"];
+  const o={lang:j.lang==="en"?"en":"ro",models:[],ratings:{},history:[]};
+  if(j.cat26!=null)o.cat26=num(j.cat26,0);
+  if(j.cat26v4!=null)o.cat26v4=num(j.cat26v4,0);
+  const seen=new Set();
+  for(const m of j.models){
+    if(!m||typeof m!=="object")continue;
+    const id=str(m.id);if(!id||seen.has(id))continue;
+    const provider=PROVS.includes(m.provider)?m.provider:"openai";
+    if(provider==="demo"&&!DEMO_STYLES[m.style])continue;
+    seen.add(id);
+    const c={id,name:str(m.name)||id,provider,model:str(m.model),baseUrl:str(m.baseUrl),apiKey:str(m.apiKey),enabled:!!m.enabled,demo:provider==="demo"};
+    if(provider==="demo")c.style=m.style;
+    const lt=m.lastTest;
+    if(lt&&typeof lt==="object")c.lastTest={ok:!!lt.ok,ms:num(lt.ms,0),code:str(lt.code),ts:num(lt.ts,0)};
+    o.models.push(c);
+  }
+  if(j.ratings&&typeof j.ratings==="object")for(const k of Object.keys(j.ratings)){
+    const r=j.ratings[k];if(k==="__proto__"||!r||typeof r!=="object")continue;
+    o.ratings[k]={elo:num(r.elo,1000),w:num(r.w,0),d:num(r.d,0),l:num(r.l,0),m:num(r.m,0)};
+  }
+  if(Array.isArray(j.history))o.history=j.history.slice(-500).filter(h=>h&&typeof h==="object").map(h=>({ts:num(h.ts,0),a:str(h.a),b:str(h.b),s:num(h.s,0.5),p:str(h.p).slice(0,140)}));
+  return o;
+}
 function loadState(){
-  try{const raw=localStorage.getItem(SKEY); if(raw) return JSON.parse(raw);}
+  try{const raw=localStorage.getItem(SKEY); if(raw) return sanitizeState(JSON.parse(raw));}
   catch(e){storageOK=false;}
   return null;
 }
@@ -921,7 +951,7 @@ function rating(id){ if(!S.ratings[id]) S.ratings[id]={elo:1000,w:0,d:0,l:0,m:0}
 
 /* ---------------- helpers ---------------- */
 const $=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function toast(msg){const el=$("toast");el.textContent=msg;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),2600);}
 function hash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h;}
 function pick(arr,seed){return arr[seed%arr.length];}
@@ -933,7 +963,7 @@ function nameOf(id){const m=modelById(id);return m?m.name:id;}
 function applyLang(){
   document.documentElement.lang=LANG;
   document.querySelectorAll("[data-i18n]").forEach(el=>{el.innerHTML=t(el.dataset.i18n);});
-  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{el.placeholder=t(el.dataset.i18nPh);});
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{el.placeholder=t(el.dataset.i18nPh);el.setAttribute("aria-label",el.placeholder);});
   const L=$("langs");L.innerHTML="";
   ["ro","en"].forEach(code=>{
     const b=document.createElement("button");b.textContent=code.toUpperCase();
@@ -964,9 +994,9 @@ async function* demoStream(model,prompt,signal){
   const topic=prompt.trim().split(/\s+/).slice(0,7).join(" ");
   const parts=[pick(st.open,seed)+" ",
     (LANG==="ro"?"Despre „":"On “")+topic+(LANG==="ro"?"” — ":"” — "),
-    pick(st.mid,seed>>3)+" ",
-    pick(st.mid,(seed>>7)+1)+"\n\n",
-    pick(st.close,seed>>11)];
+    pick(st.mid,seed>>>3)+" ",
+    pick(st.mid,(seed>>>7)+1)+"\n\n",
+    pick(st.close,seed>>>11)];
   const text=parts.join("");
   const words=text.split(/(\s+)/);
   for(const w of words){
@@ -1000,7 +1030,9 @@ async function* openaiStream(model,prompt,signal){
   if(!resp.ok)throw new Error(resp.status+" "+(await resp.text()).slice(0,200));
   for await(const d of sseLines(resp,signal)){
     if(d==="[DONE]")return;
-    try{const j=JSON.parse(d);const c=j.choices?.[0]?.delta?.content;if(c)yield c;}catch(e){}
+    let j;try{j=JSON.parse(d);}catch(e){continue;}
+    if(j&&j.error)throw new Error(String(j.error.message||JSON.stringify(j.error)).slice(0,200));
+    const c=j?.choices?.[0]?.delta?.content;if(c)yield c;
   }
 }
 async function* anthropicStream(model,prompt,signal){
@@ -1011,16 +1043,16 @@ async function* anthropicStream(model,prompt,signal){
     body:JSON.stringify({model:model.model,max_tokens:2048,stream:true,messages:[{role:"user",content:prompt}]})});
   if(!resp.ok)throw new Error(resp.status+" "+(await resp.text()).slice(0,200));
   for await(const d of sseLines(resp,signal)){
-    try{const j=JSON.parse(d);
-      if(j.type==="content_block_delta"&&j.delta?.text)yield j.delta.text;
-    }catch(e){}
+    let j;try{j=JSON.parse(d);}catch(e){continue;}
+    if(j&&j.type==="error")throw new Error(String(j.error?.message||"stream error").slice(0,200));
+    if(j&&j.type==="content_block_delta"&&j.delta?.text)yield j.delta.text;
   }
 }
 /* ---------------- WebLLM: AI local în browser (WebGPU) ---------------- */
 const WLLM={mod:null,engines:{}};
 async function* webllmStream(model,prompt,signal){
   if(!navigator.gpu)throw new Error("WebGPU indisponibil — folosește Chrome/Edge recent");
-  if(!WLLM.mod)WLLM.mod=await import("https://esm.run/@mlc-ai/web-llm");
+  if(!WLLM.mod)WLLM.mod=await import("https://esm.run/@mlc-ai/web-llm@0.2.84");
   let eng=WLLM.engines[model.model];
   if(!eng){
     const el=model._progressEl;
@@ -1057,7 +1089,7 @@ async function* chromeAIStream(model,prompt,signal){
 /* ---------------- Transformers.js (WASM/WebGPU) — merge și fără WebGPU ---------------- */
 const TJS={mod:null,pipes:{}};
 async function* tjsStream(model,prompt,signal){
-  if(!TJS.mod)TJS.mod=await import("https://esm.run/@huggingface/transformers");
+  if(!TJS.mod)TJS.mod=await import("https://esm.run/@huggingface/transformers@4.2.0");
   let pipe=TJS.pipes[model.model];
   if(!pipe){
     const el=model._progressEl;
@@ -1094,7 +1126,7 @@ function streamFor(model,prompt,signal){
 }
 async function runInto(model,prompt,el,signal){
   el.textContent="";el.classList.remove("err");el.classList.add("cursor");
-  if(model.provider==="browser"||model.provider==="transformersjs")model._progressEl=el;
+  if(model.provider==="browser"||model.provider==="transformersjs")Object.defineProperty(model,"_progressEl",{value:el,writable:true,configurable:true,enumerable:false});
   try{
     for await(const chunk of streamFor(model,prompt,signal)){
       el.textContent+=chunk;
@@ -1133,7 +1165,7 @@ async function pingModel(m){
         "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body:JSON.stringify({model:m.model,max_tokens:1,messages:msg})};
     }else{
-      let base=m.baseUrl;
+      let base=m.baseUrl||(m.provider==="openai"?"https://api.openai.com/v1":"");
       if(m.provider==="ollama"&&!base)base="http://localhost:11434/v1";
       if(m.provider==="pollinations"&&!base)base="https://gen.pollinations.ai/v1";
       url=base.replace(/\/+$/,"")+"/chat/completions";
@@ -1206,11 +1238,13 @@ async function startDuel(){
   let j=Math.floor(Math.random()*(pool.length-1));if(j>=i)j++;
   const ctrl=new AbortController();
   duel={a:pool[i],b:pool[j],prompt,ctrl,done:false};
+  const mine=duel;
   $("d-go").disabled=true;$("d-stop").style.display="";
   const [okA,okB]=await Promise.all([
     runInto(duel.a,prompt,$("d-pa"),ctrl.signal),
     runInto(duel.b,prompt,$("d-pb"),ctrl.signal)
   ]);
+  if(duel!==mine)return; /* între timp a pornit alt duel (Stop + duel nou): nu atingem UI-ul lui */
   $("d-go").disabled=false;$("d-stop").style.display="none";
   if(ctrl.signal.aborted){resetDuelUI();duel=null;return;}
   if(!(okA&&okB)){
@@ -1303,7 +1337,7 @@ function renderModels(){
     const card=document.createElement("div");card.className="mcard";
     const meta=m.provider==="demo"?"offline":`${m.provider} · ${m.model||"?"}`;
     card.innerHTML=`
-      <button class="toggle ${m.enabled?"on":""}" aria-label="toggle" data-act="toggle"></button>
+      <button class="toggle ${m.enabled?"on":""}" aria-label="${esc(m.name)}" aria-pressed="${m.enabled?"true":"false"}" data-act="toggle"></button>
       <div><div class="nm">${esc(m.name)} ${m.demo?`<span class="tag demo">${t("demo_tag")}</span>`:""}</div>
       <div class="meta">${esc(meta)}</div></div>
       <div class="sp"></div>
@@ -1369,7 +1403,7 @@ async function syncGroup(g,key){
     url=base+"/v1/models";
     headers={"x-api-key":key||"","anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"};
   }else if(key)headers["Authorization"]="Bearer "+key;
-  const resp=await fetch(url,{headers});
+  const resp=await fetch(url,{headers,signal:(typeof AbortSignal!=="undefined"&&AbortSignal.timeout)?AbortSignal.timeout(20000):undefined});
   if(!resp.ok)throw new Error(resp.status+"");
   const j=await resp.json();
   const arr=Array.isArray(j)?j:(j.data||j.models||[]);
@@ -1501,7 +1535,7 @@ $("io-export").onclick=()=>{
   const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);
   a.download="arena-fara-frontiere-"+new Date().toISOString().slice(0,10)+".json";
-  a.click();URL.revokeObjectURL(a.href);toast(t("exported"));
+  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),10000);toast(t("exported"));
 };
 $("io-import").onclick=()=>$("io-file").click();
 $("io-file").onchange=e=>{
@@ -1509,8 +1543,8 @@ $("io-file").onchange=e=>{
   const r=new FileReader();
   r.onload=()=>{try{
     const j=JSON.parse(r.result);
-    if(!j.models||!Array.isArray(j.models))throw new Error("format");
-    S=j;LANG=S.lang||"ro";saveState();
+    const sj=sanitizeState(j);if(!sj)throw new Error("format");
+    S=sj;if(!S.models.length)S.models=defaultModels();LANG=S.lang||"ro";saveState();
     applyLang();renderModels();renderCatalog();renderBoard();fillCmpSelects();renderSuggest();
     toast(t("imported"));
   }catch(err){toast("JSON invalid");}};
