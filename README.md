@@ -38,6 +38,7 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 - **Stocare locală:** toate datele (modele, chei API, clasament, istoric) se salvează în `localStorage` sub cheia `arena-ff-v1`. Dacă `localStorage` nu e disponibil, datele se pierd la închiderea paginii.
 - **Rețea:** aplicația nu are server propriu și nu trimite telemetrie. Cererile de chat pleacă direct din browser către providerul pe care îl configurezi (de exemplu `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, un server local `localhost` etc.), cu cheia ta.
 - **CDN:** doar dacă alegi motoarele din browser, modulele sunt importate de la `esm.run` (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`) și apoi se descarcă ponderile modelelor (de ex. de la Hugging Face).
+- **Atenție, modele preactivate:** la prima pornire (și la migrarea catalogului) aplicația pre-adaugă și **activează** patru modele cloud fără cheie, prin Kilo Gateway (`api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash), pe lângă cele patru modele demo. Un duel care le alege trimite promptul tău către `api.kilo.ai`, fără cheie și fără altă confirmare. Pentru utilizare strict locală, dezactivează-le în **Setări** (sau lasă active doar modelele demo / locale).
 - Linkurile din catalog (documentații, console de chei) se deschid doar la click.
 - Modelele demo nu fac niciun apel de rețea.
 
@@ -56,3 +57,5 @@ Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf.
 ## English summary
 
 ARENA is a single-file HTML app for blind head-to-head duels between AI models with a local Elo leaderboard. Models can be cloud APIs (your own key), local servers (e.g. Ollama) or in-browser engines; demo models work offline. Data stays in localStorage (`arena-ff-v1`); requests go straight from the browser to the provider you configure. UI in Romanian and English. License not yet declared.
+
+Audit: 2026-10-10 — verificat codul (cereri de rețea, sanitizare stare importată, redarea răspunsurilor prin textContent), accesibilitate (axe: contrast corectat) și funcționarea (duel cu modele demo, file). Declarația din subsol „Zero dependențe” e valabilă doar fără motoarele din browser (WebLLM/Transformers.js, încărcate de la esm.run la cerere).
