@@ -25,7 +25,7 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 - Scurtături de tastatură: `1` / `2` / `3` / `4` votează (A, B, egalitate, ambele slabe) când nu ești într-un câmp de text; `Ctrl`/`Cmd`+`Enter` în câmpul de text pornește duelul sau compararea.
 - „Exportă clasamentul (CSV)" (în fila Clasament): fișier generat local; numele care încep cu `=`, `+`, `-`, `@` sunt neutralizate.
 - Opțiune în Setări: „Păstrează cheile API doar în sesiune" — cheile nu se mai scriu în `localStorage` (rămân în `sessionStorage` și dispar la închiderea filei).
-- Interfață în română și engleză (selector de limbă în antet).
+- Interfață în română, engleză și franceză (selector RO / EN / FR în antet; combatanții demo răspund în limba aleasă; notele per grup din catalogul de AI-uri rămân în română).
 
 ## Manual de utilizare
 
@@ -55,6 +55,10 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează complet offline. Providerii cloud, importul motoarelor WebLLM/Transformers.js și sincronizarea catalogului cer internet; Ollama sau alt server local funcționează cu rețeaua locală, dacă serverul acceptă apeluri din browser (CORS).
 
 ## Istoric / Changelog
+
+### 11 octombrie 2026 (a treia intrare)
+- Interfață în franceză (≈110 texte, inclusiv combatanții demo și nota catalogului), alături de română și engleză.
+- Corectat: textul unei notificări (toast) anterioare rămânea în regiunea `aria-live` după dispariție; salvarea unui model fără nume afișează acum un mesaj și marchează câmpul `aria-invalid` (înainte nu se întâmpla nimic vizibil).
 
 ### 11 octombrie 2026 (a doua intrare)
 - Securitate: CSP cu `script-src` pe hash (fără `'unsafe-inline'`); opțiune „cheile API doar în sesiune".

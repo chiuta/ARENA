@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-T4aMSHPTqrg7rP+m8ssGkv1/DoCASWrSYCxVPHasR0Y=' 'wasm-unsafe-eval' https://esm.run https://cdn.jsdelivr.net; style-src 'unsafe-inline'; img-src data: blob: https:; font-src data:; media-src blob: data:; connect-src https: http: ws: wss:; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-QSPYBTAUBz7FB0GEgl2HfERMLiMzn4lhAwY6sCvkx8c=' 'wasm-unsafe-eval' https://esm.run https://cdn.jsdelivr.net; style-src 'unsafe-inline'; img-src data: blob: https:; font-src data:; media-src blob: data:; connect-src https: http: ws: wss:; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="description" content="Arena fără frontiere — dueluri oarbe între modele AI, clasament Elo, totul offline-first, într-un singur fișier. Fișierul e al tău.">
 <title>Arena fără frontiere</title>
 <style>
@@ -374,7 +374,7 @@ const I18N = {
   confirm_cloud:"Activezi acest model cloud? Promptul tău va fi trimis către {h}, fără cheie API și fără alt acord ulterior.",
   confirm_export_keys:"Incluzi cheile API în fișierul exportat? OK = cu chei (păstrează fișierul în siguranță); Anulează = export fără chei.",
   confirm_wipe:"Ștergi TOATE datele locale (modele, chei, clasament)?",
-  imported:"Date importate.", exported:"Export gata.", wiped:"Date șterse.", saved:"Salvat.",
+  imported:"Date importate.", exported:"Export gata.", wiped:"Date șterse.", saved:"Salvat.", need_name:"Completează numele afișat al combatantului.",
   err_stream:"Eroare: ", err_cors:"rețea/CORS blocat — serverul nu acceptă apeluri din browser, endpoint-ul e greșit sau ești offline", nostorage:"localStorage indisponibil — datele se pierd la închiderea paginii.",
   demo_tag:"demo", keyless_tag:"fără cheie", trial_tag:"credite trial", paid_tag:"plătit · cheia ta",
   cat_title:"Catalog gratuit — 29 iulie 2026",
@@ -423,7 +423,7 @@ const I18N = {
   confirm_cloud:"Enable this cloud model? Your prompt will be sent to {h}, with no API key and no further confirmation.",
   confirm_export_keys:"Include API keys in the exported file? OK = with keys (keep the file safe); Cancel = export without keys.",
   confirm_wipe:"Wipe ALL local data (models, keys, leaderboard)?",
-  imported:"Data imported.", exported:"Export ready.", wiped:"Data wiped.", saved:"Saved.",
+  imported:"Data imported.", exported:"Export ready.", wiped:"Data wiped.", saved:"Saved.", need_name:"Enter a display name for this combatant.",
   err_stream:"Error: ", err_cors:"network/CORS blocked — the server refuses browser calls, the endpoint is wrong, or you are offline", nostorage:"localStorage unavailable — data is lost when the page closes.",
   demo_tag:"demo", keyless_tag:"no key", trial_tag:"trial credits", paid_tag:"paid · your key",
   cat_title:"Free catalog — July 29, 2026",
@@ -438,6 +438,55 @@ const I18N = {
   f_all:"All", f_keyless:"No key", f_free:"Free key", f_trial:"Trial", f_paid:"Paid", f_local:"Local", f_browser:"In-browser",
   r_all:"All regions", r_global:"Global/US", r_china:"China", r_europa:"Europe", "r_românia":"Romania", r_asia:"Asia", r_orient:"Middle East", r_americi:"Americas",
   sug:["Explain quantum entanglement to a 10-year-old","Write a haiku about the Danube at dusk","Which matters more: freedom or safety?","Summarize relativity in 3 sentences"]
+ },
+ fr:{
+  keys_session:"Garder les clés API pour cette session seulement (non écrites dans localStorage ; effacées à la fermeture de l'onglet)",
+  board_csv:"Exporter le classement (CSV)", csv_empty:"Aucun duel à exporter pour l'instant.", csv_done:"Classement exporté.",
+  kb_hint:"Touches : 1 = A · 2 = B · 3 = égalité · 4 = les deux mauvais · Ctrl+Entrée dans le champ de texte = lancer",
+  tagline:"duels à l'aveugle · classement elo · le fichier est à toi",
+  tab_duel:"Duel", tab_cmp:"Comparaison", tab_board:"Classement", tab_set:"Réglages",
+  prompt_ph:"Écris une question ou une tâche pour les deux combattants…",
+  fight:"Lancer le duel", stop:"Arrêter", compare:"Comparer", again:"Nouveau duel",
+  duel_hint:"Deux combattants anonymes. Vote, puis découvre qui ils étaient.",
+  cmp_hint:"Tu choisis les combattants — pas de vote, pas d'Elo.",
+  v_a:"◀ A est meilleur", v_b:"B est meilleur ▶", v_tie:"Égalité", v_bad:"Les deux mauvais",
+  cmp_left:"Coin doré", cmp_right:"Coin vert",
+  board_title:"Classement Elo", board_reset:"Réinitialiser le classement",
+  board_note:"L'Elo démarre à 1000, K=32. L'égalité et « les deux mauvais » comptent comme nul. Le classement est local, rien que pour toi.",
+  th_rank:"#", th_model:"Modèle", th_elo:"Elo", th_m:"Duels", th_w:"V", th_d:"N", th_l:"D",
+  empty_board:"Aucun duel pour l'instant. L'arène attend ses premiers gladiateurs.",
+  set_models:"Combattants", add_model:"+ Ajouter un modèle",
+  f_name:"Nom affiché", f_prov:"Fournisseur", f_model:"ID du modèle", f_url:"Base URL", f_key:"Clé API",
+  save:"Enregistrer", cancel:"Annuler", edit:"Modifier", del:"Supprimer", test:"Test", test_all:"⚡ Tester tous les modèles actifs", test_ok_n:"fonctionnels", test_bad_n:"en panne/limités", test_quota:"Test de {n} modèles — chaque test consomme un appel du quota quotidien du fournisseur (p. ex. OpenRouter : 50/jour). Continuer ?",
+  mf_new:"Nouveau combattant", mf_edit:"Modifier le combattant",
+  set_data:"Tes données",
+  exportd:"Tout exporter (JSON)", importd:"Importer", wipe:"Tout effacer",
+  set_note:"Tout — modèles, clés, classement — reste uniquement dans ton navigateur (localStorage). L'export inclut les clés API : garde le fichier en lieu sûr. Les modèles démo fonctionnent entièrement hors ligne, sans clé.",
+  foot:"Un seul fichier HTML · JS vanilla · zéro télémétrie · aucun serveur propre<br>Les clés API ne partent que vers le fournisseur que tu as choisi, directement depuis ton navigateur.",
+  need2:"Il faut au moins 2 combattants actifs. Voir Réglages.",
+  need_prompt:"Écris d'abord un prompt.",
+  verdict_a:"Victoire du coin doré", verdict_b:"Victoire du coin vert",
+  verdict_tie:"Un nul honorable", verdict_bad:"L'arène reste sur sa faim", verdict_err:"Duel annulé — un combattant est tombé. Pas d'Elo.",
+  was:"était", confirm_del:"Supprimer ce combattant ? Son historique de duels est conservé.",
+  confirm_reset:"Réinitialiser tout le classement Elo ?",
+  confirm_cloud:"Activer ce modèle cloud ? Ton prompt sera envoyé à {h}, sans clé API et sans autre confirmation.",
+  confirm_export_keys:"Inclure les clés API dans le fichier exporté ? OK = avec les clés (garde le fichier en lieu sûr) ; Annuler = export sans clés.",
+  confirm_wipe:"Effacer TOUTES les données locales (modèles, clés, classement) ?",
+  imported:"Données importées.", exported:"Export prêt.", wiped:"Données effacées.", saved:"Enregistré.", need_name:"Saisis un nom affiché pour ce combattant.",
+  err_stream:"Erreur : ", err_cors:"réseau/CORS bloqué — le serveur refuse les appels depuis le navigateur, le point d'accès est incorrect ou tu es hors ligne", nostorage:"localStorage indisponible — les données seront perdues à la fermeture de la page.",
+  demo_tag:"démo", keyless_tag:"sans clé", trial_tag:"crédits d'essai", paid_tag:"payant · ta clé",
+  cat_title:"Catalogue gratuit — 29 juillet 2026",
+  cat_note:"181 IA intégrables au 29 juillet 2026 — 68 fournisseurs : gratuits (cloud mondial + Chine + local + dans le navigateur), essais et, signalés explicitement, payants avec ta propre clé (Claude, GPT-5, Grok, DeepSeek direct, Sonar), de l'IA intégrée au navigateur (Gemini Nano) et des moteurs dans la page (WebLLM, Transformers.js) jusqu'à tous les serveurs locaux compatibles OpenAI (Ollama, LM Studio, Jan, llama.cpp, GPT4All, KoboldCpp, vLLM, LocalAI, oobabooga, TabbyAPI, SGLang, MLX, Aphrodite, Cortex, Xinference, FastChat, LiteLLM, Docker) sur tous les continents : États-Unis, Chine (8 plateformes), UE (Mistral, Scaleway, EuroLLM, Teuken), Roumanie (OpenLLM-Ro), Inde (Sarvam), Singapour (SEA-LION), Qatar (Fanar), Arabie saoudite (ALLaM via Groq), Israël (AI21), Corée (Upstage), Brésil (Maritaca), EAU (Falcon), Vietnam, Afrique. Liste vérifiée sur des sources à jour. Le bouton ⟳ Synchroniser interroge en direct le point d'accès /models du fournisseur et ajoute tout ce qui est gratuit à cet instant — la liste ne vieillit pas. Pollinations et Kilo Gateway fonctionnent sans aucune clé. Pour les autres, crée une clé gratuite (sans carte) chez le fournisseur, colle-la dans le champ du groupe et ajoute les modèles en un clic. Les catalogues gratuits changent chaque mois — si un modèle renvoie 404/429, il a été retiré ou tu as atteint la limite quotidienne. État du catalogue : dernière vérification le 29 juillet 2026 ; les modèles, limites gratuites et prix changent souvent — non revérifiés au 11 octobre 2026, confirme auprès du fournisseur.",
+  cat_add_all:"+ Tout ajouter", cat_key_ph:"Clé API du groupe…",
+  cat_added:"ajouté(s).", cat_key_first:"Colle d'abord la clé API du groupe.",
+  cat_in:"déjà ajouté",
+  sync:"Synchroniser", sync_tip:"Interroge en direct /models chez le fournisseur et ajoute tout ce qui est gratuit MAINTENANT",
+  sync_none:"Rien de nouveau — la liste est à jour.", sync_err:"Échec de la synchronisation : ",
+  sync_all:"⟳ Tout synchroniser", sync_groups:"groupes", sync_skipped:"ignorés (sans clé/erreur) :",
+  f_search:"Chercher un modèle ou un fournisseur…", f_prov:"fournisseurs", f_mod:"modèles",
+  f_all:"Tous", f_keyless:"Sans clé", f_free:"Clé gratuite", f_trial:"Essai", f_paid:"Payants", f_local:"Locaux", f_browser:"Dans le navigateur",
+  r_all:"Toutes les régions", r_global:"Monde/É-U", r_china:"Chine", r_europa:"Europe", "r_românia":"Roumanie", r_asia:"Asie", r_orient:"Moyen-Orient", r_americi:"Amériques",
+  sug:["Explique l'intrication quantique à un enfant de 10 ans","Écris un haïku sur le Danube au crépuscule","Qu'est-ce qui compte le plus : la liberté ou la sécurité ?","Résume la relativité en 3 phrases"]
  }
 };
 let LANG = "ro";
@@ -446,13 +495,17 @@ const t = k => (I18N[LANG] && I18N[LANG][k]) ?? I18N.ro[k] ?? k;
 /* ---------------- demo combatants (offline) ---------------- */
 const DEMO_STYLES = {
  laconic:{ro:{name:"Laconic (demo)",open:["Pe scurt:","Direct:","Esența:"],mid:["Un singur lucru contează aici — miezul întrebării.","Restul e zgomot; păstrează doar ce poți verifica.","Dacă nu încape într-o frază, nu e încă înțeles."],close:["Atât.","Restul e exercițiu pentru cititor.","Simplu."]},
-              en:{name:"Laconic (demo)",open:["In short:","Directly:","The essence:"],mid:["Only one thing matters here — the core of the question.","The rest is noise; keep what you can verify.","If it doesn't fit in one sentence, it isn't understood yet."],close:["That's it.","The rest is left as an exercise.","Simple."]}},
+              en:{name:"Laconic (demo)",open:["In short:","Directly:","The essence:"],mid:["Only one thing matters here — the core of the question.","The rest is noise; keep what you can verify.","If it doesn't fit in one sentence, it isn't understood yet."],close:["That's it.","The rest is left as an exercise.","Simple."]},
+              fr:{name:"Laconique (démo)",open:["En bref :","Directement :","L'essentiel :"],mid:["Une seule chose compte ici — le cœur de la question.","Le reste n'est que du bruit ; garde ce que tu peux vérifier.","Si cela ne tient pas en une phrase, ce n'est pas encore compris."],close:["Voilà.","Le reste est laissé en exercice au lecteur.","Simple."]}},
  rapsod:{ro:{name:"Rapsodul (demo)",open:["Închipuie-ți o clipă:","Ascultă:","E o poveste veche în întrebarea ta —"],mid:["fiecare idee e un fir de nisip în arena timpului, și totuși nisipul ține pași de gladiatori.","ce întrebi tu au întrebat și alții, la lumina altor focuri, și răspunsul s-a schimbat cu fiecare limbă în care a fost rostit.","există o frumusețe discretă în a nu ști încă — spațiul acela e locul unde crește gândirea."],close:["Așa se încheie cântul; al tău începe acum.","Iar arena, ca întotdeauna, aplaudă întrebarea, nu răspunsul.","Punct, și de la capăt."]},
-             en:{name:"The Rhapsode (demo)",open:["Imagine, for a moment:","Listen:","There is an old story inside your question —"],mid:["every idea is a grain of sand in the arena of time, and yet the sand carries the steps of gladiators.","what you ask, others asked by other fires, and the answer changed with every language it was spoken in.","there is a quiet beauty in not knowing yet — that space is where thinking grows."],close:["So ends the song; yours begins now.","And the arena, as always, applauds the question, not the answer.","Full stop, and again from the top."]}},
+             en:{name:"The Rhapsode (demo)",open:["Imagine, for a moment:","Listen:","There is an old story inside your question —"],mid:["every idea is a grain of sand in the arena of time, and yet the sand carries the steps of gladiators.","what you ask, others asked by other fires, and the answer changed with every language it was spoken in.","there is a quiet beauty in not knowing yet — that space is where thinking grows."],close:["So ends the song; yours begins now.","And the arena, as always, applauds the question, not the answer.","Full stop, and again from the top."]},
+              fr:{name:"Le Rhapsode (démo)",open:["Imagine un instant :","Écoute :","Il y a une vieille histoire dans ta question —"],mid:["chaque idée est un grain de sable dans l'arène du temps, et pourtant le sable garde les pas des gladiateurs.","ce que tu demandes, d'autres l'ont demandé près d'autres feux, et la réponse a changé avec chaque langue qui l'a prononcée.","il y a une beauté discrète à ne pas encore savoir — cet espace est l'endroit où la pensée grandit."],close:["Ainsi s'achève le chant ; le tien commence maintenant.","Et l'arène, comme toujours, applaudit la question, non la réponse.","Point final, et on reprend du début."]}},
  analist:{ro:{name:"Analistul (demo)",open:["Să structurăm.","Descompun problema în trei părți.","Metodic:"],mid:["Întâi definițiile: fără termeni clari, orice concluzie e fragilă. Apoi datele: ce știm sigur, ce doar presupunem. La final, inferența: pasul cel mai mic care leagă una de alta.","Ipoteza de lucru trebuie să fie falsificabilă; altfel discutăm gusturi, nu fapte. Verific premisele una câte una și marchez explicit incertitudinea.","Există cel puțin două interpretări plauzibile. Le compar după predicțiile pe care le fac, nu după cât de elegant sună."],close:["Concluzie provizorie, deschisă la revizuire.","Q.E.D. — cu asterisc.","Datele noi bat opiniile vechi."]},
-              en:{name:"The Analyst (demo)",open:["Let's structure this.","I'll decompose the problem into three parts.","Methodically:"],mid:["First, definitions: without clear terms, any conclusion is fragile. Then the data: what we know, what we merely assume. Finally, inference: the smallest step linking one to the other.","A working hypothesis must be falsifiable; otherwise we're discussing taste, not fact. I check premises one by one and mark uncertainty explicitly.","There are at least two plausible readings. I compare them by the predictions they make, not by how elegant they sound."],close:["Provisional conclusion, open to revision.","Q.E.D. — with an asterisk.","New data beats old opinions."]}},
+              en:{name:"The Analyst (demo)",open:["Let's structure this.","I'll decompose the problem into three parts.","Methodically:"],mid:["First, definitions: without clear terms, any conclusion is fragile. Then the data: what we know, what we merely assume. Finally, inference: the smallest step linking one to the other.","A working hypothesis must be falsifiable; otherwise we're discussing taste, not fact. I check premises one by one and mark uncertainty explicitly.","There are at least two plausible readings. I compare them by the predictions they make, not by how elegant they sound."],close:["Provisional conclusion, open to revision.","Q.E.D. — with an asterisk.","New data beats old opinions."]},
+              fr:{name:"L'Analyste (démo)",open:["Structurons.","Je décompose le problème en trois parties.","Méthodiquement :"],mid:["D'abord les définitions : sans termes clairs, toute conclusion est fragile. Ensuite les données : ce que nous savons, ce que nous supposons seulement. Enfin l'inférence : le plus petit pas qui relie l'un à l'autre.","Une hypothèse de travail doit être falsifiable ; sinon nous discutons de goûts, pas de faits. Je vérifie les prémisses une à une et je signale explicitement l'incertitude.","Il existe au moins deux lectures plausibles. Je les compare d'après les prédictions qu'elles font, non d'après leur élégance."],close:["Conclusion provisoire, ouverte à révision.","C.Q.F.D. — avec un astérisque.","Les données nouvelles battent les vieilles opinions."]}},
  sceptic:{ro:{name:"Scepticul (demo)",open:["Stai puțin.","Înainte de răspuns, o obiecție.","Hm — întrebarea ascunde o premisă."],mid:["Cine spune că întrebarea e pusă corect? De multe ori răspunsul greșit vine dintr-o întrebare acceptată prea repede.","Aș vrea surse, nu impresii. Până atunci, răspunsul cinstit e „nu știm încă destul”.","Atenție la ce pare evident: evidentul e locul unde se ascund cele mai vechi erori."],close:["Îndoiala rămâne cel mai bun instrument din arenă.","Verifică-mă. Serios.","Nu mă crede pe cuvânt — asta e tot mesajul."]},
-              en:{name:"The Skeptic (demo)",open:["Hold on.","Before an answer, an objection.","Hm — the question hides a premise."],mid:["Who says the question is well posed? Wrong answers often come from questions accepted too quickly.","I'd want sources, not impressions. Until then, the honest answer is “we don't know enough yet”.","Beware of the obvious: the obvious is where the oldest errors hide."],close:["Doubt remains the best instrument in the arena.","Check me. Seriously.","Don't take my word for it — that's the whole message."]}}
+              en:{name:"The Skeptic (demo)",open:["Hold on.","Before an answer, an objection.","Hm — the question hides a premise."],mid:["Who says the question is well posed? Wrong answers often come from questions accepted too quickly.","I'd want sources, not impressions. Until then, the honest answer is “we don't know enough yet”.","Beware of the obvious: the obvious is where the oldest errors hide."],close:["Doubt remains the best instrument in the arena.","Check me. Seriously.","Don't take my word for it — that's the whole message."]},
+              fr:{name:"Le Sceptique (démo)",open:["Une seconde.","Avant la réponse, une objection.","Hm — la question cache une prémisse."],mid:["Qui dit que la question est bien posée ? Souvent, la mauvaise réponse vient d'une question acceptée trop vite.","Je voudrais des sources, pas des impressions. D'ici là, la réponse honnête est « nous n'en savons pas encore assez ».","Méfie-toi de l'évident : l'évident est l'endroit où se cachent les plus vieilles erreurs."],close:["Le doute reste le meilleur instrument de l'arène.","Vérifie-moi. Sérieusement.","Ne me crois pas sur parole — tout le message est là."]}}
 };
 
 function defaultModels(){
@@ -903,7 +956,7 @@ function sanitizeState(j){
   const num=(v,d)=>{v=Number(v);return Number.isFinite(v)?v:d;};
   const str=v=>v==null?"":String(v);
   const PROVS=["openai","pollinations","browser","chromeai","transformersjs","anthropic","ollama","demo"];
-  const o={lang:j.lang==="en"?"en":"ro",models:[],ratings:{},history:[],keysSession:!!j.keysSession};
+  const o={lang:(j.lang==="en"||j.lang==="fr")?j.lang:"ro",models:[],ratings:{},history:[],keysSession:!!j.keysSession};
   if(j.cat26!=null)o.cat26=num(j.cat26,0);
   if(j.cat26v4!=null)o.cat26v4=num(j.cat26v4,0);
   const seen=new Set();
@@ -988,7 +1041,7 @@ function rating(id){ if(!S.ratings[id]) S.ratings[id]={elo:1000,w:0,d:0,l:0,m:0}
 /* ---------------- helpers ---------------- */
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function toast(msg){const el=$("toast");el.textContent=msg;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),2600);}
+function toast(msg){const el=$("toast");el.textContent=msg;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>{el.classList.remove("on");setTimeout(()=>{if(!el.classList.contains("on"))el.textContent="";},300);},2600);}
 function hash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h;}
 function pick(arr,seed){return arr[seed%arr.length];}
 function modelById(id){return S.models.find(m=>m.id===id);}
@@ -1002,7 +1055,7 @@ function applyLang(){
   document.querySelectorAll("[data-i18n]").forEach(el=>{el.innerHTML=t(el.dataset.i18n);});
   document.querySelectorAll("[data-i18n-ph]").forEach(el=>{el.placeholder=t(el.dataset.i18nPh);el.setAttribute("aria-label",el.placeholder);});
   const L=$("langs");L.innerHTML="";
-  ["ro","en"].forEach(code=>{
+  ["ro","en","fr"].forEach(code=>{
     const b=document.createElement("button");b.textContent=code.toUpperCase();
     if(code===LANG)b.classList.add("on");
     b.onclick=()=>{LANG=code;S.lang=code;saveState();applyLang();renderBoard();renderModels();renderCatalog();renderSuggest();fillCmpSelects();};
@@ -1030,11 +1083,11 @@ async function* demoStream(model,prompt,signal){
   const seed=hash(prompt+"|"+model.id);
   const topic=prompt.trim().split(/\s+/).slice(0,7).join(" ");
   const parts=[pick(st.open,seed)+" ",
-    (LANG==="ro"?"Despre „":"On “")+topic+(LANG==="ro"?"” — ":"” — "),
+    (LANG==="ro"?"Despre „":LANG==="fr"?"À propos de « ":"On “")+topic+(LANG==="ro"?"” — ":LANG==="fr"?" » — ":"” — "),
     pick(st.mid,seed>>>3)+" ",
     pick(st.mid,(seed>>>7)+1)+"\n\n",
     pick(st.close,seed>>>11)];
-  parts.push(LANG==="ro"?"\n\n— Răspuns demo, generat dintr-un șablon de stil (nu de un model real); adaugă un model real în Setări pentru conținut relevant.":"\n\n— Demo reply built from a style template (not a real model); add a real model in Settings for relevant content.");
+  parts.push(LANG==="ro"?"\n\n— Răspuns demo, generat dintr-un șablon de stil (nu de un model real); adaugă un model real în Setări pentru conținut relevant.":LANG==="fr"?"\n\n— Réponse démo générée à partir d'un modèle de style (pas d'un vrai modèle) ; ajoute un vrai modèle dans Réglages pour un contenu pertinent.":"\n\n— Demo reply built from a style template (not a real model); add a real model in Settings for relevant content.");
   const text=parts.join("");
   const words=text.split(/(\s+)/);
   for(const w of words){
@@ -1441,7 +1494,8 @@ $("m-testall").onclick=testAll;
 $("mf-cancel").onclick=()=>$("mform").classList.remove("on");
 $("mf-save").onclick=()=>{
   const name=$("f-name").value.trim();
-  if(!name){$("f-name").focus();return;}
+  if(!name){const fn=$("f-name");fn.setAttribute("aria-invalid","true");fn.focus();toast(t("need_name"));return;}
+  $("f-name").removeAttribute("aria-invalid");
   const data={name,provider:$("f-prov").value,model:$("f-model").value.trim(),
     baseUrl:$("f-url").value.trim(),apiKey:$("f-key").value.trim()};
   if(editId){Object.assign(modelById(editId),data);}
