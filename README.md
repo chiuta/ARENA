@@ -4,6 +4,8 @@ Dueluri oarbe între modele AI, cu clasament Elo local — într-un singur fiși
 
 **Live:** https://chiuta.github.io/ARENA/
 
+**Ultima actualizare:** 11 octombrie 2026
+
 ![Captura de ecran](screenshot.png)
 
 ## Ce este
@@ -18,7 +20,7 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 - Clasament Elo local (pornește de la 1000, K=32; egalitatea și „ambele slabe” contează ca remiză), cu buton „Resetează clasamentul”.
 - Setări: adăugare/editare/ștergere de modele (nume, provider, ID model, Base URL, cheie API), buton „Test”, „Testează toate modelele active”.
 - Provideri tip: compatibili OpenAI, Anthropic, Ollama (local), Pollinations (cheie opțională), WebLLM (WebGPU), AI încorporat în browser (Gemini Nano), Transformers.js, plus modele demo.
-- Catalog de AI-uri integrabile (datat 29 iulie 2026, 181 de intrări, 68 de provideri conform textului din aplicație), cu filtre, „+ Adaugă toate” și „⟳” pentru sincronizarea listei de modele de la provider.
+- Catalog de AI-uri integrabile (datat 29 iulie 2026, 181 de intrări, 68 de provideri conform textului din aplicație; nereverificat la 11 octombrie 2026, vezi nota din aplicație), cu filtre, „+ Adaugă toate” și „⟳” pentru sincronizarea listei de modele de la provider.
 - „Exportă tot (JSON)”, „Importă”, „Șterge tot”.
 - Interfață în română și engleză (selector de limbă în antet).
 
@@ -43,9 +45,19 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 - Linkurile din catalog (documentații, console de chei) se deschid doar la click.
 - Modelele demo nu fac niciun apel de rețea.
 
+- **CSP:** pagina are o politică CSP: scripturi doar inline plus `esm.run`/`cdn.jsdelivr.net` (motoare în browser), conexiuni `https:`/`http:`/`ws:` (adresele de bază ale providerilor sunt configurate de utilizator, deci nu pot fi enumerate), fără obiecte, `base`/`form` blocate.
+
 ## Rulare locală / offline
 
 Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează complet offline. Providerii cloud, importul motoarelor WebLLM/Transformers.js și sincronizarea catalogului cer internet; Ollama sau alt server local funcționează cu rețeaua locală, dacă serverul acceptă apeluri din browser (CORS).
+
+## Istoric / Changelog
+
+### 11 octombrie 2026
+- Accesibilitate: titlu `h1` adăugat, selectorul de limbă ca <nav> etichetat (axe: 0 violări).
+- Răspunsurile demo poartă acum o notă vizibilă că sunt generate dintr-un șablon de stil, nu de un model real.
+- Catalogul de AI-uri: nota din aplicație (RO/EN) precizează că ultima verificare a fost la 29 iulie 2026 și că nu a fost reverificat la 11 octombrie 2026.
+- Adăugat CSP (scripturi doar inline + esm.run/cdn.jsdelivr.net; fără obiecte).
 
 ## Licență
 

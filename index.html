@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' https://esm.run https://cdn.jsdelivr.net; style-src 'unsafe-inline'; img-src data: blob: https:; font-src data:; media-src blob: data:; connect-src https: http: ws: wss:; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="description" content="Arena fără frontiere — dueluri oarbe între modele AI, clasament Elo, totul offline-first, într-un singur fișier. Fișierul e al tău.">
 <title>Arena fără frontiere</title>
 <style>
@@ -30,17 +31,17 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 /* ------- shell ------- */
 .wrap{max-width:1120px;margin:0 auto;padding:0 16px 64px}
 header{padding:26px 0 10px;text-align:center}
-.title{font-family:var(--serif);font-size:clamp(26px,4.5vw,40px);letter-spacing:.06em;color:var(--gold-soft)}
+.title{margin:0;font-weight:400;font-family:var(--serif);font-size:clamp(26px,4.5vw,40px);letter-spacing:.06em;color:var(--gold-soft)}
 .title b{font-weight:400;color:var(--text)}
 .laurel{display:flex;align-items:center;gap:12px;justify-content:center;color:var(--faint);margin-top:4px}
 .laurel::before,.laurel::after{content:"";height:1px;width:min(160px,26vw);background:linear-gradient(90deg,transparent,var(--line2));}
 .laurel::after{background:linear-gradient(90deg,var(--line2),transparent)}
 .tagline{font-size:12.5px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase}
-nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:18px 0 22px}
-nav button{padding:8px 16px;border-radius:999px;border:1px solid var(--line);color:var(--dim);font-size:13.5px;letter-spacing:.04em}
-nav button:hover{color:var(--text);border-color:var(--line2)}
-nav button.on{color:var(--bg);background:var(--gold);border-color:var(--gold);font-weight:600}
-.langs{position:absolute;top:14px;right:14px;display:flex;gap:4px}
+#nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:18px 0 22px}
+#nav button{padding:8px 16px;border-radius:999px;border:1px solid var(--line);color:var(--dim);font-size:13.5px;letter-spacing:.04em}
+#nav button:hover{color:var(--text);border-color:var(--line2)}
+#nav button.on{color:var(--bg);background:var(--gold);border-color:var(--gold);font-weight:600}
+.langs{margin:0;position:absolute;top:14px;right:14px;display:flex;gap:4px}
 .langs button{padding:4px 9px;border-radius:6px;border:1px solid var(--line);font-size:12px;color:var(--dim)}
 .langs button.on{color:var(--gold-soft);border-color:var(--gold)}
 main section{display:none}
@@ -173,11 +174,11 @@ footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
 </style>
 </head>
 <body>
-<div class="langs" id="langs"></div>
+<nav class="langs" id="langs" aria-label="Limbă / Language"></nav>
 <div class="wrap">
 
 <header>
-  <div class="title">ARENA <b>fără frontiere</b></div>
+  <h1 class="title">ARENA <b>fără frontiere</b></h1>
   <div class="laurel"><span class="tagline" data-i18n="tagline"></span></div>
 </header>
 
@@ -371,7 +372,7 @@ const I18N = {
   err_stream:"Eroare: ", err_cors:"rețea/CORS blocat — serverul nu acceptă apeluri din browser, endpoint-ul e greșit sau ești offline", nostorage:"localStorage indisponibil — datele se pierd la închiderea paginii.",
   demo_tag:"demo", keyless_tag:"fără cheie", trial_tag:"credite trial", paid_tag:"plătit · cheia ta",
   cat_title:"Catalog gratuit — 29 iulie 2026",
-  cat_note:"181 AI-uri integrabile la 29 iulie 2026 — 68 de provideri: gratuite (cloud global + China + local + în browser), trial și, marcate explicit, cele plătite cu cheia ta (Claude, GPT-5, Grok, DeepSeek direct, Sonar), de la AI-ul încorporat în browser (Gemini Nano) și motoarele din pagină (WebLLM, Transformers.js) până la toate serverele locale OpenAI-compatible (Ollama, LM Studio, Jan, llama.cpp, GPT4All, KoboldCpp, vLLM, LocalAI, oobabooga, TabbyAPI, SGLang, MLX, Aphrodite, Cortex, Xinference, FastChat, LiteLLM, Docker) de pe toate continentele: SUA, China (8 platforme), UE (Mistral, Scaleway, EuroLLM, Teuken), România (OpenLLM-Ro), India (Sarvam), Singapore (SEA-LION), Qatar (Fanar), Arabia Saudită (ALLaM prin Groq), Israel (AI21), Coreea (Upstage), Brazilia (Maritaca), EAU (Falcon), Vietnam, Africa. Listă verificată pe surse la zi. Butonul ⟳ Sincronizează interoghează live endpoint-ul /models al providerului și adaugă tot ce e gratuit în clipa aceea — lista nu îmbătrânește. Pollinations și Kilo Gateway merg fără nicio cheie. Pentru celelalte îți faci o cheie gratuită (fără card) la providerul respectiv, o lipești în câmpul grupului și adaugi modelele cu un click. Cataloagele gratuite se schimbă lunar — dacă un model dă eroare 404/429, a fost retras sau ai atins limita zilnică.",
+  cat_note:"181 AI-uri integrabile la 29 iulie 2026 — 68 de provideri: gratuite (cloud global + China + local + în browser), trial și, marcate explicit, cele plătite cu cheia ta (Claude, GPT-5, Grok, DeepSeek direct, Sonar), de la AI-ul încorporat în browser (Gemini Nano) și motoarele din pagină (WebLLM, Transformers.js) până la toate serverele locale OpenAI-compatible (Ollama, LM Studio, Jan, llama.cpp, GPT4All, KoboldCpp, vLLM, LocalAI, oobabooga, TabbyAPI, SGLang, MLX, Aphrodite, Cortex, Xinference, FastChat, LiteLLM, Docker) de pe toate continentele: SUA, China (8 platforme), UE (Mistral, Scaleway, EuroLLM, Teuken), România (OpenLLM-Ro), India (Sarvam), Singapore (SEA-LION), Qatar (Fanar), Arabia Saudită (ALLaM prin Groq), Israel (AI21), Coreea (Upstage), Brazilia (Maritaca), EAU (Falcon), Vietnam, Africa. Listă verificată pe surse la zi. Butonul ⟳ Sincronizează interoghează live endpoint-ul /models al providerului și adaugă tot ce e gratuit în clipa aceea — lista nu îmbătrânește. Pollinations și Kilo Gateway merg fără nicio cheie. Pentru celelalte îți faci o cheie gratuită (fără card) la providerul respectiv, o lipești în câmpul grupului și adaugi modelele cu un click. Cataloagele gratuite se schimbă lunar — dacă un model dă eroare 404/429, a fost retras sau ai atins limita zilnică. Starea catalogului: verificată ultima dată la 29 iulie 2026; modelele, limitele gratuite și prețurile se schimbă des — nu au fost reverificate la 11 octombrie 2026, confirmă la provider.",
   cat_add_all:"+ Adaugă toate", cat_key_ph:"Cheia API a grupului…",
   cat_added:"adăugat(e).", cat_key_first:"Lipește întâi cheia API a grupului.",
   cat_in:"deja în listă",
@@ -417,7 +418,7 @@ const I18N = {
   err_stream:"Error: ", err_cors:"network/CORS blocked — the server refuses browser calls, the endpoint is wrong, or you are offline", nostorage:"localStorage unavailable — data is lost when the page closes.",
   demo_tag:"demo", keyless_tag:"no key", trial_tag:"trial credits", paid_tag:"paid · your key",
   cat_title:"Free catalog — July 29, 2026",
-  cat_note:"181 integrable AIs as of July 29, 2026 — 68 providers: free (global cloud + China + local + in-browser), trial, and, explicitly tagged, paid ones with your own key (Claude, GPT-5, Grok, direct DeepSeek, Sonar), from the browser built-in AI (Gemini Nano) and in-page engines (WebLLM, Transformers.js) to every local OpenAI-compatible server (Ollama, LM Studio, Jan, llama.cpp, GPT4All, KoboldCpp, vLLM, LocalAI, oobabooga, TabbyAPI, SGLang, MLX, Aphrodite, Cortex, Xinference, FastChat, LiteLLM, Docker) across every continent: US, China (8 platforms), EU (Mistral, Scaleway, EuroLLM, Teuken), Romania (OpenLLM-Ro), India (Sarvam), Singapore (SEA-LION), Qatar (Fanar), Saudi Arabia (ALLaM via Groq), Israel (AI21), Korea (Upstage), Brazil (Maritaca), UAE (Falcon), Vietnam, Africa. List verified against live sources. The ⟳ Sync button queries the provider's live /models endpoint and adds everything free at that moment — the list never goes stale. Pollinations and Kilo Gateway need no key at all. For the others, create a free key (no card) at the provider, paste it into the group field, and add models with one click. Free catalogs rotate monthly — if a model returns 404/429, it was delisted or you hit the daily limit.",
+  cat_note:"181 integrable AIs as of July 29, 2026 — 68 providers: free (global cloud + China + local + in-browser), trial, and, explicitly tagged, paid ones with your own key (Claude, GPT-5, Grok, direct DeepSeek, Sonar), from the browser built-in AI (Gemini Nano) and in-page engines (WebLLM, Transformers.js) to every local OpenAI-compatible server (Ollama, LM Studio, Jan, llama.cpp, GPT4All, KoboldCpp, vLLM, LocalAI, oobabooga, TabbyAPI, SGLang, MLX, Aphrodite, Cortex, Xinference, FastChat, LiteLLM, Docker) across every continent: US, China (8 platforms), EU (Mistral, Scaleway, EuroLLM, Teuken), Romania (OpenLLM-Ro), India (Sarvam), Singapore (SEA-LION), Qatar (Fanar), Saudi Arabia (ALLaM via Groq), Israel (AI21), Korea (Upstage), Brazil (Maritaca), UAE (Falcon), Vietnam, Africa. List verified against live sources. The ⟳ Sync button queries the provider's live /models endpoint and adds everything free at that moment — the list never goes stale. Pollinations and Kilo Gateway need no key at all. For the others, create a free key (no card) at the provider, paste it into the group field, and add models with one click. Free catalogs rotate monthly — if a model returns 404/429, it was delisted or you hit the daily limit. Catalog status: last verified on July 29, 2026; models, free-tier limits and prices change often — not re-verified on October 11, 2026, so confirm with the provider.",
   cat_add_all:"+ Add all", cat_key_ph:"Group API key…",
   cat_added:"added.", cat_key_first:"Paste the group's API key first.",
   cat_in:"already added",
@@ -1008,6 +1009,7 @@ async function* demoStream(model,prompt,signal){
     pick(st.mid,seed>>>3)+" ",
     pick(st.mid,(seed>>>7)+1)+"\n\n",
     pick(st.close,seed>>>11)];
+  parts.push(LANG==="ro"?"\n\n— Răspuns demo, generat dintr-un șablon de stil (nu de un model real); adaugă un model real în Setări pentru conținut relevant.":"\n\n— Demo reply built from a style template (not a real model); add a real model in Settings for relevant content.");
   const text=parts.join("");
   const words=text.split(/(\s+)/);
   for(const w of words){
