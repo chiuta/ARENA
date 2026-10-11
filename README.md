@@ -22,6 +22,9 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 - Provideri tip: compatibili OpenAI, Anthropic, Ollama (local), Pollinations (cheie opțională), WebLLM (WebGPU), AI încorporat în browser (Gemini Nano), Transformers.js, plus modele demo.
 - Catalog de AI-uri integrabile (datat 29 iulie 2026, 181 de intrări, 68 de provideri conform textului din aplicație; nereverificat la 11 octombrie 2026, vezi nota din aplicație), cu filtre, „+ Adaugă toate” și „⟳” pentru sincronizarea listei de modele de la provider.
 - „Exportă tot (JSON)”, „Importă”, „Șterge tot”.
+- Scurtături de tastatură: `1` / `2` / `3` / `4` votează (A, B, egalitate, ambele slabe) când nu ești într-un câmp de text; `Ctrl`/`Cmd`+`Enter` în câmpul de text pornește duelul sau compararea.
+- „Exportă clasamentul (CSV)" (în fila Clasament): fișier generat local; numele care încep cu `=`, `+`, `-`, `@` sunt neutralizate.
+- Opțiune în Setări: „Păstrează cheile API doar în sesiune" — cheile nu se mai scriu în `localStorage` (rămân în `sessionStorage` și dispar la închiderea filei).
 - Interfață în română și engleză (selector de limbă în antet).
 
 ## Manual de utilizare
@@ -37,21 +40,25 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 
 ## Confidențialitate și rețea
 
-- **Stocare locală:** toate datele (modele, chei API, clasament, istoric) se salvează în `localStorage` sub cheia `arena-ff-v1`. Dacă `localStorage` nu e disponibil, datele se pierd la închiderea paginii.
+- **Stocare locală:** toate datele (modele, chei API, clasament, istoric) se salvează în `localStorage` sub cheia `arena-ff-v1`. Cheile API pot fi ținute separat, doar în `sessionStorage`, din Setări. Dacă `localStorage` nu e disponibil, datele se pierd la închiderea paginii.
 - **Rețea:** aplicația nu are server propriu și nu trimite telemetrie. Cererile de chat pleacă direct din browser către providerul pe care îl configurezi (de exemplu `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, un server local `localhost` etc.), cu cheia ta.
 - **CDN:** doar dacă alegi motoarele din browser, modulele sunt importate de la `esm.run` (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`) și apoi se descarcă ponderile modelelor (de ex. de la Hugging Face).
 - **Modele cloud dezactivate implicit:** modelele din catalog care nu cer cheie (Kilo Gateway, `api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash) sunt adăugate în listă dar **dezactivate**; activarea lor (comutator în **Setări**) cere confirmare explicită, iar abia apoi un duel le poate trimite promptul. La prima rulare după această versiune, modelele de acest fel rămase active dintr-o versiune anterioară sunt dezactivate o singură dată. Fără acord, doar modelele demo (offline) sunt active.
-- **Chei API:** se păstrează în clar în `localStorage` (`arena-ff-v1`) și, la „Exportă tot”, aplicația întreabă dacă vrei să incluzi cheile (Anulează = export fără chei). Oricine are acces la profilul browserului sau rulează script pe această origine le poate citi.
+- **Chei API:** implicit se păstrează în clar în `localStorage` (`arena-ff-v1`); cu opțiunea „doar în sesiune" (Setări → Datele tale) se păstrează numai în `sessionStorage` (`arena-ff-v1-keys`) și nu se scriu pe disc și, la „Exportă tot”, aplicația întreabă dacă vrei să incluzi cheile (Anulează = export fără chei). Oricine are acces la profilul browserului sau rulează script pe această origine le poate citi.
 - Linkurile din catalog (documentații, console de chei) se deschid doar la click.
 - Modelele demo nu fac niciun apel de rețea.
 
-- **CSP:** pagina are o politică CSP: scripturi doar inline plus `esm.run`/`cdn.jsdelivr.net` (motoare în browser), conexiuni `https:`/`http:`/`ws:` (adresele de bază ale providerilor sunt configurate de utilizator, deci nu pot fi enumerate), fără obiecte, `base`/`form` blocate.
+- **CSP:** pagina are o politică CSP: scripturi doar inline, pe bază de hash SHA-256 (fără `'unsafe-inline'`), plus `esm.run`/`cdn.jsdelivr.net` (motoare în browser), conexiuni `https:`/`http:`/`ws:` (adresele de bază ale providerilor sunt configurate de utilizator, deci nu pot fi enumerate), fără obiecte, `base`/`form` blocate.
 
 ## Rulare locală / offline
 
 Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează complet offline. Providerii cloud, importul motoarelor WebLLM/Transformers.js și sincronizarea catalogului cer internet; Ollama sau alt server local funcționează cu rețeaua locală, dacă serverul acceptă apeluri din browser (CORS).
 
 ## Istoric / Changelog
+
+### 11 octombrie 2026 (a doua intrare)
+- Securitate: CSP cu `script-src` pe hash (fără `'unsafe-inline'`); opțiune „cheile API doar în sesiune".
+- Scurtături de tastatură pentru vot și pornire, export CSV al clasamentului; texte noi în română și engleză.
 
 ### 11 octombrie 2026
 - Accesibilitate: titlu `h1` adăugat, selectorul de limbă ca <nav> etichetat (axe: 0 violări).
