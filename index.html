@@ -301,7 +301,7 @@ footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
   <div class="fbar" id="fbar">
     <input type="search" id="f-q" data-i18n-ph="f_search">
     <span id="f-cats"></span>
-    <select id="f-reg"></select>
+    <select id="f-reg" aria-label="Regiune / Region"></select>
     <span class="fcount" id="f-count"></span>
   </div>
   <div class="io" style="margin-top:10px"><button class="btn primary" id="sync-all" data-i18n="sync_all"></button></div>
@@ -322,7 +322,7 @@ footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
 <footer>
   <span class="sig">Arena fără frontiere</span><br>
   <span data-i18n="foot"></span><br>
-  <span>Atenție: modelele cloud preactivate (ex. Kilo Gateway, api.kilo.ai) primesc promptul tău; dezactivează-le în Setări pentru utilizare doar locală. · Pre-enabled cloud models (e.g. Kilo Gateway) receive your prompt; disable them in Settings for local-only use.</span>
+  <span>Modelele cloud din catalog (ex. Kilo Gateway, api.kilo.ai) sunt dezactivate implicit; când le activezi în Setări, promptul tău pleacă către providerul lor. · Cloud models from the catalog (e.g. Kilo Gateway) are off by default; once you enable them in Settings, your prompt is sent to their provider.</span>
 </footer>
 </div>
 
@@ -332,7 +332,7 @@ footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
 "use strict";
 /* =====================================================================
    ARENA fără frontiere — dueluri oarbe între modele AI + clasament Elo
-   Un singur fișier. Zero dependențe. Zero telemetrie. Fișierul e al tău.
+   Un singur fișier. Fără dependențe obligatorii (motoarele din browser, opționale, se încarcă de la esm.run). Zero telemetrie. Fișierul e al tău.
    ===================================================================== */
 
 /* ---------------- i18n ---------------- */
@@ -364,6 +364,8 @@ const I18N = {
   verdict_tie:"Remiză onorabilă", verdict_bad:"Arena rămâne nemulțumită", verdict_err:"Duel anulat — un combatant a picat. Fără Elo.",
   was:"a fost", confirm_del:"Ștergi acest combatant? Duelurile lui rămân în istoric.",
   confirm_reset:"Resetezi tot clasamentul Elo?",
+  confirm_cloud:"Activezi acest model cloud? Promptul tău va fi trimis către {h}, fără cheie API și fără alt acord ulterior.",
+  confirm_export_keys:"Incluzi cheile API în fișierul exportat? OK = cu chei (păstrează fișierul în siguranță); Anulează = export fără chei.",
   confirm_wipe:"Ștergi TOATE datele locale (modele, chei, clasament)?",
   imported:"Date importate.", exported:"Export gata.", wiped:"Date șterse.", saved:"Salvat.",
   err_stream:"Eroare: ", err_cors:"rețea/CORS blocat — serverul nu acceptă apeluri din browser, endpoint-ul e greșit sau ești offline", nostorage:"localStorage indisponibil — datele se pierd la închiderea paginii.",
@@ -408,6 +410,8 @@ const I18N = {
   verdict_tie:"An honorable draw", verdict_bad:"The arena remains unimpressed", verdict_err:"Duel voided — a combatant failed. No Elo.",
   was:"was", confirm_del:"Delete this combatant? Its duel history is kept.",
   confirm_reset:"Reset the entire Elo leaderboard?",
+  confirm_cloud:"Enable this cloud model? Your prompt will be sent to {h}, with no API key and no further confirmation.",
+  confirm_export_keys:"Include API keys in the exported file? OK = with keys (keep the file safe); Cancel = export without keys.",
   confirm_wipe:"Wipe ALL local data (models, keys, leaderboard)?",
   imported:"Data imported.", exported:"Export ready.", wiped:"Data wiped.", saved:"Saved.",
   err_stream:"Error: ", err_cors:"network/CORS blocked — the server refuses browser calls, the endpoint is wrong, or you are offline", nostorage:"localStorage unavailable — data is lost when the page closes.",
@@ -932,7 +936,7 @@ function ensureKeyless(st){
     g.models.forEach(pm=>{
       if(!st.models.some(m=>m.baseUrl===g.baseUrl&&m.model===pm.id))
         st.models.push({id:"cat-k-"+pm.id.replace(/[^a-z0-9]/gi,""),name:pm.n,provider:g.provider,model:pm.id,
-          baseUrl:g.baseUrl,apiKey:"",enabled:true,demo:false});
+          baseUrl:g.baseUrl,apiKey:"",enabled:false,demo:false});
     });
   });
   st.cat26=2;
@@ -947,7 +951,13 @@ function migrateV4(st){
   });
   st.cat26v4=1;
 }
-ensureKeyless(S);migrateV4(S);saveState();
+/* migrare v5 (2026-10): modelele cloud fără cheie adăugate automat NU mai sunt active implicit; se activează doar explicit, din Setări */
+function migrateV5(st){
+  if(st.cat26v5)return;
+  st.models.forEach(m=>{if(/^cat-k-/.test(m.id)&&!m.apiKey)m.enabled=false;});
+  st.cat26v5=1;
+}
+ensureKeyless(S);migrateV4(S);migrateV5(S);saveState();
 function rating(id){ if(!S.ratings[id]) S.ratings[id]={elo:1000,w:0,d:0,l:0,m:0}; return S.ratings[id]; }
 
 /* ---------------- helpers ---------------- */
@@ -1348,7 +1358,9 @@ function renderModels(){
       <button class="mini danger" data-act="del">${t("del")}</button>`}`;
     card.addEventListener("click",e=>{
       const act=e.target.closest("[data-act]")?.dataset.act;if(!act)return;
-      if(act==="toggle"){m.enabled=!m.enabled;saveState();renderModels();fillCmpSelects();}
+      if(act==="toggle"){
+        if(!m.enabled&&needsCloudConsent(m)&&!confirm(t("confirm_cloud").replace("{h}",hostOf(m))))return;
+        m.enabled=!m.enabled;saveState();renderModels();fillCmpSelects();}
       if(act==="test"){
         const b=e.target.closest("[data-act=test]");b.disabled=true;b.textContent="…";
         pingModel(m).then(r=>{m.lastTest={ok:r.ok,ms:r.ms,code:r.code||"",ts:Date.now()};saveState();renderModels();});
@@ -1531,9 +1543,20 @@ $("f-q").addEventListener("input",()=>{FILT.q=$("f-q").value.trim();renderCatalo
 $("f-cats").addEventListener("click",e=>{const b=e.target.closest("[data-fc]");if(b){FILT.cat=b.dataset.fc;renderCatalog();}});
 $("f-reg").addEventListener("change",()=>{FILT.reg=$("f-reg").value;renderCatalog();});
 
+/* ---------------- consimțământ cloud ---------------- */
+function hostOf(m){try{return new URL(m.baseUrl).host;}catch(e){return m.provider;}}
+function needsCloudConsent(m){
+  if(m.demo||m.provider==="demo"||m.provider==="browser"||m.provider==="chromeai"||m.provider==="transformersjs")return false;
+  if(m.apiKey)return false;
+  return !/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/i.test(m.baseUrl||"")&&m.provider!=="ollama";
+}
 /* ---------------- data io ---------------- */
 $("io-export").onclick=()=>{
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  let out=S;
+  if(S.models.some(m=>m.apiKey)&&!confirm(t("confirm_export_keys"))){
+    out=JSON.parse(JSON.stringify(S));out.models.forEach(m=>{m.apiKey="";});
+  }
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);
   a.download="arena-fara-frontiere-"+new Date().toISOString().slice(0,10)+".json";
   a.click();setTimeout(()=>URL.revokeObjectURL(a.href),10000);toast(t("exported"));

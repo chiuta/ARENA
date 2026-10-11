@@ -38,7 +38,8 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 - **Stocare locală:** toate datele (modele, chei API, clasament, istoric) se salvează în `localStorage` sub cheia `arena-ff-v1`. Dacă `localStorage` nu e disponibil, datele se pierd la închiderea paginii.
 - **Rețea:** aplicația nu are server propriu și nu trimite telemetrie. Cererile de chat pleacă direct din browser către providerul pe care îl configurezi (de exemplu `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, un server local `localhost` etc.), cu cheia ta.
 - **CDN:** doar dacă alegi motoarele din browser, modulele sunt importate de la `esm.run` (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`) și apoi se descarcă ponderile modelelor (de ex. de la Hugging Face).
-- **Atenție, modele preactivate:** la prima pornire (și la migrarea catalogului) aplicația pre-adaugă și **activează** patru modele cloud fără cheie, prin Kilo Gateway (`api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash), pe lângă cele patru modele demo. Un duel care le alege trimite promptul tău către `api.kilo.ai`, fără cheie și fără altă confirmare. Pentru utilizare strict locală, dezactivează-le în **Setări** (sau lasă active doar modelele demo / locale).
+- **Modele cloud dezactivate implicit:** modelele din catalog care nu cer cheie (Kilo Gateway, `api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash) sunt adăugate în listă dar **dezactivate**; activarea lor (comutator în **Setări**) cere confirmare explicită, iar abia apoi un duel le poate trimite promptul. La prima rulare după această versiune, modelele de acest fel rămase active dintr-o versiune anterioară sunt dezactivate o singură dată. Fără acord, doar modelele demo (offline) sunt active.
+- **Chei API:** se păstrează în clar în `localStorage` (`arena-ff-v1`) și, la „Exportă tot”, aplicația întreabă dacă vrei să incluzi cheile (Anulează = export fără chei). Oricine are acces la profilul browserului sau rulează script pe această origine le poate citi.
 - Linkurile din catalog (documentații, console de chei) se deschid doar la click.
 - Modelele demo nu fac niciun apel de rețea.
 
@@ -48,7 +49,7 @@ Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează 
 
 ## Licență
 
-Licența nu este încă declarată explicit în acest repository; vezi nota din aplicație. Aplicația se descrie ca „Un singur fișier. Zero dependențe. Zero telemetrie. Fișierul e al tău.”
+Licența nu este încă declarată explicit în acest repository; vezi nota din aplicație. Aplicația se descrie ca „Un singur fișier. Fără dependențe obligatorii. Zero telemetrie. Fișierul e al tău.”
 
 ## Autor
 
@@ -58,4 +59,4 @@ Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf.
 
 ARENA is a single-file HTML app for blind head-to-head duels between AI models with a local Elo leaderboard. Models can be cloud APIs (your own key), local servers (e.g. Ollama) or in-browser engines; demo models work offline. Data stays in localStorage (`arena-ff-v1`); requests go straight from the browser to the provider you configure. UI in Romanian and English. License not yet declared.
 
-Audit: 2026-10-10 — verificat codul (cereri de rețea, sanitizare stare importată, redarea răspunsurilor prin textContent), accesibilitate (axe: contrast corectat) și funcționarea (duel cu modele demo, file). Declarația din subsol „Zero dependențe” e valabilă doar fără motoarele din browser (WebLLM/Transformers.js, încărcate de la esm.run la cerere).
+Audit: 2026-10-10 (rundă 2: 2026-10-11, modele cloud dezactivate implicit, export cu/fără chei) — verificat codul (cereri de rețea, sanitizare stare importată, redarea răspunsurilor prin textContent), accesibilitate (axe: contrast corectat) și funcționarea (duel cu modele demo, file). Motoarele din browser (WebLLM/Transformers.js) sunt opționale și se încarcă de la esm.run doar la cerere.
