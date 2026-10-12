@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-QSPYBTAUBz7FB0GEgl2HfERMLiMzn4lhAwY6sCvkx8c=' 'wasm-unsafe-eval' https://esm.run https://cdn.jsdelivr.net; style-src 'unsafe-inline'; img-src data: blob: https:; font-src data:; media-src blob: data:; connect-src https: http: ws: wss:; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="application-version" content="1.0.0">
+<meta name="last-updated" content="2026-10-12">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-KYItplPXHGvXUX9fNzmCBmx62iAk4mQ/N94L6JRCXSs=' 'wasm-unsafe-eval' https://esm.run https://cdn.jsdelivr.net; style-src 'unsafe-inline'; img-src data: blob: https:; font-src data:; media-src blob: data:; connect-src https: http: ws: wss:; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="description" content="Arena fără frontiere — dueluri oarbe între modele AI, clasament Elo, totul offline-first, într-un singur fișier. Fișierul e al tău.">
 <title>Arena fără frontiere</title>
 <style>
@@ -326,7 +328,8 @@ footer .sig{font-family:var(--serif);letter-spacing:.08em;color:var(--dim)}
 <footer>
   <span class="sig">Arena fără frontiere</span><br>
   <span data-i18n="foot"></span><br>
-  <span>Modelele cloud din catalog (ex. Kilo Gateway, api.kilo.ai) sunt dezactivate implicit; când le activezi în Setări, promptul tău pleacă către providerul lor. · Cloud models from the catalog (e.g. Kilo Gateway) are off by default; once you enable them in Settings, your prompt is sent to their provider.</span>
+  <span>Modelele cloud din catalog (ex. Kilo Gateway, api.kilo.ai) sunt dezactivate implicit; când le activezi în Setări, promptul tău pleacă către providerul lor. · Cloud models from the catalog (e.g. Kilo Gateway) are off by default; once you enable them in Settings, your prompt is sent to their provider.</span><br>
+  <span><span data-i18n="verLabel">Versiune</span> <span id="app-version">v 1.0.0 · 2026-10-12</span></span>
 </footer>
 </div>
 
@@ -364,6 +367,7 @@ const I18N = {
   set_data:"Datele tale",
   exportd:"Exportă tot (JSON)", importd:"Importă", wipe:"Șterge tot",
   set_note:"Totul — modele, chei, clasament — stă doar în browserul tău (localStorage). Exportul include cheile API: păstrează fișierul în siguranță. Modelele demo funcționează complet offline, fără nicio cheie.",
+  verLabel:"Versiune",
   foot:"Un singur fișier HTML · vanilla JS · zero telemetrie · zero servere proprii<br>Cheile API pleacă doar spre providerul ales de tine, direct din browser.",
   need2:"Ai nevoie de cel puțin 2 combatanți activi. Vezi Setări.",
   need_prompt:"Scrie mai întâi un prompt.",
@@ -413,6 +417,7 @@ const I18N = {
   set_data:"Your data",
   exportd:"Export all (JSON)", importd:"Import", wipe:"Wipe all",
   set_note:"Everything — models, keys, leaderboard — lives only in your browser (localStorage). Exports include API keys: keep the file safe. Demo models work fully offline, no key needed.",
+  verLabel:"Version",
   foot:"One HTML file · vanilla JS · zero telemetry · no servers of its own<br>API keys travel only to the provider you chose, straight from your browser.",
   need2:"You need at least 2 active combatants. See Settings.",
   need_prompt:"Write a prompt first.",
@@ -462,6 +467,7 @@ const I18N = {
   set_data:"Tes données",
   exportd:"Tout exporter (JSON)", importd:"Importer", wipe:"Tout effacer",
   set_note:"Tout — modèles, clés, classement — reste uniquement dans ton navigateur (localStorage). L'export inclut les clés API : garde le fichier en lieu sûr. Les modèles démo fonctionnent entièrement hors ligne, sans clé.",
+  verLabel:"Version",
   foot:"Un seul fichier HTML · JS vanilla · zéro télémétrie · aucun serveur propre<br>Les clés API ne partent que vers le fournisseur que tu as choisi, directement depuis ton navigateur.",
   need2:"Il faut au moins 2 combattants actifs. Voir Réglages.",
   need_prompt:"Écris d'abord un prompt.",

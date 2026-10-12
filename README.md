@@ -4,7 +4,7 @@ Dueluri oarbe între modele AI, cu clasament Elo local — într-un singur fiși
 
 **Live:** https://chiuta.github.io/ARENA/
 
-**Ultima actualizare:** 11 octombrie 2026
+**Versiune:** 1.0.0 · **Ultima actualizare:** 12 octombrie 2026
 
 ![Captura de ecran](screenshot.png)
 
@@ -55,6 +55,9 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează complet offline. Providerii cloud, importul motoarelor WebLLM/Transformers.js și sincronizarea catalogului cer internet; Ollama sau alt server local funcționează cu rețeaua locală, dacă serverul acceptă apeluri din browser (CORS).
 
 ## Istoric / Changelog
+
+### 12 octombrie 2026 (v1.0.0)
+- 1.0.0 — 2026-10-12: versiunea și data ultimei actualizări sunt afișate în aplicație
 
 ### 11 octombrie 2026 (a treia intrare)
 - Interfață în franceză (≈110 texte, inclusiv combatanții demo și nota catalogului), alături de română și engleză.
