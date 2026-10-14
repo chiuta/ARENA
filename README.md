@@ -4,7 +4,7 @@ Dueluri oarbe între modele AI, cu clasament Elo local — într-un singur fiși
 
 **Live:** https://chiuta.github.io/ARENA/
 
-**Versiune:** 1.0.0 · **Ultima actualizare:** 12 octombrie 2026
+**Versiune:** 1.1.0 · **Ultima actualizare:** 14 octombrie 2026
 
 ![Captura de ecran](screenshot.png)
 
@@ -54,7 +54,19 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 
 Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează complet offline. Providerii cloud, importul motoarelor WebLLM/Transformers.js și sincronizarea catalogului cer internet; Ollama sau alt server local funcționează cu rețeaua locală, dacă serverul acceptă apeluri din browser (CORS).
 
+## Funcții noi (v1.1.0)
+
+- **Citirea răspunsurilor cu voce** (butoanele „Ascultă A” / „Ascultă B” / „Oprește”, sub duel și sub comparație; FFF.tts): folosește vocea sistemului, textul nu pleacă din browser. Dacă browserul nu are sintetizator, apare un mesaj, nu o eroare.
+- **Export duel / comparație ca Markdown** („Exportă (.md)”): întrebarea și cele două răspunsuri. Înainte de vot duelul rămâne orb: fișierul nu conține numele modelelor și o spune; după vot, numele sunt incluse.
+- **Etichetă de transparență și copie .fff.json** (kit comun: core, label, bundle, tts): clic pe `v 1.1.0 · 2026-10-14`. **Atenție:** copia conține și cheile API salvate în `localStorage`; folosește „Criptează cu parolă” sau opțiunea existentă „Păstrează cheile API doar în sesiune”.
+- Reparat: contrastul culorii roșii a scorului negativ din antetul panourilor (axe-core color-contrast).
+- Textele noi sunt în ro, en, fr, it, es, pt, hu, de; traducerile fr/it/es/pt/hu/de sunt automate și neverificate nativ (interfața existentă rămâne ro/en/fr).
+- Teste: `tests/fff-r8.test.mjs` (rețea blocată, 1280 și 360 px, axe 0 violări, duel cu modele demo).
+
 ## Istoric / Changelog
+
+### 1.1.0 — 2026-10-14
+- Nou: citire cu voce a răspunsurilor, export duel/comparație în Markdown, etichetă de transparență și copie .fff.json (kit comun); contrast reparat.
 
 ### 12 octombrie 2026 (v1.0.0)
 - 1.0.0 — 2026-10-12: versiunea și data ultimei actualizări sunt afișate în aplicație

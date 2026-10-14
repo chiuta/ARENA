@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "slug": "arena",
+  "name": "Arena fără frontiere",
+  "version": "1.1.0",
+  "updated": "2026-10-14",
+  "description": "Arena fără frontiere — dueluri oarbe între modele AI, clasament Elo, totul offline-first, într-un singur fișier. Fișierul e al tău.",
+  "egress": [
+    {
+      "host": "cdn.jsdelivr.net",
+      "via": [
+        "csp:script-src"
+      ]
+    },
+    {
+      "host": "esm.run",
+      "via": [
+        "csp:script-src",
+        "import()"
+      ]
+    },
+    {
+      "host": "http:(orice gazdă)",
+      "via": [
+        "csp:connect-src"
+      ]
+    },
+    {
+      "host": "https:(orice gazdă)",
+      "via": [
+        "csp:connect-src",
+        "csp:img-src"
+      ]
+    },
+    {
+      "host": "ws:(orice gazdă)",
+      "via": [
+        "csp:connect-src"
+      ]
+    },
+    {
+      "host": "wss:(orice gazdă)",
+      "via": [
+        "csp:connect-src"
+      ]
+    }
+  ],
+  "permissions": [
+    "serviceWorker",
+    "localStorage",
+    "WebGPU"
+  ],
+  "storageKeys": [],
+  "sizeBytes": 231219,
+  "sha256": "9582e51097812b451dc43949a52cda0b7c678375c83e8abcfddcc4327af59e18",
+  "csp": {
+    "present": true,
+    "directives": {
+      "default-src": "'none'",
+      "script-src": "'wasm-unsafe-eval' https://esm.run https://cdn.jsdelivr.net sha256×4",
+      "style-src": "'unsafe-inline'",
+      "img-src": "'self' data: blob: https:",
+      "font-src": "data:",
+      "media-src": "blob: data:",
+      "connect-src": "https: http: ws: wss:",
+      "worker-src": "'self' blob:",
+      "object-src": "'none'",
+      "base-uri": "'none'",
+      "form-action": "'none'",
+      "manifest-src": "'self'"
+    },
+    "scriptInline": "hash",
+    "connect": "https: http: ws: wss:"
+  },
+  "features": {
+    "export": true,
+    "import": true,
+    "i18n": [
+      "ro",
+      "en",
+      "fr",
+      "it",
+      "es",
+      "pt",
+      "hu",
+      "de"
+    ],
+    "pwa": {
+      "manifest": true,
+      "serviceWorker": true
+    },
+    "modules": [
+      "core",
+      "label",
+      "bundle",
+      "tts"
+    ]
+  },
+  "kit": {
+    "version": "1.0.0",
+    "modules": [
+      "core",
+      "label",
+      "bundle",
+      "tts"
+    ]
+  },
+  "selfSerializing": false
+}
