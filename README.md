@@ -87,7 +87,7 @@ Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează 
 
 ## Licență
 
-Licența nu este încă declarată explicit în acest repository; vezi nota din aplicație. Aplicația se descrie ca „Un singur fișier. Fără dependențe obligatorii. Zero telemetrie. Fișierul e al tău.”
+CC0 1.0 Universal (domeniu public) pentru codul și structura aplicației — vezi fișierul `LICENSE`. Eventualele biblioteci terțe incluse în fișier își păstrează licențele proprii.
 
 ## Autor
 
