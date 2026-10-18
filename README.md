@@ -4,7 +4,7 @@ Dueluri oarbe între modele AI, cu clasament Elo local — într-un singur fiși
 
 **Live:** https://chiuta.github.io/ARENA/
 
-**Versiune:** 1.1.0 · **Ultima actualizare:** 14 octombrie 2026
+**Versiune:** 1.2.0 · **Ultima actualizare:** 18 octombrie 2026
 
 ![Captura de ecran](screenshot.png)
 
@@ -64,6 +64,9 @@ Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează 
 - Teste: `tests/fff-r8.test.mjs` (rețea blocată, 1280 și 360 px, axe 0 violări, duel cu modele demo).
 
 ## Istoric / Changelog
+
+### 1.2.0 — 2026-10-18
+- Securitate: exportul din Setări NU mai include cheile API decât dacă bifezi „Include cheile API…” și confirmi; copia de siguranță necriptată din kit (1.1.0) golește cheile (cea criptată cu parolă le păstrează). Restaurarea unei copii necriptate nu mai readuce cheile: se reintroduc manual.
 
 ### 1.1.0 — 2026-10-14
 - Nou: citire cu voce a răspunsurilor, export duel/comparație în Markdown, etichetă de transparență și copie .fff.json (kit comun); contrast reparat.
