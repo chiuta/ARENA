@@ -50,9 +50,11 @@
     "localStorage",
     "WebGPU"
   ],
-  "storageKeys": [],
-  "sizeBytes": 232820,
-  "sha256": "737076ddd151f668796bcff6c98f87cc5c973c85f1f1c4f4424ba4e27a63748a",
+  "storageKeys": [
+    "arena-ff-v1"
+  ],
+  "sizeBytes": 232833,
+  "sha256": "e1e7c39e657589545201d86deff6c8cdbbdc57b435c53c79ca59cc9ad805e5bd",
   "csp": {
     "present": true,
     "directives": {
