@@ -10,7 +10,7 @@ Duelos às cegas entre modelos de IA, com classificação Elo local — num úni
 
 **Aplicação online:** https://chiuta.github.io/ARENA/
 
-![Captura de ecrã](screenshot.png)
+![Captura de ecrã](screenshot.pt.png)
 
 ## O que é
 

@@ -10,7 +10,7 @@ Duels à l'aveugle entre modèles d'IA, avec classement Elo local — dans un se
 
 **Application en ligne :** https://chiuta.github.io/ARENA/
 
-![Capture d'écran](screenshot.png)
+![Capture d'écran](screenshot.fr.png)
 
 ## Ce que c'est
 

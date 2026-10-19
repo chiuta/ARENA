@@ -10,7 +10,7 @@ Blinde Duelle zwischen KI-Modellen, mit lokaler Elo-Rangliste — in einer einzi
 
 **Online-Anwendung:** https://chiuta.github.io/ARENA/
 
-![Screenshot](screenshot.png)
+![Screenshot](screenshot.de.png)
 
 ## Was es ist
 

@@ -10,7 +10,7 @@ Duelos a ciegas entre modelos de IA, con clasificación Elo local — en un úni
 
 **Aplicación en línea:** https://chiuta.github.io/ARENA/
 
-![Captura de pantalla](screenshot.png)
+![Captura de pantalla](screenshot.es.png)
 
 ## Qué es
 

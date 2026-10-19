@@ -10,7 +10,7 @@ Duelli alla cieca tra modelli di IA, con classifica Elo locale — in un unico f
 
 **Applicazione online:** https://chiuta.github.io/ARENA/
 
-![Schermata](screenshot.png)
+![Schermata](screenshot.it.png)
 
 ## Che cos'è
 

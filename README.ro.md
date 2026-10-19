@@ -10,7 +10,7 @@ Dueluri oarbe între modele AI, cu clasament Elo local — într-un singur fiși
 
 **Live:** https://chiuta.github.io/ARENA/
 
-![Captura de ecran](screenshot.png)
+![Captura de ecran](screenshot.ro.png)
 
 ## Ce este
 

@@ -10,7 +10,7 @@ Blind duels between AI models, with a local Elo leaderboard — in a single HTML
 
 **Live app:** https://chiuta.github.io/ARENA/
 
-![Screenshot](screenshot.png)
+![Screenshot](screenshot.en.png)
 
 ## What it is
 

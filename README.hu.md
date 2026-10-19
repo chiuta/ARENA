@@ -10,7 +10,7 @@ Vak párbajok MI-modellek között, helyi Elo-ranglistával — egyetlen HTML-f�
 
 **Online alkalmazás:** https://chiuta.github.io/ARENA/
 
-![Képernyőkép](screenshot.png)
+![Képernyőkép](screenshot.hu.png)
 
 ## Mi ez
 
