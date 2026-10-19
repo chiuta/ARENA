@@ -100,8 +100,8 @@ MIT pentru codul și structura aplicației — vezi fișierul `LICENSE`. Eventua
 
 Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf.
 
-## English summary
+## Rezumat
 
-ARENA is a single-file HTML app for blind head-to-head duels between AI models with a local Elo leaderboard. Models can be cloud APIs (your own key), local servers (e.g. Ollama) or in-browser engines; demo models work offline. Data stays in localStorage (`arena-ff-v1`); requests go straight from the browser to the provider you configure. UI in 8 languages. Licence: MIT (see LICENSE).
+ARENA este o aplicație într-un singur fișier HTML pentru dueluri „în orb” între modele AI, cu un clasament Elo local. Modelele pot fi API-uri în cloud (cu cheia ta), servere locale (de ex. Ollama) sau motoare din browser; modelele demo funcționează offline. Datele rămân în localStorage (`arena-ff-v1`); cererile pleacă direct din browser către furnizorul configurat. Interfață în 8 limbi. Licență: MIT (vezi LICENSE).
 
 Audit: 2026-10-10 (rundă 2: 2026-10-11, modele cloud dezactivate implicit, export cu/fără chei) — verificat codul (cereri de rețea, sanitizare stare importată, redarea răspunsurilor prin textContent), accesibilitate (axe: contrast corectat) și funcționarea (duel cu modele demo, file). Motoarele din browser (WebLLM/Transformers.js) sunt opționale și se încarcă de la esm.run doar la cerere.
