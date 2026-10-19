@@ -2,7 +2,9 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 1.2.0 · **Última atualização:** 2026-10-18
+**Versão:** 1.3.0 · **Última atualização:** 2026-10-19
+
+Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
 Duelos às cegas entre modelos de IA, com classificação Elo local — num único ficheiro HTML.
 
@@ -27,7 +29,7 @@ O ARENA é uma aplicação de um único ficheiro (`index.html`, JavaScript puro)
 - Atalhos de teclado: `1` / `2` / `3` / `4` votam (A, B, empate, ambos maus) quando não está num campo de texto; `Ctrl`/`Cmd`+`Enter` no campo de texto inicia o duelo ou a comparação.
 - «Exportar a classificação (CSV)» (no separador Classificação): ficheiro gerado localmente; os nomes que começam por `=`, `+`, `-`, `@` são neutralizados.
 - Opção nas Definições: «Guardar as chaves API apenas durante a sessão» — as chaves deixam de ser escritas no `localStorage` (ficam no `sessionStorage` e desaparecem ao fechar o separador).
-- Interface em romeno, inglês e francês (seletor RO / EN / FR no cabeçalho; os combatentes de demonstração respondem no idioma escolhido; as notas por grupo do catálogo de IA permanecem em romeno).
+- Interface em 8 idiomas (seletor RO / EN / FR / IT / ES / PT / DE / HU no cabeçalho; os combatentes de demonstração respondem no idioma escolhido; as notas por grupo do catálogo de IA permanecem em romeno).
 
 ## Manual de utilização
 
@@ -100,6 +102,6 @@ Alexio — Alexandru-Ionuț Chiuță, contacto: alexio@trom.tf.
 
 ## Resumo
 
-O ARENA é uma aplicação HTML de um único ficheiro para duelos às cegas frente a frente entre modelos de IA com uma classificação Elo local. Os modelos podem ser API na nuvem (a sua própria chave), servidores locais (p. ex. Ollama) ou motores no navegador; os modelos de demonstração funcionam offline. Os dados ficam no localStorage (`arena-ff-v1`); os pedidos vão diretamente do navegador para o fornecedor que configurar. Interface em romeno e inglês. Licença: MIT (veja LICENSE).
+O ARENA é uma aplicação HTML de um único ficheiro para duelos às cegas frente a frente entre modelos de IA com uma classificação Elo local. Os modelos podem ser API na nuvem (a sua própria chave), servidores locais (p. ex. Ollama) ou motores no navegador; os modelos de demonstração funcionam offline. Os dados ficam no localStorage (`arena-ff-v1`); os pedidos vão diretamente do navegador para o fornecedor que configurar. Interface em 8 idiomas. Licença: MIT (veja LICENSE).
 
 Auditoria: 2026-10-10 (ronda 2: 2026-10-11, modelos na nuvem desativados por predefinição, exportação com/sem chaves) — verificados o código (pedidos de rede, saneamento do estado importado, apresentação das respostas através de textContent), a acessibilidade (axe: contraste corrigido) e o funcionamento (duelo com modelos de demonstração, separadores). Os motores no navegador (WebLLM/Transformers.js) são opcionais e só são carregados a partir de esm.run a pedido.

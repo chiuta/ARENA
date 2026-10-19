@@ -2,7 +2,9 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 1.2.0 · **Zuletzt aktualisiert:** 2026-10-18
+**Version:** 1.3.0 · **Zuletzt aktualisiert:** 2026-10-19
+
+Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
 Blinde Duelle zwischen KI-Modellen, mit lokaler Elo-Rangliste — in einer einzigen HTML-Datei.
 
@@ -27,7 +29,7 @@ ARENA ist eine Anwendung in einer einzigen Datei (`index.html`, reines JavaScrip
 - Tastenkürzel: `1` / `2` / `3` / `4` stimmen ab (A, B, Unentschieden, beide schlecht), wenn Sie sich nicht in einem Textfeld befinden; `Strg`/`Cmd`+`Eingabe` im Textfeld startet das Duell oder den Vergleich.
 - „Rangliste exportieren (CSV)“ (im Reiter Rangliste): lokal erzeugte Datei; Namen, die mit `=`, `+`, `-`, `@` beginnen, werden neutralisiert.
 - Option in den Einstellungen: „API-Schlüssel nur für die Sitzung behalten“ — die Schlüssel werden nicht mehr in `localStorage` geschrieben (sie bleiben in `sessionStorage` und verschwinden beim Schließen des Tabs).
-- Oberfläche auf Rumänisch, Englisch und Französisch (Auswahl RO / EN / FR in der Kopfzeile; die Demo-Kämpfer antworten in der gewählten Sprache; die Gruppennotizen im KI-Katalog bleiben auf Rumänisch).
+- Oberfläche in 8 Sprachen (Auswahl RO / EN / FR / IT / ES / PT / DE / HU in der Kopfzeile; die Demo-Kämpfer antworten in der gewählten Sprache; die Gruppennotizen im KI-Katalog bleiben auf Rumänisch).
 
 ## Anleitung
 
@@ -100,6 +102,6 @@ Alexio — Alexandru-Ionuț Chiuță, Kontakt: alexio@trom.tf.
 
 ## Zusammenfassung
 
-ARENA ist eine HTML-Anwendung in einer einzigen Datei für blinde Direktduelle zwischen KI-Modellen mit einer lokalen Elo-Rangliste. Die Modelle können Cloud-APIs (Ihr eigener Schlüssel), lokale Server (z. B. Ollama) oder Engines im Browser sein; Demo-Modelle funktionieren offline. Die Daten bleiben im localStorage (`arena-ff-v1`); Anfragen gehen direkt vom Browser an den von Ihnen konfigurierten Anbieter. Oberfläche auf Rumänisch und Englisch. Lizenz: MIT (siehe LICENSE).
+ARENA ist eine HTML-Anwendung in einer einzigen Datei für blinde Direktduelle zwischen KI-Modellen mit einer lokalen Elo-Rangliste. Die Modelle können Cloud-APIs (Ihr eigener Schlüssel), lokale Server (z. B. Ollama) oder Engines im Browser sein; Demo-Modelle funktionieren offline. Die Daten bleiben im localStorage (`arena-ff-v1`); Anfragen gehen direkt vom Browser an den von Ihnen konfigurierten Anbieter. Oberfläche in 8 Sprachen. Lizenz: MIT (siehe LICENSE).
 
 Audit: 2026-10-10 (Runde 2: 2026-10-11, Cloud-Modelle standardmäßig deaktiviert, Export mit/ohne Schlüssel) — geprüft wurden der Code (Netzwerkanfragen, Bereinigung des importierten Zustands, Darstellung der Antworten über textContent), die Barrierefreiheit (axe: Kontrast korrigiert) und die Funktion (Duell mit Demo-Modellen, Reiter). Die Engines im Browser (WebLLM/Transformers.js) sind optional und werden nur auf Anfrage von esm.run geladen.

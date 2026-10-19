@@ -2,7 +2,9 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.2.0 · **Ultima actualizare:** 2026-10-18
+**Versiune:** 1.3.0 · **Ultima actualizare:** 2026-10-19
+
+Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
 Dueluri oarbe între modele AI, cu clasament Elo local — într-un singur fișier HTML.
 
@@ -27,7 +29,7 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 - Scurtături de tastatură: `1` / `2` / `3` / `4` votează (A, B, egalitate, ambele slabe) când nu ești într-un câmp de text; `Ctrl`/`Cmd`+`Enter` în câmpul de text pornește duelul sau compararea.
 - „Exportă clasamentul (CSV)" (în fila Clasament): fișier generat local; numele care încep cu `=`, `+`, `-`, `@` sunt neutralizate.
 - Opțiune în Setări: „Păstrează cheile API doar în sesiune" — cheile nu se mai scriu în `localStorage` (rămân în `sessionStorage` și dispar la închiderea filei).
-- Interfață în română, engleză și franceză (selector RO / EN / FR în antet; combatanții demo răspund în limba aleasă; notele per grup din catalogul de AI-uri rămân în română).
+- Interfață în 8 limbi (selector RO / EN / FR / IT / ES / PT / DE / HU în antet; combatanții demo răspund în limba aleasă; notele per grup din catalogul de AI-uri rămân în română).
 
 ## Manual de utilizare
 
@@ -100,6 +102,6 @@ Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf.
 
 ## English summary
 
-ARENA is a single-file HTML app for blind head-to-head duels between AI models with a local Elo leaderboard. Models can be cloud APIs (your own key), local servers (e.g. Ollama) or in-browser engines; demo models work offline. Data stays in localStorage (`arena-ff-v1`); requests go straight from the browser to the provider you configure. UI in Romanian and English. Licence: MIT (see LICENSE).
+ARENA is a single-file HTML app for blind head-to-head duels between AI models with a local Elo leaderboard. Models can be cloud APIs (your own key), local servers (e.g. Ollama) or in-browser engines; demo models work offline. Data stays in localStorage (`arena-ff-v1`); requests go straight from the browser to the provider you configure. UI in 8 languages. Licence: MIT (see LICENSE).
 
 Audit: 2026-10-10 (rundă 2: 2026-10-11, modele cloud dezactivate implicit, export cu/fără chei) — verificat codul (cereri de rețea, sanitizare stare importată, redarea răspunsurilor prin textContent), accesibilitate (axe: contrast corectat) și funcționarea (duel cu modele demo, file). Motoarele din browser (WebLLM/Transformers.js) sunt opționale și se încarcă de la esm.run doar la cerere.

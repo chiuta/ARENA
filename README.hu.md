@@ -2,7 +2,9 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.2.0 · **Utolsó frissítés:** 2026-10-18
+**Verzió:** 1.3.0 · **Utolsó frissítés:** 2026-10-19
+
+A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
 Vak párbajok MI-modellek között, helyi Elo-ranglistával — egyetlen HTML-fájlban.
 
@@ -27,7 +29,7 @@ Az ARENA egyfájlos alkalmazás (`index.html`, vanília JavaScript), amelyben k�
 - Gyorsbillentyűk: az `1` / `2` / `3` / `4` szavaz (A, B, döntetlen, mindkettő gyenge), ha nem szövegmezőben vagy; a `Ctrl`/`Cmd`+`Enter` a szövegmezőben elindítja a párbajt vagy az összehasonlítást.
 - „Ranglista exportálása (CSV)” (a Ranglista lapon): helyben generált fájl; az `=`, `+`, `-`, `@` karakterrel kezdődő neveket semlegesíti.
 - Beállítás a Beállításokban: „Az API-kulcsok megőrzése csak a munkamenetben” — a kulcsok többé nem íródnak a `localStorage`-ba (a `sessionStorage`-ban maradnak, és a lap bezárásakor eltűnnek).
-- Felület románul, angolul és franciául (RO / EN / FR választó a fejlécben; a demóharcosok a választott nyelven válaszolnak; az MI-katalógus csoportonkénti megjegyzései románul maradnak).
+- Felület 8 nyelven (RO / EN / FR / IT / ES / PT / DE / HU választó a fejlécben; a demóharcosok a választott nyelven válaszolnak; az MI-katalógus csoportonkénti megjegyzései románul maradnak).
 
 ## Használati útmutató
 

@@ -2,7 +2,9 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.2.0 · **Last updated:** 2026-10-18
+**Version:** 1.3.0 · **Last updated:** 2026-10-19
+
+Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
 Blind duels between AI models, with a local Elo leaderboard — in a single HTML file.
 
@@ -27,7 +29,7 @@ ARENA is a single-file app (`index.html`, vanilla JavaScript) in which you compa
 - Keyboard shortcuts: `1` / `2` / `3` / `4` vote (A, B, tie, both bad) when you are not in a text field; `Ctrl`/`Cmd`+`Enter` in the text field starts the duel or the comparison.
 - "Export leaderboard (CSV)" (in the Leaderboard tab): a locally generated file; names that begin with `=`, `+`, `-`, `@` are neutralised.
 - An option in Settings: "Keep API keys only in the session" — the keys are no longer written to `localStorage` (they stay in `sessionStorage` and disappear when the tab is closed).
-- Interface in Romanian, English and French (RO / EN / FR selector in the header; the demo combatants answer in the chosen language; the per-group notes in the AI catalogue remain in Romanian).
+- Interface in 8 languages (RO / EN / FR / IT / ES / PT / DE / HU selector in the header; the demo combatants answer in the chosen language; the per-group notes in the AI catalogue remain in Romanian).
 
 ## User guide
 
@@ -100,6 +102,6 @@ Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf.
 
 ## Summary
 
-ARENA is a single-file HTML app for blind head-to-head duels between AI models with a local Elo leaderboard. Models can be cloud APIs (your own key), local servers (e.g. Ollama) or in-browser engines; demo models work offline. Data stays in localStorage (`arena-ff-v1`); requests go straight from the browser to the provider you configure. UI in Romanian and English. Licence: MIT (see LICENSE).
+ARENA is a single-file HTML app for blind head-to-head duels between AI models with a local Elo leaderboard. Models can be cloud APIs (your own key), local servers (e.g. Ollama) or in-browser engines; demo models work offline. Data stays in localStorage (`arena-ff-v1`); requests go straight from the browser to the provider you configure. UI in 8 languages. Licence: MIT (see LICENSE).
 
 Audit: 2026-10-10 (round 2: 2026-10-11, cloud models disabled by default, export with/without keys) — verified the code (network requests, sanitisation of the imported state, rendering of the answers through textContent), accessibility (axe: contrast corrected) and operation (duel with demo models, tabs). The in-browser engines (WebLLM/Transformers.js) are optional and are loaded from esm.run only on request.
