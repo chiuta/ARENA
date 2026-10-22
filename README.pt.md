@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 1.3.3 · **Última atualização:** 2026-10-22
+**Versão:** 1.3.4 · **Última atualização:** 2026-10-22
 
 Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Descarregue `index.html` e abra-o num navegador. Os modelos de demonstração fu
 - Testes: `tests/fff-r8.test.mjs` (rede bloqueada, 1280 e 360 px, axe 0 violações, duelo com modelos de demonstração).
 
 ## Histórico / Registo de alterações
+
+### 1.3.4 — 2026-10-22
+- fff-kit 1.1.2: PBKDF2 600 000 iterações, proteção anti-clickjacking
 
 ### 1.3.2 — 2026-10-22
 - A nota de privacidade sobre os modelos na nuvem (Definições e Duelo) aparece agora apenas na língua atual da interface, e não bilingue romeno · inglês; traduzida para fr, it, es, pt, de e hu.
