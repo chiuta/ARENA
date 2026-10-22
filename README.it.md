@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · **Italiano** · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versione:** 1.3.4 · **Ultimo aggiornamento:** 2026-10-22
+**Versione:** 1.3.5 · **Ultimo aggiornamento:** 2026-10-22
 
 Lingue dell'interfaccia: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Scarica `index.html` e aprilo in un browser. I modelli dimostrativi funzionano c
 - Test: `tests/fff-r8.test.mjs` (rete bloccata, 1280 e 360 px, axe 0 violazioni, duello con modelli dimostrativi).
 
 ## Cronologia / Changelog
+
+### 1.3.5 — 2026-10-22
+- fff-kit 1.1.4: target touch e dimensione minima del testo
 
 ### 1.3.4 — 2026-10-22
 - fff-kit 1.1.2: PBKDF2 600.000 iterazioni, protezione anti-clickjacking
