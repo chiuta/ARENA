@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · **Italiano** · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versione:** 1.3.2 · **Ultimo aggiornamento:** 2026-10-22
+**Versione:** 1.3.3 · **Ultimo aggiornamento:** 2026-10-22
 
 Lingue dell'interfaccia: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -82,6 +82,8 @@ Scarica `index.html` e aprilo in un browser. I modelli dimostrativi funzionano c
 - Novità: lettura ad alta voce delle risposte, esportazione del duello/confronto in Markdown, etichetta di trasparenza e copia .fff.json (kit comune); contrasto corretto.
 
 ### 12 ottobre 2026 (v1.0.0)
+- 1.3.3 — 2026-10-22: I sei window.confirm (reset, eliminazione modello, consenso cloud, esportazione chiavi, cancellazione dati, test di massa) sono sostituiti da finestre integrate; il messaggio di importazione JSON non valido è tradotto; dimensione minima del testo 12 px.
+
 - 1.0.0 — 2026-10-12: la versione e la data dell'ultimo aggiornamento sono mostrate nell'applicazione
 
 ### 11 ottobre 2026 (terza voce)

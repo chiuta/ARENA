@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 1.3.2 · **Zuletzt aktualisiert:** 2026-10-22
+**Version:** 1.3.3 · **Zuletzt aktualisiert:** 2026-10-22
 
 Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -82,6 +82,8 @@ Laden Sie `index.html` herunter und öffnen Sie sie in einem Browser. Die Demo-M
 - Neu: Antworten laut vorlesen, Export von Duell/Vergleich als Markdown, Transparenzetikett und `.fff.json`-Kopie (gemeinsames Kit); Kontrast behoben.
 
 ### 12. Oktober 2026 (v1.0.0)
+- 1.3.3 — 2026-10-22: Die sechs window.confirm-Abfragen (Zurücksetzen, Modell löschen, Cloud-Einwilligung, Schlüsselexport, Daten löschen, Massentest) sind durch Dialoge in der Seite ersetzt; die Meldung bei ungültigem JSON-Import ist übersetzt; Mindest-Textgröße 12 px.
+
 - 1.0.0 — 2026-10-12: Die Version und das Datum der letzten Aktualisierung werden in der Anwendung angezeigt
 
 ### 11. Oktober 2026 (dritter Eintrag)

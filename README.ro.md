@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.3.2 · **Ultima actualizare:** 2026-10-22
+**Versiune:** 1.3.3 · **Ultima actualizare:** 2026-10-22
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -82,6 +82,8 @@ Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează 
 - Nou: citire cu voce a răspunsurilor, export duel/comparație în Markdown, etichetă de transparență și copie .fff.json (kit comun); contrast reparat.
 
 ### 12 octombrie 2026 (v1.0.0)
+- 1.3.3 — 2026-10-22: Cele șase window.confirm (resetare, ștergere model, acord cloud, export chei, ștergere date, test în masă) sunt înlocuite cu dialoguri în pagină; mesajul de import JSON invalid este tradus; dimensiune minimă a textului 12 px.
+
 - 1.0.0 — 2026-10-12: versiunea și data ultimei actualizări sunt afișate în aplicație
 
 ### 11 octombrie 2026 (a treia intrare)

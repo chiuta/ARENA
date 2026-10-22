@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · **Français** · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version :** 1.3.2 · **Dernière mise à jour :** 2026-10-22
+**Version :** 1.3.3 · **Dernière mise à jour :** 2026-10-22
 
 Langues de l'interface : **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -82,6 +82,8 @@ Téléchargez `index.html` et ouvrez-le dans un navigateur. Les modèles de dém
 - Nouveau : lecture des réponses à voix haute, export du duel/de la comparaison en Markdown, étiquette de transparence et copie .fff.json (kit commun) ; contraste corrigé.
 
 ### 12 octobre 2026 (v1.0.0)
+- 1.3.3 — 2026-10-22 : Les six window.confirm (réinitialisation, suppression de modèle, consentement cloud, export des clés, effacement des données, test groupé) sont remplacés par des boîtes de dialogue intégrées ; le message d’import JSON invalide est traduit ; taille de texte minimale 12 px.
+
 - 1.0.0 — 2026-10-12 : la version et la date de la dernière mise à jour sont affichées dans l'application
 
 ### 11 octobre 2026 (troisième entrée)

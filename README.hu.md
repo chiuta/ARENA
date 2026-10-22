@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.3.2 · **Utolsó frissítés:** 2026-10-22
+**Verzió:** 1.3.3 · **Utolsó frissítés:** 2026-10-22
 
 A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -82,6 +82,8 @@ Töltsd le az `index.html` fájlt, és nyisd meg böngészőben. A demómodellek
 - Új: a válaszok felolvasása, a párbaj/összehasonlítás exportálása Markdownba, átláthatósági címke és `.fff.json` másolat (közös készlet); kontraszt javítva.
 
 ### 2026. október 12. (v1.0.0)
+- 1.3.3 — 2026-10-22: A hat window.confirm (visszaállítás, modell törlése, felhő-hozzájárulás, kulcsexport, adattörlés, tömeges teszt) oldalon belüli párbeszédpanelre cserélve; az érvénytelen JSON-importról szóló üzenet lefordítva; a szöveg minimális mérete 12 px.
+
 - 1.0.0 — 2026-10-12: a verzió és az utolsó frissítés dátuma megjelenik az alkalmazásban
 
 ### 2026. október 11. (harmadik bejegyzés)

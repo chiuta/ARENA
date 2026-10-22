@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.3.2 · **Last updated:** 2026-10-22
+**Version:** 1.3.3 · **Last updated:** 2026-10-22
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -82,6 +82,8 @@ Download `index.html` and open it in a browser. The demo models work fully offli
 - New: reading the answers aloud, export of the duel/comparison to Markdown, transparency label and `.fff.json` copy (common kit); contrast fixed.
 
 ### 12 October 2026 (v1.0.0)
+- 1.3.3 — 2026-10-22: The six window.confirm prompts (reset, delete model, cloud consent, key export, wipe data, bulk test) are replaced by in-page dialogs; the invalid-JSON import message is translated; minimum text size 12 px.
+
 - 1.0.0 — 2026-10-12: the version and the date of the last update are shown in the app
 
 ### 11 October 2026 (third entry)

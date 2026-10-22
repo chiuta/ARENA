@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 1.3.2 · **Última atualização:** 2026-10-22
+**Versão:** 1.3.3 · **Última atualização:** 2026-10-22
 
 Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -82,6 +82,8 @@ Descarregue `index.html` e abra-o num navegador. Os modelos de demonstração fu
 - Novidade: leitura das respostas em voz alta, exportação do duelo/comparação para Markdown, etiqueta de transparência e cópia .fff.json (kit comum); contraste corrigido.
 
 ### 12 de outubro de 2026 (v1.0.0)
+- 1.3.3 — 2026-10-22: Os seis window.confirm (reposição, eliminação de modelo, consentimento cloud, exportação de chaves, apagar dados, teste em massa) foram substituídos por diálogos integrados; a mensagem de importação de JSON inválido está traduzida; tamanho mínimo do texto 12 px.
+
 - 1.0.0 — 2026-10-12: a versão e a data da última atualização são apresentadas na aplicação
 
 ### 11 de outubro de 2026 (terceira entrada)

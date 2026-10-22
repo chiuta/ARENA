@@ -2,7 +2,7 @@
   "schema": 1,
   "slug": "arena",
   "name": "Arena fără frontiere",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "updated": "2026-10-22",
   "description": "Arena fără frontiere — dueluri oarbe între modele AI, clasament Elo, totul offline-first, într-un singur fișier. Fișierul e al tău.",
   "egress": [
@@ -53,8 +53,8 @@
   "storageKeys": [
     "arena-ff-v1"
   ],
-  "sizeBytes": 363900,
-  "sha256": "bc6c803d58d2fa5e4a0a697bf9da9fb270ad0e4951abdb50cf2138db08561b33",
+  "sizeBytes": 364657,
+  "sha256": "6abe26d4d24581e35e0fa6ebfd60ecac817cb56d4dccff0caaac1ba8b4eb34ac",
   "csp": {
     "present": true,
     "directives": {
