@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 1.3.0 · **Última atualização:** 2026-10-19
+**Versão:** 1.3.1 · **Última atualização:** 2026-10-22
 
 Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Descarregue `index.html` e abra-o num navegador. Os modelos de demonstração fu
 - Testes: `tests/fff-r8.test.mjs` (rede bloqueada, 1280 e 360 px, axe 0 violações, duelo com modelos de demonstração).
 
 ## Histórico / Registo de alterações
+
+### 1.3.1 — 2026-10-22
+- O catálogo de fornecedores nas Definições (nomes de grupos, notas por fornecedor, etiquetas de modelos, opções de fornecedor e códigos de erro) está agora traduzido nos oito idiomas, em vez de ficar em romeno.
 
 ### 1.2.0 — 2026-10-18
 - Segurança: a exportação a partir das Definições JÁ NÃO inclui as chaves API, a menos que assinale «Incluir as chaves API…» e confirme; a cópia de segurança não cifrada do kit (1.1.0) esvazia as chaves (a cifrada com palavra-passe mantém-nas). O restauro de uma cópia não cifrada já não traz as chaves de volta: reintroduzem-se manualmente.

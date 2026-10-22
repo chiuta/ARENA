@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · **Italiano** · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versione:** 1.3.0 · **Ultimo aggiornamento:** 2026-10-19
+**Versione:** 1.3.1 · **Ultimo aggiornamento:** 2026-10-22
 
 Lingue dell'interfaccia: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Scarica `index.html` e aprilo in un browser. I modelli dimostrativi funzionano c
 - Test: `tests/fff-r8.test.mjs` (rete bloccata, 1280 e 360 px, axe 0 violazioni, duello con modelli dimostrativi).
 
 ## Cronologia / Changelog
+
+### 1.3.1 — 2026-10-22
+- Il catalogo dei provider nelle Impostazioni (nomi dei gruppi, note per provider, etichette dei modelli, opzioni di provider e codici di errore) è ora tradotto in tutte e otto le lingue invece di restare in rumeno.
 
 ### 1.2.0 — 2026-10-18
 - Sicurezza: l'esportazione dalle Impostazioni NON include più le chiavi API a meno che tu non selezioni «Includi le chiavi API…» e confermi; la copia di riserva non cifrata del kit (1.1.0) svuota le chiavi (quella cifrata con password le conserva). Il ripristino di una copia non cifrata non riporta più le chiavi: si reinseriscono manualmente.

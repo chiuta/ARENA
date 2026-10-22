@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · **Español** · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versión:** 1.3.0 · **Última actualización:** 2026-10-19
+**Versión:** 1.3.1 · **Última actualización:** 2026-10-22
 
 Idiomas de la interfaz: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Descarga `index.html` y ábrelo en un navegador. Los modelos de demostración fu
 - Pruebas: `tests/fff-r8.test.mjs` (red bloqueada, 1280 y 360 px, axe 0 infracciones, duelo con modelos de demostración).
 
 ## Historial / Registro de cambios
+
+### 1.3.1 — 2026-10-22
+- El catálogo de proveedores en Ajustes (nombres de grupos, notas por proveedor, etiquetas de modelos, opciones de proveedor y códigos de error) ahora está traducido a los ocho idiomas en lugar de quedarse en rumano.
 
 ### 1.2.0 — 2026-10-18
 - Seguridad: la exportación desde Ajustes YA NO incluye las claves API a menos que marques «Incluir las claves API…» y confirmes; la copia de seguridad sin cifrar del kit (1.1.0) vacía las claves (la cifrada con contraseña las conserva). La restauración de una copia sin cifrar ya no recupera las claves: se vuelven a introducir manualmente.

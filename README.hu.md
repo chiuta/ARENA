@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.3.0 · **Utolsó frissítés:** 2026-10-19
+**Verzió:** 1.3.1 · **Utolsó frissítés:** 2026-10-22
 
 A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Töltsd le az `index.html` fájlt, és nyisd meg böngészőben. A demómodellek
 - Tesztek: `tests/fff-r8.test.mjs` (hálózat letiltva, 1280 és 360 px, axe 0 szabálysértés, párbaj demómodellekkel).
 
 ## Előzmények / Változásnapló
+
+### 1.3.1 — 2026-10-22
+- A Beállítások szolgáltatókatalógusa (csoportnevek, szolgáltatónkénti megjegyzések, modellcímkék, szolgáltatóopciók és hibakódok) mostantól mind a nyolc nyelven le van fordítva, nem marad románul.
 
 ### 1.2.0 — 2026-10-18
 - Biztonság: a Beállításokból történő export MÁR NEM tartalmazza az API-kulcsokat, hacsak be nem jelölöd az „API-kulcsok belefoglalása…” lehetőséget, és meg nem erősíted; a készlet (1.1.0) titkosítatlan biztonsági másolata kiüríti a kulcsokat (a jelszóval titkosított megtartja őket). Egy titkosítatlan másolat visszaállítása már nem hozza vissza a kulcsokat: azokat kézzel kell újra megadni.

@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · **Français** · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version :** 1.3.0 · **Dernière mise à jour :** 2026-10-19
+**Version :** 1.3.1 · **Dernière mise à jour :** 2026-10-22
 
 Langues de l'interface : **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Téléchargez `index.html` et ouvrez-le dans un navigateur. Les modèles de dém
 - Tests : `tests/fff-r8.test.mjs` (réseau bloqué, 1280 et 360 px, axe 0 violation, duel avec des modèles de démonstration).
 
 ## Historique / Journal des modifications
+
+### 1.3.1 — 2026-10-22
+- Le catalogue des fournisseurs dans Réglages (noms de groupes, notes par fournisseur, étiquettes de modèles, options de fournisseur et codes d'erreur) est désormais traduit dans les huit langues au lieu de rester en roumain.
 
 ### 1.2.0 — 2026-10-18
 - Sécurité : l'export depuis les Paramètres N'INCLUT PLUS les clés API sauf si vous cochez « Inclure les clés API… » et confirmez ; la copie de sauvegarde non chiffrée du kit (1.1.0) vide les clés (celle chiffrée par mot de passe les conserve). La restauration d'une copie non chiffrée ne ramène plus les clés : elles se saisissent manuellement.

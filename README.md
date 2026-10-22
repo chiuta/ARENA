@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.3.0 · **Last updated:** 2026-10-19
+**Version:** 1.3.1 · **Last updated:** 2026-10-22
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Download `index.html` and open it in a browser. The demo models work fully offli
 - Tests: `tests/fff-r8.test.mjs` (network blocked, 1280 and 360 px, axe 0 violations, duel with demo models).
 
 ## History / Changelog
+
+### 1.3.1 — 2026-10-22
+- The provider catalog in Settings (group names, per-provider notes, model labels, provider options and error codes) is now translated into all eight languages instead of staying Romanian.
 
 ### 1.2.0 — 2026-10-18
 - Security: the export from Settings NO LONGER includes the API keys unless you tick "Include API keys…" and confirm; the unencrypted backup copy from the kit (1.1.0) empties the keys (the password-encrypted one keeps them). Restoring an unencrypted copy no longer brings the keys back: they are re-entered manually.

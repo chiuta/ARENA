@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 1.3.0 · **Zuletzt aktualisiert:** 2026-10-19
+**Version:** 1.3.1 · **Zuletzt aktualisiert:** 2026-10-22
 
 Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Laden Sie `index.html` herunter und öffnen Sie sie in einem Browser. Die Demo-M
 - Tests: `tests/fff-r8.test.mjs` (Netzwerk gesperrt, 1280 und 360 px, axe 0 Verstöße, Duell mit Demo-Modellen).
 
 ## Verlauf / Changelog
+
+### 1.3.1 — 2026-10-22
+- Der Anbieterkatalog in den Einstellungen (Gruppennamen, Hinweise je Anbieter, Modellbezeichnungen, Anbieteroptionen und Fehlercodes) ist jetzt in alle acht Sprachen übersetzt, statt rumänisch zu bleiben.
 
 ### 1.2.0 — 2026-10-18
 - Sicherheit: Der Export aus den Einstellungen enthält die API-Schlüssel NICHT mehr, es sei denn, Sie haken „API-Schlüssel einbeziehen…“ an und bestätigen; die unverschlüsselte Sicherungskopie aus dem Kit (1.1.0) leert die Schlüssel (die passwortverschlüsselte behält sie). Das Wiederherstellen einer unverschlüsselten Kopie bringt die Schlüssel nicht mehr zurück: Sie werden manuell neu eingegeben.

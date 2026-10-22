@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.3.0 · **Ultima actualizare:** 2026-10-19
+**Versiune:** 1.3.1 · **Ultima actualizare:** 2026-10-22
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează 
 - Teste: `tests/fff-r8.test.mjs` (rețea blocată, 1280 și 360 px, axe 0 violări, duel cu modele demo).
 
 ## Istoric / Changelog
+
+### 1.3.1 — 2026-10-22
+- Catalogul de provideri din Setări (nume de grupuri, note pe provider, etichete de modele, opțiunile de provider și codurile de eroare) este acum tradus în toate cele opt limbi, nu mai rămâne în română.
 
 ### 1.2.0 — 2026-10-18
 - Securitate: exportul din Setări NU mai include cheile API decât dacă bifezi „Include cheile API…” și confirmi; copia de siguranță necriptată din kit (1.1.0) golește cheile (cea criptată cu parolă le păstrează). Restaurarea unei copii necriptate nu mai readuce cheile: se reintroduc manual.
