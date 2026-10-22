@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.3.1 · **Ultima actualizare:** 2026-10-22
+**Versiune:** 1.3.2 · **Ultima actualizare:** 2026-10-22
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează 
 - Teste: `tests/fff-r8.test.mjs` (rețea blocată, 1280 și 360 px, axe 0 violări, duel cu modele demo).
 
 ## Istoric / Changelog
+
+### 1.3.2 — 2026-10-22
+- Nota de confidențialitate despre modelele cloud (Setări și Duel) apare acum doar în limba curentă a interfeței, nu bilingv română · engleză; tradusă în fr, it, es, pt, de și hu.
 
 ### 1.3.1 — 2026-10-22
 - Catalogul de provideri din Setări (nume de grupuri, note pe provider, etichete de modele, opțiunile de provider și codurile de eroare) este acum tradus în toate cele opt limbi, nu mai rămâne în română.

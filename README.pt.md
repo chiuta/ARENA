@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 1.3.1 · **Última atualização:** 2026-10-22
+**Versão:** 1.3.2 · **Última atualização:** 2026-10-22
 
 Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,9 @@ Descarregue `index.html` e abra-o num navegador. Os modelos de demonstração fu
 - Testes: `tests/fff-r8.test.mjs` (rede bloqueada, 1280 e 360 px, axe 0 violações, duelo com modelos de demonstração).
 
 ## Histórico / Registo de alterações
+
+### 1.3.2 — 2026-10-22
+- A nota de privacidade sobre os modelos na nuvem (Definições e Duelo) aparece agora apenas na língua atual da interface, e não bilingue romeno · inglês; traduzida para fr, it, es, pt, de e hu.
 
 ### 1.3.1 — 2026-10-22
 - O catálogo de fornecedores nas Definições (nomes de grupos, notas por fornecedor, etiquetas de modelos, opções de fornecedor e códigos de erro) está agora traduzido nos oito idiomas, em vez de ficar em romeno.
