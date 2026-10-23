@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 1.3.5 · **Zuletzt aktualisiert:** 2026-10-22
+**Version:** 1.3.8 · **Zuletzt aktualisiert:** 2026-10-23
 
 Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -46,13 +46,13 @@ ARENA ist eine Anwendung in einer einzigen Datei (`index.html`, reines JavaScrip
 
 - **Lokaler Speicher:** Alle Daten (Modelle, API-Schlüssel, Rangliste, Verlauf) werden im `localStorage` unter dem Schlüssel `arena-ff-v1` gespeichert. Die API-Schlüssel können in den Einstellungen getrennt gehalten werden, nur im `sessionStorage`. Ist `localStorage` nicht verfügbar, gehen die Daten beim Schließen der Seite verloren.
 - **Netzwerk:** Die Anwendung hat keinen eigenen Server und sendet keine Telemetrie. Chat-Anfragen gehen direkt vom Browser an den von Ihnen konfigurierten Anbieter (zum Beispiel `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, einen lokalen `localhost`-Server usw.), mit Ihrem Schlüssel.
-- **CDN:** Nur wenn Sie die Engines im Browser wählen, werden die Module von `esm.run` importiert (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`) und anschließend die Modellgewichte heruntergeladen (z. B. von Hugging Face).
+- **CDN:** Nur wenn Sie die Engines im Browser wählen, werden die Module aus `vendor/` desselben Ursprungs geladen (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`, kein CDN); anschließend werden die WebLLM-Modellbibliothek (`.wasm`, fester Commit von `binary-mlc-llm-libs`, per SHA-256-SRI geprüft) bzw. die ONNX-Runtime-`.wasm` (feste jsDelivr-URL, SHA-256 geprüft, bei Abweichung abgelehnt) und die Modellgewichte (z. B. von Hugging Face, ohne festen Hash) heruntergeladen.
 - **Cloud-Modelle standardmäßig deaktiviert:** Die Katalogmodelle, die keinen Schlüssel verlangen (Kilo Gateway, `api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash), werden der Liste hinzugefügt, aber **deaktiviert**; ihre Aktivierung (Schalter in den **Einstellungen**) verlangt eine ausdrückliche Bestätigung, und erst dann kann ein Duell ihnen den Prompt senden. Beim ersten Start nach dieser Version werden Modelle dieser Art, die aus einer früheren Version aktiv geblieben sind, einmalig deaktiviert. Ohne Zustimmung sind nur die Demo-Modelle (offline) aktiv.
 - **API-Schlüssel:** Standardmäßig werden sie im Klartext im `localStorage` gehalten (`arena-ff-v1`); mit der Option „nur für die Sitzung“ (Einstellungen → Ihre Daten) werden sie nur im `sessionStorage` gehalten (`arena-ff-v1-keys`) und nicht auf die Festplatte geschrieben, und bei „Alles exportieren“ fragt die Anwendung, ob Sie die Schlüssel einbeziehen möchten (Abbrechen = Export ohne Schlüssel). Jeder mit Zugriff auf das Browserprofil oder der Skripte auf diesem Origin ausführt, kann sie lesen.
 - Die Links im Katalog (Dokumentationen, Schlüsselkonsolen) öffnen sich nur per Klick.
 - Die Demo-Modelle führen keine Netzwerkaufrufe aus.
 
-- **CSP:** Die Seite hat eine CSP-Richtlinie: Skripte nur inline, per SHA-256-Hash (ohne `'unsafe-inline'`), dazu `esm.run`/`cdn.jsdelivr.net` (Engines im Browser), Verbindungen `https:`/`http:`/`ws:` (die Basisadressen der Anbieter werden vom Nutzer konfiguriert und können daher nicht aufgezählt werden), keine Objekte, `base`/`form` gesperrt.
+- **CSP:** Die Seite hat eine CSP-Richtlinie: Skripte nur inline, per SHA-256-Hash (ohne `'unsafe-inline'`), dazu `'self'` (die Engines im Browser kommen aus `vendor/`), Verbindungen `https:`/`http:`/`ws:` (die Basisadressen der Anbieter werden vom Nutzer konfiguriert und können daher nicht aufgezählt werden), keine Objekte, `base`/`form` gesperrt.
 
 ## Lokale Ausführung / offline
 
@@ -68,6 +68,10 @@ Laden Sie `index.html` herunter und öffnen Sie sie in einem Browser. Die Demo-M
 - Tests: `tests/fff-r8.test.mjs` (Netzwerk gesperrt, 1280 und 360 px, axe 0 Verstöße, Duell mit Demo-Modellen).
 
 ## Verlauf / Changelog
+
+### 1.3.6 — 2026-10-22
+- Die Engines im Browser hängen nicht mehr von einem CDN ab: WebLLM 0.2.84 und Transformers.js 4.2.0 (mit den ONNX-Runtime-Loadern) liegen in `vendor/`. Die WebLLM-Modellbibliotheken (`.wasm`) stammen von einem festen Commit von `binary-mlc-llm-libs` und werden per SHA-256-SRI geprüft; die ONNX-Runtime-`.wasm` wird vor der Nutzung per SHA-256 geprüft (bei Abweichung abgelehnt). Die CSP entfernt `esm.run` und `cdn.jsdelivr.net` aus `script-src`.
+- Die Seite ist bei Nutzung dieser Engines nicht mehr eine einzelne Datei (die Engines liegen in `vendor/`, +6,4 MB). Neue `NOTICE.md`.
 
 ### 1.3.5 — 2026-10-22
 - fff-kit 1.1.4: Touch-Ziele und Mindestschriftgröße
@@ -118,4 +122,4 @@ Alexio — Alexandru-Ionuț Chiuță, Kontakt: alexio@trom.tf.
 
 ARENA ist eine HTML-Anwendung in einer einzigen Datei für blinde Direktduelle zwischen KI-Modellen mit einer lokalen Elo-Rangliste. Die Modelle können Cloud-APIs (Ihr eigener Schlüssel), lokale Server (z. B. Ollama) oder Engines im Browser sein; Demo-Modelle funktionieren offline. Die Daten bleiben im localStorage (`arena-ff-v1`); Anfragen gehen direkt vom Browser an den von Ihnen konfigurierten Anbieter. Oberfläche in 8 Sprachen. Lizenz: MIT (siehe LICENSE).
 
-Audit: 2026-10-10 (Runde 2: 2026-10-11, Cloud-Modelle standardmäßig deaktiviert, Export mit/ohne Schlüssel) — geprüft wurden der Code (Netzwerkanfragen, Bereinigung des importierten Zustands, Darstellung der Antworten über textContent), die Barrierefreiheit (axe: Kontrast korrigiert) und die Funktion (Duell mit Demo-Modellen, Reiter). Die Engines im Browser (WebLLM/Transformers.js) sind optional und werden nur auf Anfrage von esm.run geladen.
+Audit: 2026-10-10 (Runde 2: 2026-10-11, Cloud-Modelle standardmäßig deaktiviert, Export mit/ohne Schlüssel) — geprüft wurden der Code (Netzwerkanfragen, Bereinigung des importierten Zustands, Darstellung der Antworten über textContent), die Barrierefreiheit (axe: Kontrast korrigiert) und die Funktion (Duell mit Demo-Modellen, Reiter). Die Engines im Browser (WebLLM/Transformers.js) sind optional und werden nur auf Anfrage aus `vendor/` geladen.

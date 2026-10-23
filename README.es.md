@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · **Español** · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versión:** 1.3.5 · **Última actualización:** 2026-10-22
+**Versión:** 1.3.8 · **Última actualización:** 2026-10-23
 
 Idiomas de la interfaz: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -46,13 +46,13 @@ ARENA es una aplicación de un único archivo (`index.html`, JavaScript puro) en
 
 - **Almacenamiento local:** todos los datos (modelos, claves API, clasificación, historial) se guardan en `localStorage` bajo la clave `arena-ff-v1`. Las claves API pueden guardarse por separado, solo en `sessionStorage`, desde Ajustes. Si `localStorage` no está disponible, los datos se pierden al cerrar la página.
 - **Red:** la aplicación no tiene servidor propio y no envía telemetría. Las solicitudes de chat salen directamente del navegador hacia el proveedor que configures (por ejemplo `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, un servidor local `localhost`, etc.), con tu clave.
-- **CDN:** solo si eliges los motores en el navegador, los módulos se importan de `esm.run` (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`) y luego se descargan los pesos de los modelos (p. ej. de Hugging Face).
+- **CDN:** solo si eliges los motores en el navegador, los módulos se cargan desde `vendor/` del mismo origen (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`, sin CDN); después se descargan la biblioteca de modelo de WebLLM (`.wasm`, commit de `binary-mlc-llm-libs` fijado, verificada con SRI SHA-256) o el `.wasm` de ONNX Runtime (URL de jsDelivr fijada, SHA-256 verificado, rechazado si difiere) y los pesos de los modelos (p. ej. de Hugging Face, sin hash fijado).
 - **Modelos en la nube desactivados por defecto:** los modelos del catálogo que no piden clave (Kilo Gateway, `api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash) se añaden a la lista pero **desactivados**; su activación (interruptor en **Ajustes**) exige una confirmación explícita, y solo entonces un duelo puede enviarles el prompt. En la primera ejecución tras esta versión, los modelos de este tipo que seguían activos de una versión anterior se desactivan una sola vez. Sin consentimiento, solo están activos los modelos de demostración (sin conexión).
 - **Claves API:** por defecto se guardan en claro en `localStorage` (`arena-ff-v1`); con la opción «solo durante la sesión» (Ajustes → Tus datos) se guardan únicamente en `sessionStorage` (`arena-ff-v1-keys`) y no se escriben en disco, y al «Exportar todo» la aplicación pregunta si quieres incluir las claves (Cancelar = exportación sin claves). Cualquiera con acceso al perfil del navegador o que ejecute un script en este origen puede leerlas.
 - Los enlaces del catálogo (documentaciones, consolas de claves) se abren solo al hacer clic.
 - Los modelos de demostración no hacen ninguna llamada de red.
 
-- **CSP:** la página tiene una política CSP: scripts solo en línea, mediante hash SHA-256 (sin `'unsafe-inline'`), además de `esm.run`/`cdn.jsdelivr.net` (motores en el navegador), conexiones `https:`/`http:`/`ws:` (las direcciones base de los proveedores las configura el usuario, por lo que no pueden enumerarse), sin objetos, `base`/`form` bloqueados.
+- **CSP:** la página tiene una política CSP: scripts solo en línea, mediante hash SHA-256 (sin `'unsafe-inline'`), además de `'self'` (los motores en el navegador vienen de `vendor/`), conexiones `https:`/`http:`/`ws:` (las direcciones base de los proveedores las configura el usuario, por lo que no pueden enumerarse), sin objetos, `base`/`form` bloqueados.
 
 ## Ejecución local / sin conexión
 
@@ -68,6 +68,10 @@ Descarga `index.html` y ábrelo en un navegador. Los modelos de demostración fu
 - Pruebas: `tests/fff-r8.test.mjs` (red bloqueada, 1280 y 360 px, axe 0 infracciones, duelo con modelos de demostración).
 
 ## Historial / Registro de cambios
+
+### 1.3.6 — 2026-10-22
+- Los motores en el navegador ya no dependen de un CDN: WebLLM 0.2.84 y Transformers.js 4.2.0 (con los cargadores de ONNX Runtime) están en `vendor/`. Las bibliotecas de modelo de WebLLM (`.wasm`) vienen de un commit fijado de `binary-mlc-llm-libs` y se verifican con SRI SHA-256; el `.wasm` de ONNX Runtime se verifica con SHA-256 antes de usarse (rechazado si difiere). La CSP quita `esm.run` y `cdn.jsdelivr.net` de `script-src`.
+- La página ya no es un único archivo cuando usas estos motores (los motores están en `vendor/`, +6,4 MB). Nuevo `NOTICE.md`.
 
 ### 1.3.5 — 2026-10-22
 - fff-kit 1.1.4: objetivos táctiles y tamaño mínimo de texto
@@ -118,4 +122,4 @@ Alexio — Alexandru-Ionuț Chiuță, contacto: alexio@trom.tf.
 
 ARENA es una aplicación HTML de un único archivo para duelos a ciegas cara a cara entre modelos de IA con una clasificación Elo local. Los modelos pueden ser API en la nube (tu propia clave), servidores locales (p. ej. Ollama) o motores en el navegador; los modelos de demostración funcionan sin conexión. Los datos permanecen en localStorage (`arena-ff-v1`); las solicitudes van directamente del navegador al proveedor que configures. Interfaz en 8 idiomas. Licencia: MIT (véase LICENSE).
 
-Auditoría: 2026-10-10 (ronda 2: 2026-10-11, modelos en la nube desactivados por defecto, exportación con/sin claves) — verificado el código (solicitudes de red, saneamiento del estado importado, representación de las respuestas mediante textContent), la accesibilidad (axe: contraste corregido) y el funcionamiento (duelo con modelos de demostración, pestañas). Los motores en el navegador (WebLLM/Transformers.js) son opcionales y solo se cargan desde esm.run bajo petición.
+Auditoría: 2026-10-10 (ronda 2: 2026-10-11, modelos en la nube desactivados por defecto, exportación con/sin claves) — verificado el código (solicitudes de red, saneamiento del estado importado, representación de las respuestas mediante textContent), la accesibilidad (axe: contraste corregido) y el funcionamiento (duelo con modelos de demostración, pestañas). Los motores en el navegador (WebLLM/Transformers.js) son opcionales y solo se cargan desde `vendor/` bajo petición.

@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.3.5 · **Utolsó frissítés:** 2026-10-22
+**Verzió:** 1.3.8 · **Utolsó frissítés:** 2026-10-23
 
 A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -46,13 +46,13 @@ Az ARENA egyfájlos alkalmazás (`index.html`, vanília JavaScript), amelyben k�
 
 - **Helyi tárolás:** minden adat (modellek, API-kulcsok, ranglista, előzmények) a `localStorage`-ban kerül mentésre az `arena-ff-v1` kulcs alatt. Az API-kulcsok a Beállításokból külön, csak a `sessionStorage`-ban is tarthatók. Ha a `localStorage` nem érhető el, az adatok az oldal bezárásakor elvesznek.
 - **Hálózat:** az alkalmazásnak nincs saját szervere, és nem küld telemetriát. A csevegési kérések közvetlenül a böngészőből mennek az általad beállított szolgáltatóhoz (például `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, egy helyi `localhost` szerver stb.), a te kulcsoddal.
-- **CDN:** csak ha a böngészőbeli motorokat választod, a modulok az `esm.run` címről kerülnek importálásra (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`), majd letöltődnek a modellsúlyok (pl. a Hugging Face-ről).
+- **CDN:** csak ha a böngészőbeli motorokat választod, a modulok ugyanazon eredet `vendor/` mappájából töltődnek be (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`, CDN nélkül); ezután letöltődik a WebLLM modellkönyvtára (`.wasm`, rögzített `binary-mlc-llm-libs` commit, SHA-256 SRI-vel ellenőrizve) vagy az ONNX Runtime `.wasm` (rögzített jsDelivr URL, SHA-256-tal ellenőrizve, eltérésnél elutasítva), valamint a modellsúlyok (pl. a Hugging Face-ről, rögzített ellenőrzőösszeg nélkül).
 - **Alapértelmezés szerint kikapcsolt felhőmodellek:** a katalógus azon modelljei, amelyek nem kérnek kulcsot (Kilo Gateway, `api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash) bekerülnek a listába, de **kikapcsolva**; bekapcsolásuk (kapcsoló a **Beállításokban**) kifejezett megerősítést igényel, és csak ezután küldheti el nekik egy párbaj a promptot. Az e verzió utáni első futtatáskor az előző verzióból aktívan maradt ilyen modelleket egyszer kikapcsolja. Hozzájárulás nélkül csak a demómodellek (offline) aktívak.
 - **API-kulcsok:** alapértelmezés szerint egyszerű szövegként tárolódnak a `localStorage`-ban (`arena-ff-v1`); a „csak a munkamenetben” beállítással (Beállítások → Az adataid) csak a `sessionStorage`-ban (`arena-ff-v1-keys`) tárolódnak, és nem íródnak lemezre, a „Minden exportálása” során pedig az alkalmazás megkérdezi, hogy szeretnéd-e belefoglalni a kulcsokat (Mégse = export kulcsok nélkül). Bárki elolvashatja őket, aki hozzáfér a böngészőprofilhoz vagy szkriptet futtat ezen az origin-en.
 - A katalógus hivatkozásai (dokumentációk, kulcskonzolok) csak kattintásra nyílnak meg.
 - A demómodellek nem végeznek hálózati hívást.
 
-- **CSP:** az oldalnak CSP-szabályzata van: szkriptek csak beágyazottan, SHA-256 ellenőrzőösszeggel (`'unsafe-inline'` nélkül), valamint `esm.run`/`cdn.jsdelivr.net` (böngészőbeli motorok), `https:`/`http:`/`ws:` kapcsolatok (a szolgáltatók alapcímeit a felhasználó állítja be, ezért nem sorolhatók fel), objektumok nélkül, `base`/`form` letiltva.
+- **CSP:** az oldalnak CSP-szabályzata van: szkriptek csak beágyazottan, SHA-256 ellenőrzőösszeggel (`'unsafe-inline'` nélkül), valamint `'self'` (a böngészőbeli motorok a `vendor/` mappából jönnek), `https:`/`http:`/`ws:` kapcsolatok (a szolgáltatók alapcímeit a felhasználó állítja be, ezért nem sorolhatók fel), objektumok nélkül, `base`/`form` letiltva.
 
 ## Helyi futtatás / offline
 
@@ -68,6 +68,10 @@ Töltsd le az `index.html` fájlt, és nyisd meg böngészőben. A demómodellek
 - Tesztek: `tests/fff-r8.test.mjs` (hálózat letiltva, 1280 és 360 px, axe 0 szabálysértés, párbaj demómodellekkel).
 
 ## Előzmények / Változásnapló
+
+### 1.3.6 — 2026-10-22
+- A böngészőbeli motorok már nem függenek CDN-től: a WebLLM 0.2.84 és a Transformers.js 4.2.0 (az ONNX Runtime betöltőkkel) a `vendor/` mappában van. A WebLLM modellkönyvtárai (`.wasm`) a `binary-mlc-llm-libs` egy rögzített commitjáról jönnek, és SHA-256 SRI-vel ellenőrzöttek; az ONNX Runtime `.wasm` használat előtt SHA-256-tal ellenőrzött (eltérésnél elutasítva). A CSP kivette az `esm.run` és a `cdn.jsdelivr.net` címet a `script-src`-ből.
+- Az oldal e motorok használatakor már nem egyetlen fájl (a motorok a `vendor/` mappában vannak, +6,4 MB). Új `NOTICE.md`.
 
 ### 1.3.5 — 2026-10-22
 - fff-kit 1.1.4: érintési célpontok és minimális szövegméret
@@ -118,4 +122,4 @@ Alexio — Alexandru-Ionuț Chiuță, kapcsolat: alexio@trom.tf.
 
 Az ARENA egy egyfájlos HTML-alkalmazás MI-modellek közötti vak, közvetlen párbajokhoz helyi Elo-ranglistával. A modellek lehetnek felhős API-k (saját kulccsal), helyi szerverek (pl. Ollama) vagy böngészőbeli motorok; a demómodellek offline működnek. Az adatok a localStorage-ban maradnak (`arena-ff-v1`); a kérések közvetlenül a böngészőből mennek az általad beállított szolgáltatóhoz. Román és angol nyelvű felület. Licenc: MIT (lásd LICENSE).
 
-Audit: 2026-10-10 (2. forduló: 2026-10-11, alapértelmezés szerint kikapcsolt felhőmodellek, export kulcsokkal/kulcsok nélkül) — ellenőrizve a kód (hálózati kérések, az importált állapot szanálása, a válaszok megjelenítése textContent-en keresztül), a hozzáférhetőség (axe: kontraszt javítva) és a működés (párbaj demómodellekkel, lapok). A böngészőbeli motorok (WebLLM/Transformers.js) opcionálisak, és csak kérésre töltődnek be az esm.run címről.
+Audit: 2026-10-10 (2. forduló: 2026-10-11, alapértelmezés szerint kikapcsolt felhőmodellek, export kulcsokkal/kulcsok nélkül) — ellenőrizve a kód (hálózati kérések, az importált állapot szanálása, a válaszok megjelenítése textContent-en keresztül), a hozzáférhetőség (axe: kontraszt javítva) és a működés (párbaj demómodellekkel, lapok). A böngészőbeli motorok (WebLLM/Transformers.js) opcionálisak, és csak kérésre töltődnek be a `vendor/` mappából.

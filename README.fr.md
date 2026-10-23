@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · **Français** · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version :** 1.3.5 · **Dernière mise à jour :** 2026-10-22
+**Version :** 1.3.8 · **Dernière mise à jour :** 2026-10-23
 
 Langues de l'interface : **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -46,13 +46,13 @@ ARENA est une application en un seul fichier (`index.html`, JavaScript natif) da
 
 - **Stockage local :** toutes les données (modèles, clés API, classement, historique) sont enregistrées dans `localStorage` sous la clé `arena-ff-v1`. Les clés API peuvent être conservées séparément, uniquement dans `sessionStorage`, depuis les Paramètres. Si `localStorage` n'est pas disponible, les données sont perdues à la fermeture de la page.
 - **Réseau :** l'application n'a pas de serveur propre et n'envoie aucune télémétrie. Les requêtes de chat partent directement du navigateur vers le fournisseur que vous configurez (par exemple `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, un serveur local `localhost`, etc.), avec votre clé.
-- **CDN :** uniquement si vous choisissez les moteurs dans le navigateur, les modules sont importés depuis `esm.run` (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`) puis les poids des modèles sont téléchargés (p. ex. depuis Hugging Face).
+- **CDN :** uniquement si vous choisissez les moteurs dans le navigateur, les modules sont chargés depuis `vendor/` de la même origine (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`, sans CDN) ; ensuite sont téléchargés la bibliothèque de modèle WebLLM (`.wasm`, commit `binary-mlc-llm-libs` figé, vérifiée par SRI SHA-256) ou le `.wasm` d'ONNX Runtime (URL jsDelivr figée, SHA-256 vérifié, refusé en cas de différence) et les poids des modèles (p. ex. depuis Hugging Face, sans empreinte figée).
 - **Modèles cloud désactivés par défaut :** les modèles du catalogue qui ne demandent pas de clé (Kilo Gateway, `api.kilo.ai` : Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash) sont ajoutés à la liste mais **désactivés** ; leur activation (interrupteur dans les **Paramètres**) exige une confirmation explicite, et ce n'est qu'ensuite qu'un duel peut leur envoyer le prompt. Lors du premier lancement après cette version, les modèles de ce type restés actifs depuis une version précédente sont désactivés une seule fois. Sans accord, seuls les modèles de démonstration (hors ligne) sont actifs.
 - **Clés API :** par défaut elles sont conservées en clair dans `localStorage` (`arena-ff-v1`) ; avec l'option « uniquement pour la session » (Paramètres → Vos données) elles ne sont conservées que dans `sessionStorage` (`arena-ff-v1-keys`) et ne sont pas écrites sur le disque, et lors de « Tout exporter » l'application demande si vous voulez inclure les clés (Annuler = export sans clés). Toute personne ayant accès au profil du navigateur ou exécutant un script sur cette origine peut les lire.
 - Les liens du catalogue (documentations, consoles de clés) ne s'ouvrent qu'au clic.
 - Les modèles de démonstration ne font aucun appel réseau.
 
-- **CSP :** la page a une politique CSP : scripts uniquement en ligne, par empreinte SHA-256 (sans `'unsafe-inline'`), plus `esm.run`/`cdn.jsdelivr.net` (moteurs dans le navigateur), connexions `https:`/`http:`/`ws:` (les adresses de base des fournisseurs sont configurées par l'utilisateur, elles ne peuvent donc pas être énumérées), sans objets, `base`/`form` bloqués.
+- **CSP :** la page a une politique CSP : scripts uniquement en ligne, par empreinte SHA-256 (sans `'unsafe-inline'`), plus `'self'` (les moteurs dans le navigateur viennent de `vendor/`), connexions `https:`/`http:`/`ws:` (les adresses de base des fournisseurs sont configurées par l'utilisateur, elles ne peuvent donc pas être énumérées), sans objets, `base`/`form` bloqués.
 
 ## Exécution locale / hors ligne
 
@@ -68,6 +68,10 @@ Téléchargez `index.html` et ouvrez-le dans un navigateur. Les modèles de dém
 - Tests : `tests/fff-r8.test.mjs` (réseau bloqué, 1280 et 360 px, axe 0 violation, duel avec des modèles de démonstration).
 
 ## Historique / Journal des modifications
+
+### 1.3.6 — 2026-10-22
+- Les moteurs dans le navigateur ne dépendent plus d'un CDN : WebLLM 0.2.84 et Transformers.js 4.2.0 (avec les chargeurs ONNX Runtime) sont dans `vendor/`. Les bibliothèques de modèle WebLLM (`.wasm`) viennent d'un commit figé de `binary-mlc-llm-libs` et sont vérifiées par SRI SHA-256 ; le `.wasm` d'ONNX Runtime est vérifié par SHA-256 avant usage (refusé en cas de différence). La CSP retire `esm.run` et `cdn.jsdelivr.net` de `script-src`.
+- La page n'est plus un fichier unique lorsque vous utilisez ces moteurs (les moteurs sont dans `vendor/`, +6,4 Mo). Nouveau `NOTICE.md`.
 
 ### 1.3.5 — 2026-10-22
 - fff-kit 1.1.4 : cibles tactiles et taille de texte minimale
@@ -118,4 +122,4 @@ Alexio — Alexandru-Ionuț Chiuță, contact : alexio@trom.tf.
 
 ARENA est une application HTML en un seul fichier pour des duels à l'aveugle en face-à-face entre modèles d'IA, avec un classement Elo local. Les modèles peuvent être des API cloud (votre propre clé), des serveurs locaux (p. ex. Ollama) ou des moteurs dans le navigateur ; les modèles de démonstration fonctionnent hors ligne. Les données restent dans localStorage (`arena-ff-v1`) ; les requêtes vont directement du navigateur vers le fournisseur que vous configurez. Interface en 8 langues. Licence : MIT (voir LICENSE).
 
-Audit : 2026-10-10 (tour 2 : 2026-10-11, modèles cloud désactivés par défaut, export avec/sans clés) — vérification du code (requêtes réseau, assainissement de l'état importé, affichage des réponses via textContent), de l'accessibilité (axe : contraste corrigé) et du fonctionnement (duel avec modèles de démonstration, onglets). Les moteurs dans le navigateur (WebLLM/Transformers.js) sont facultatifs et ne sont chargés depuis esm.run que sur demande.
+Audit : 2026-10-10 (tour 2 : 2026-10-11, modèles cloud désactivés par défaut, export avec/sans clés) — vérification du code (requêtes réseau, assainissement de l'état importé, affichage des réponses via textContent), de l'accessibilité (axe : contraste corrigé) et du fonctionnement (duel avec modèles de démonstration, onglets). Les moteurs dans le navigateur (WebLLM/Transformers.js) sont facultatifs et ne sont chargés depuis `vendor/` que sur demande.

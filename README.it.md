@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · **Italiano** · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versione:** 1.3.5 · **Ultimo aggiornamento:** 2026-10-22
+**Versione:** 1.3.8 · **Ultimo aggiornamento:** 2026-10-23
 
 Lingue dell'interfaccia: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -46,13 +46,13 @@ ARENA è un'applicazione in un unico file (`index.html`, JavaScript puro) in cui
 
 - **Archiviazione locale:** tutti i dati (modelli, chiavi API, classifica, cronologia) vengono salvati in `localStorage` con la chiave `arena-ff-v1`. Le chiavi API possono essere conservate separatamente, solo in `sessionStorage`, dalle Impostazioni. Se `localStorage` non è disponibile, i dati si perdono alla chiusura della pagina.
 - **Rete:** l'applicazione non ha un server proprio e non invia telemetria. Le richieste di chat partono direttamente dal browser verso il provider che configuri (ad esempio `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, un server locale `localhost` ecc.), con la tua chiave.
-- **CDN:** solo se scegli i motori nel browser, i moduli vengono importati da `esm.run` (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`) e poi si scaricano i pesi dei modelli (ad es. da Hugging Face).
+- **CDN:** solo se scegli i motori nel browser, i moduli vengono caricati da `vendor/` della stessa origine (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`, senza CDN); poi si scaricano la libreria del modello WebLLM (`.wasm`, commit `binary-mlc-llm-libs` fissato, verificata con SRI SHA-256) o il `.wasm` di ONNX Runtime (URL jsDelivr fissato, SHA-256 verificato, rifiutato se diverso) e i pesi dei modelli (ad es. da Hugging Face, senza hash fissato).
 - **Modelli cloud disattivati per impostazione predefinita:** i modelli del catalogo che non richiedono una chiave (Kilo Gateway, `api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash) vengono aggiunti all'elenco ma **disattivati**; la loro attivazione (interruttore nelle **Impostazioni**) richiede una conferma esplicita, e solo dopo un duello può inviare loro il prompt. Al primo avvio dopo questa versione, i modelli di questo tipo rimasti attivi da una versione precedente vengono disattivati una sola volta. Senza consenso, sono attivi solo i modelli dimostrativi (offline).
 - **Chiavi API:** per impostazione predefinita vengono conservate in chiaro in `localStorage` (`arena-ff-v1`); con l'opzione «solo per la sessione» (Impostazioni → I tuoi dati) vengono conservate solo in `sessionStorage` (`arena-ff-v1-keys`) e non vengono scritte su disco, e con «Esporta tutto» l'applicazione chiede se vuoi includere le chiavi (Annulla = esportazione senza chiavi). Chiunque abbia accesso al profilo del browser o esegua script su questa origine può leggerle.
 - I link del catalogo (documentazioni, console delle chiavi) si aprono solo al clic.
 - I modelli dimostrativi non effettuano alcuna chiamata di rete.
 
-- **CSP:** la pagina ha una politica CSP: script solo inline, tramite hash SHA-256 (senza `'unsafe-inline'`), più `esm.run`/`cdn.jsdelivr.net` (motori nel browser), connessioni `https:`/`http:`/`ws:` (gli indirizzi di base dei provider sono configurati dall'utente, quindi non possono essere elencati), senza oggetti, `base`/`form` bloccati.
+- **CSP:** la pagina ha una politica CSP: script solo inline, tramite hash SHA-256 (senza `'unsafe-inline'`), più `'self'` (i motori nel browser provengono da `vendor/`), connessioni `https:`/`http:`/`ws:` (gli indirizzi di base dei provider sono configurati dall'utente, quindi non possono essere elencati), senza oggetti, `base`/`form` bloccati.
 
 ## Esecuzione locale / offline
 
@@ -68,6 +68,10 @@ Scarica `index.html` e aprilo in un browser. I modelli dimostrativi funzionano c
 - Test: `tests/fff-r8.test.mjs` (rete bloccata, 1280 e 360 px, axe 0 violazioni, duello con modelli dimostrativi).
 
 ## Cronologia / Changelog
+
+### 1.3.6 — 2026-10-22
+- I motori nel browser non dipendono più da una CDN: WebLLM 0.2.84 e Transformers.js 4.2.0 (con i loader di ONNX Runtime) sono in `vendor/`. Le librerie dei modelli WebLLM (`.wasm`) provengono da un commit fissato di `binary-mlc-llm-libs` e sono verificate con SRI SHA-256; il `.wasm` di ONNX Runtime è verificato con SHA-256 prima dell'uso (rifiutato se diverso). La CSP rimuove `esm.run` e `cdn.jsdelivr.net` da `script-src`.
+- La pagina non è più un file unico quando usi questi motori (i motori sono in `vendor/`, +6,4 MB). Nuovo `NOTICE.md`.
 
 ### 1.3.5 — 2026-10-22
 - fff-kit 1.1.4: target touch e dimensione minima del testo
@@ -118,4 +122,4 @@ Alexio — Alexandru-Ionuț Chiuță, contatto: alexio@trom.tf.
 
 ARENA è un'applicazione HTML in un unico file per duelli alla cieca testa a testa tra modelli di IA con una classifica Elo locale. I modelli possono essere API cloud (la tua chiave), server locali (ad es. Ollama) o motori nel browser; i modelli dimostrativi funzionano offline. I dati restano in localStorage (`arena-ff-v1`); le richieste vanno direttamente dal browser al provider che configuri. Interfaccia in 8 lingue. Licenza: MIT (vedi LICENSE).
 
-Audit: 2026-10-10 (round 2: 2026-10-11, modelli cloud disattivati per impostazione predefinita, esportazione con/senza chiavi) — verificati il codice (richieste di rete, sanificazione dello stato importato, resa delle risposte tramite textContent), l'accessibilità (axe: contrasto corretto) e il funzionamento (duello con modelli dimostrativi, schede). I motori nel browser (WebLLM/Transformers.js) sono facoltativi e vengono caricati da esm.run solo su richiesta.
+Audit: 2026-10-10 (round 2: 2026-10-11, modelli cloud disattivati per impostazione predefinita, esportazione con/senza chiavi) — verificati il codice (richieste di rete, sanificazione dello stato importato, resa delle risposte tramite textContent), l'accessibilità (axe: contrasto corretto) e il funzionamento (duello con modelli dimostrativi, schede). I motori nel browser (WebLLM/Transformers.js) sono facoltativi e vengono caricati da `vendor/` solo su richiesta.

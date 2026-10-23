@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.3.5 · **Last updated:** 2026-10-22
+**Version:** 1.3.8 · **Last updated:** 2026-10-23
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -46,13 +46,13 @@ ARENA is a single-file app (`index.html`, vanilla JavaScript) in which you compa
 
 - **Local storage:** all the data (models, API keys, leaderboard, history) is saved in `localStorage` under the key `arena-ff-v1`. The API keys can be kept separately, only in `sessionStorage`, from Settings. If `localStorage` is not available, the data is lost when the page is closed.
 - **Network:** the app has no server of its own and sends no telemetry. Chat requests go directly from the browser to the provider you configure (for example `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, a local `localhost` server, etc.), with your key.
-- **CDN:** only if you choose the in-browser engines, the modules are imported from `esm.run` (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`) and then the model weights are downloaded (e.g. from Hugging Face).
+- **CDN:** only if you choose the in-browser engines, the modules are loaded from `vendor/` of the same origin (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`, no CDN); then the WebLLM model library (`.wasm`, pinned `binary-mlc-llm-libs` commit, verified by SHA-256 SRI) or the ONNX Runtime `.wasm` (pinned jsDelivr URL, SHA-256 verified, refused on mismatch) and the model weights (e.g. from Hugging Face, no pinned hash) are downloaded.
 - **Cloud models disabled by default:** the catalogue models that do not require a key (Kilo Gateway, `api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash) are added to the list but **disabled**; enabling them (a switch in **Settings**) requires explicit confirmation, and only then can a duel send them the prompt. On the first run after this version, models of this kind left active from a previous version are disabled once. Without consent, only the demo (offline) models are active.
 - **API keys:** by default they are kept in plain text in `localStorage` (`arena-ff-v1`); with the "session only" option (Settings → Your data) they are kept only in `sessionStorage` (`arena-ff-v1-keys`) and are not written to disk, and at "Export everything" the app asks whether you want to include the keys (Cancel = export without keys). Anyone with access to the browser profile or running script on this origin can read them.
 - The links in the catalogue (documentation, key consoles) open only on click.
 - The demo models make no network calls.
 
-- **CSP:** the page has a CSP policy: scripts only inline, by SHA-256 hash (no `'unsafe-inline'`), plus `esm.run`/`cdn.jsdelivr.net` (in-browser engines), `https:`/`http:`/`ws:` connections (the providers' base addresses are configured by the user, so they cannot be enumerated), no objects, `base`/`form` blocked.
+- **CSP:** the page has a CSP policy: scripts only inline, by SHA-256 hash (no `'unsafe-inline'`), plus `'self'` (the in-browser engines come from `vendor/`), `https:`/`http:`/`ws:` connections (the providers' base addresses are configured by the user, so they cannot be enumerated), no objects, `base`/`form` blocked.
 
 ## Running locally / offline
 
@@ -68,6 +68,10 @@ Download `index.html` and open it in a browser. The demo models work fully offli
 - Tests: `tests/fff-r8.test.mjs` (network blocked, 1280 and 360 px, axe 0 violations, duel with demo models).
 
 ## History / Changelog
+
+### 1.3.6 — 2026-10-22
+- The in-browser engines no longer depend on a CDN: WebLLM 0.2.84 and Transformers.js 4.2.0 (with the ONNX Runtime loaders) are in `vendor/`. The WebLLM model libraries (`.wasm`) come from a pinned `binary-mlc-llm-libs` commit and are verified by SHA-256 SRI; the ONNX Runtime `.wasm` is verified by SHA-256 before use (refused on mismatch). The CSP drops `esm.run` and `cdn.jsdelivr.net` from `script-src`.
+- The page is no longer a single file when you use these engines (the engines are in `vendor/`, +6.4 MB). New `NOTICE.md`.
 
 ### 1.3.5 — 2026-10-22
 - fff-kit 1.1.4: touch targets and minimum text size
@@ -118,4 +122,4 @@ Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf.
 
 ARENA is a single-file HTML app for blind head-to-head duels between AI models with a local Elo leaderboard. Models can be cloud APIs (your own key), local servers (e.g. Ollama) or in-browser engines; demo models work offline. Data stays in localStorage (`arena-ff-v1`); requests go straight from the browser to the provider you configure. UI in 8 languages. Licence: MIT (see LICENSE).
 
-Audit: 2026-10-10 (round 2: 2026-10-11, cloud models disabled by default, export with/without keys) — verified the code (network requests, sanitisation of the imported state, rendering of the answers through textContent), accessibility (axe: contrast corrected) and operation (duel with demo models, tabs). The in-browser engines (WebLLM/Transformers.js) are optional and are loaded from esm.run only on request.
+Audit: 2026-10-10 (round 2: 2026-10-11, cloud models disabled by default, export with/without keys) — verified the code (network requests, sanitisation of the imported state, rendering of the answers through textContent), accessibility (axe: contrast corrected) and operation (duel with demo models, tabs). The in-browser engines (WebLLM/Transformers.js) are optional and are loaded from `vendor/` only on request.

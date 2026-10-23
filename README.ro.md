@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.3.5 · **Ultima actualizare:** 2026-10-22
+**Versiune:** 1.3.8 · **Ultima actualizare:** 2026-10-23
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -46,13 +46,13 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 
 - **Stocare locală:** toate datele (modele, chei API, clasament, istoric) se salvează în `localStorage` sub cheia `arena-ff-v1`. Cheile API pot fi ținute separat, doar în `sessionStorage`, din Setări. Dacă `localStorage` nu e disponibil, datele se pierd la închiderea paginii.
 - **Rețea:** aplicația nu are server propriu și nu trimite telemetrie. Cererile de chat pleacă direct din browser către providerul pe care îl configurezi (de exemplu `api.openai.com`, `api.anthropic.com`, `gen.pollinations.ai`, `router.huggingface.co`, un server local `localhost` etc.), cu cheia ta.
-- **CDN:** doar dacă alegi motoarele din browser, modulele sunt importate de la `esm.run` (`@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`) și apoi se descarcă ponderile modelelor (de ex. de la Hugging Face).
+- **CDN:** doar dacă alegi motoarele din browser, modulele se încarcă din `vendor/` (aceeași origine; `@mlc-ai/web-llm@0.2.84`, `@huggingface/transformers@4.2.0`, fără CDN); apoi se descarcă biblioteca modelului WebLLM (`.wasm`, commit `binary-mlc-llm-libs` fixat, verificată prin SRI SHA-256) sau `.wasm`-ul ONNX Runtime (URL jsDelivr fixat, verificat SHA-256, refuzat la nepotrivire) și ponderile modelelor (de ex. de la Hugging Face, fără hash fixat).
 - **Modele cloud dezactivate implicit:** modelele din catalog care nu cer cheie (Kilo Gateway, `api.kilo.ai`: Kilo Auto, GLM-5, MiniMax M2.5, StepFun Step 3.5 Flash) sunt adăugate în listă dar **dezactivate**; activarea lor (comutator în **Setări**) cere confirmare explicită, iar abia apoi un duel le poate trimite promptul. La prima rulare după această versiune, modelele de acest fel rămase active dintr-o versiune anterioară sunt dezactivate o singură dată. Fără acord, doar modelele demo (offline) sunt active.
 - **Chei API:** implicit se păstrează în clar în `localStorage` (`arena-ff-v1`); cu opțiunea „doar în sesiune" (Setări → Datele tale) se păstrează numai în `sessionStorage` (`arena-ff-v1-keys`) și nu se scriu pe disc și, la „Exportă tot”, aplicația întreabă dacă vrei să incluzi cheile (Anulează = export fără chei). Oricine are acces la profilul browserului sau rulează script pe această origine le poate citi.
 - Linkurile din catalog (documentații, console de chei) se deschid doar la click.
 - Modelele demo nu fac niciun apel de rețea.
 
-- **CSP:** pagina are o politică CSP: scripturi doar inline, pe bază de hash SHA-256 (fără `'unsafe-inline'`), plus `esm.run`/`cdn.jsdelivr.net` (motoare în browser), conexiuni `https:`/`http:`/`ws:` (adresele de bază ale providerilor sunt configurate de utilizator, deci nu pot fi enumerate), fără obiecte, `base`/`form` blocate.
+- **CSP:** pagina are o politică CSP: scripturi doar inline, pe bază de hash SHA-256 (fără `'unsafe-inline'`), plus `'self'` (motoarele din browser vin din `vendor/`), conexiuni `https:`/`http:`/`ws:` (adresele de bază ale providerilor sunt configurate de utilizator, deci nu pot fi enumerate), fără obiecte, `base`/`form` blocate.
 
 ## Rulare locală / offline
 
@@ -68,6 +68,10 @@ Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează 
 - Teste: `tests/fff-r8.test.mjs` (rețea blocată, 1280 și 360 px, axe 0 violări, duel cu modele demo).
 
 ## Istoric / Changelog
+
+### 1.3.6 — 2026-10-22
+- Motoarele din browser nu mai depind de un CDN: WebLLM 0.2.84 și Transformers.js 4.2.0 (cu încărcătoarele ONNX Runtime) sunt în `vendor/`. Bibliotecile de model WebLLM (`.wasm`) vin de la un commit `binary-mlc-llm-libs` fixat și sunt verificate prin SRI SHA-256; `.wasm`-ul ONNX Runtime se verifică SHA-256 înainte de folosire (refuzat la nepotrivire). CSP-ul scoate `esm.run` și `cdn.jsdelivr.net` din `script-src`.
+- Pagina nu mai este un singur fișier când folosești aceste motoare (motoarele sunt în `vendor/`, +6,4 MB). `NOTICE.md` nou.
 
 ### 1.3.5 — 2026-10-22
 - fff-kit 1.1.4: ținte tactile și text minim
@@ -118,4 +122,4 @@ Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf.
 
 ARENA este o aplicație într-un singur fișier HTML pentru dueluri „în orb” între modele AI, cu un clasament Elo local. Modelele pot fi API-uri în cloud (cu cheia ta), servere locale (de ex. Ollama) sau motoare din browser; modelele demo funcționează offline. Datele rămân în localStorage (`arena-ff-v1`); cererile pleacă direct din browser către furnizorul configurat. Interfață în 8 limbi. Licență: MIT (vezi LICENSE).
 
-Audit: 2026-10-10 (rundă 2: 2026-10-11, modele cloud dezactivate implicit, export cu/fără chei) — verificat codul (cereri de rețea, sanitizare stare importată, redarea răspunsurilor prin textContent), accesibilitate (axe: contrast corectat) și funcționarea (duel cu modele demo, file). Motoarele din browser (WebLLM/Transformers.js) sunt opționale și se încarcă de la esm.run doar la cerere.
+Audit: 2026-10-10 (rundă 2: 2026-10-11, modele cloud dezactivate implicit, export cu/fără chei) — verificat codul (cereri de rețea, sanitizare stare importată, redarea răspunsurilor prin textContent), accesibilitate (axe: contrast corectat) și funcționarea (duel cu modele demo, file). Motoarele din browser (WebLLM/Transformers.js) sunt opționale și se încarcă din `vendor/` doar la cerere.

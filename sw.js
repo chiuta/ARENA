@@ -1,8 +1,8 @@
 /* fff-pwa v1 · generat de fff-kit/pwa/pwa.mjs · fără cereri externe, fără importScripts */
 'use strict';
-var SLUG = "arena", VERSION = "1.3.5";
+var SLUG = "arena", VERSION = "1.3.8";
 var PREFIX = 'fff-' + SLUG + '-', CACHE = PREFIX + VERSION;   // versiunea nu conține '-', deci sufixul de după ultimul '-' e versiunea
-var SHELL = ['./manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
+var SHELL = ['./vendor/transformers@4.2.0/transformers.min.js', './vendor/onnxruntime-web@1.26.0-dev.20260416-b7804b056c/ort-wasm-simd-threaded.asyncify.mjs', './vendor/onnxruntime-web@1.26.0-dev.20260416-b7804b056c/ort-wasm-simd-threaded.mjs', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil((async function () {
