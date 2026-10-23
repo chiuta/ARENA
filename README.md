@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.3.8 · **Last updated:** 2026-10-23
+**Version:** 1.3.9 · **Last updated:** 2026-10-23
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -68,6 +68,10 @@ Download `index.html` and open it in a browser. The demo models work fully offli
 - Tests: `tests/fff-r8.test.mjs` (network blocked, 1280 and 360 px, axe 0 violations, duel with demo models).
 
 ## History / Changelog
+
+### 1.3.9 — 2026-10-23
+
+- Accessibility: on touch screens (`pointer:coarse`) language, tab, suggestion, mini and chip buttons, selects and search fields are at least 44 px; model toggles get a 44 px touch area. No change on desktop.
 
 ### 1.3.6 — 2026-10-22
 - The in-browser engines no longer depend on a CDN: WebLLM 0.2.84 and Transformers.js 4.2.0 (with the ONNX Runtime loaders) are in `vendor/`. The WebLLM model libraries (`.wasm`) come from a pinned `binary-mlc-llm-libs` commit and are verified by SHA-256 SRI; the ONNX Runtime `.wasm` is verified by SHA-256 before use (refused on mismatch). The CSP drops `esm.run` and `cdn.jsdelivr.net` from `script-src`.
