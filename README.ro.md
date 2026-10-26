@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.3.10 · **Ultima actualizare:** 2026-10-26
+**Versiune:** 2.0.0 · **Ultima actualizare:** 2026-10-26
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -18,7 +18,8 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 
 ## Funcții
 
-- Patru file: **Duel**, **Comparație**, **Clasament**, **Setări**.
+- Cinci file: **Duel**, **Comparație**, **Clasament**, **Evaluare**, **Setări**.
+- **Evaluare (2.0):** seturi de prompturi (o linie = un prompt, opțional `categorie | prompt`), sesiuni de dueluri oarbe consecutive, clasament Elo pe categorii (recalculat din istoric) și raport JSON exportabil (fără chei API și fără textele prompturilor). Totul local.
 - Duel orb: butoane „A e mai bun”, „B e mai bun”, „Egalitate”, „Ambele slabe”; după vot se dezvăluie modelele.
 - Comparație: alegi tu cei doi combatanți, fără vot și fără Elo.
 - Clasament Elo local (pornește de la 1000, K=32; egalitatea și „ambele slabe” contează ca remiză), cu buton „Resetează clasamentul”.

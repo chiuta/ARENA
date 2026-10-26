@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.3.10 · **Last updated:** 2026-10-26
+**Version:** 2.0.0 · **Last updated:** 2026-10-26
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -18,6 +18,7 @@ ARENA is a single-file app (`index.html`, vanilla JavaScript) in which you compa
 
 ## Features
 
+- **Evaluation (2.0):** prompt sets (one line = one prompt, optionally `category | prompt`), consecutive blind-duel sessions, per-category Elo leaderboard (recomputed from history) and an exportable JSON report (no API keys, no prompt texts). All local.
 - Four tabs: **Duel**, **Comparison**, **Leaderboard**, **Settings**.
 - Blind duel: buttons "A is better", "B is better", "Tie", "Both bad"; after the vote the models are revealed.
 - Comparison: you choose the two combatants yourself, with no vote and no Elo.

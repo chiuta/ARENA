@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 1.3.10 · **Última atualização:** 2026-10-26
+**Versão:** 2.0.0 · **Última atualização:** 2026-10-26
 
 Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -18,6 +18,7 @@ O ARENA é uma aplicação de um único ficheiro (`index.html`, JavaScript puro)
 
 ## Funcionalidades
 
+- **Evaluation (2.0):** prompt sets (one line = one prompt, optionally `category | prompt`), consecutive blind-duel sessions, per-category Elo leaderboard (recomputed from history) and an exportable JSON report (no API keys, no prompt texts). All local.
 - Quatro separadores: **Duelo**, **Comparação**, **Classificação**, **Definições**.
 - Duelo às cegas: botões «A é melhor», «B é melhor», «Empate», «Ambos maus»; após o voto os modelos são revelados.
 - Comparação: escolhe você os dois combatentes, sem voto e sem Elo.
