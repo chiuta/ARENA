@@ -2,11 +2,11 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 2.1.0 · **Last updated:** 2026-10-27
+**Version:** 2.2.0 · **Last updated:** 2026-10-27
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
-**Status:** stable (2.1.0). The optional password encryption of API keys and the demo prompt sets are new; the encryption **has not been audited by a third party**.
+**Status:** stable (2.2.0). The optional password encryption of API keys and the demo prompt sets are new; the encryption **has not been audited by a third party**.
 
 **Offline:** partial. The interface loads offline after the first visit and the demo models and the in-browser engines work without a network; cloud models and local servers need a connection.
 
@@ -71,6 +71,7 @@ In **Settings → Your data** there is a "Password protection" card. **Off by de
 - The app asks for the password when it opens (you can dismiss the dialog and unlock later from Settings). Unlocked keys live in memory only; "Lock now" drops them. "Delete all data" also removes the vault. The unencrypted kit backup never contains the vault.
 - **Honest limits:** the component is small and **has not been audited by a third party**; the password cannot be recovered (if you forget it, enter the keys again); it does not protect against a malicious script or extension running in the page while the keys are unlocked; a short password can be guessed offline. If you tick "Include API keys" in the export, the keys leave the vault in clear text in that file: your choice and your responsibility. The card's text exists in Romanian and English (other languages fall back to English).
 - Tests: `node tests/keyvault-core.test.mjs` and `node tests/keyvault-ui.test.mjs`.
+- Languages: the card and dialogs are available in all 8 interface languages (RO and EN written by hand; FR/IT/ES/PT/DE/HU are **machine translations, not verified by native speakers**). Test: `node tests/keyvault-i18n.test.mjs`.
 
 ## Demo prompt sets in Romanian (since 2.1.0)
 
