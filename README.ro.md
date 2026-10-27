@@ -2,11 +2,11 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 2.1.0 · **Ultima actualizare:** 2026-10-27
+**Versiune:** 2.2.0 · **Ultima actualizare:** 2026-10-27
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
-**Stare:** stabilă (2.1.0). Criptarea opțională cu parolă a cheilor API și seturile demonstrative de prompturi sunt noi; criptarea **nu a fost auditată de un terț**.
+**Stare:** stabilă (2.2.0). Criptarea opțională cu parolă a cheilor API și seturile demonstrative de prompturi sunt noi; criptarea **nu a fost auditată de un terț**.
 
 **Offline:** parțial. Interfața se încarcă offline după prima vizită, iar modelele demo și motoarele din browser merg fără rețea; modelele cloud și serverele locale cer conexiune.
 
@@ -71,6 +71,7 @@ Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează 
 - La deschidere aplicația cere parola (poți închide dialogul și debloca mai târziu din Setări). Cheile deblocate stau doar în memorie; „Blochează acum” le scoate. „Șterge toate datele” șterge și seiful. Copia de siguranță necriptată din kit nu conține niciodată seiful.
 - **Limite spuse deschis:** componenta e mică și **nu a fost auditată de un terț**; parola nu se poate recupera (dacă o uiți, reintroduci cheile); nu protejează împotriva unui script rău-intenționat sau a unei extensii care rulează în pagină cât timp cheile sunt deblocate; o parolă scurtă poate fi ghicită offline. Dacă bifezi „Include cheile API” la export, cheile ies din seif în clar în acel fișier: alegerea și responsabilitatea ta. Textele cardului există în română și engleză (celelalte limbi folosesc engleza).
 - Teste: `node tests/keyvault-core.test.mjs` și `node tests/keyvault-ui.test.mjs`.
+- Limbi: cardul și dialogurile există în toate cele 8 limbi ale interfeței (RO și EN scrise de mână; FR/IT/ES/PT/DE/HU sunt **traduceri automate, neverificate de vorbitori nativi**). Test: `node tests/keyvault-i18n.test.mjs`.
 
 ## Seturi demonstrative de prompturi în română (din 2.1.0)
 
