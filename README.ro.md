@@ -2,9 +2,13 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 2.0.0 · **Ultima actualizare:** 2026-10-26
+**Versiune:** 2.1.0 · **Ultima actualizare:** 2026-10-27
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
+
+**Stare:** stabilă (2.1.0). Criptarea opțională cu parolă a cheilor API și seturile demonstrative de prompturi sunt noi; criptarea **nu a fost auditată de un terț**.
+
+**Offline:** parțial. Interfața se încarcă offline după prima vizită, iar modelele demo și motoarele din browser merg fără rețea; modelele cloud și serverele locale cer conexiune.
 
 Dueluri oarbe între modele AI, cu clasament Elo local — într-un singur fișier HTML.
 
@@ -58,6 +62,27 @@ ARENA este o aplicație single-file (`index.html`, JavaScript vanilla) în care 
 ## Rulare locală / offline
 
 Descarcă `index.html` și deschide-l în browser. Modelele demo funcționează complet offline. Providerii cloud, importul motoarelor WebLLM/Transformers.js și sincronizarea catalogului cer internet; Ollama sau alt server local funcționează cu rețeaua locală, dacă serverul acceptă apeluri din browser (CORS).
+
+## Criptare cu parolă a cheilor API (din 2.1.0, opțională)
+
+În **Setări → Datele tale** există un card „Protecție cu parolă”. **Implicit e oprită**: cheile funcționează ca înainte (`localStorage` în clar sau `sessionStorage`, cu opțiunea „doar în sesiune”).
+
+- Când o activezi, cheile tuturor modelelor sunt criptate cu **AES-256-GCM**, cu o cheie derivată din parola ta prin **PBKDF2-SHA256, 600 000 de iterații și sare aleatoare de 16 octeți**, și păstrate într-un singur plic în `arena-ff-v1-vault`. `arena-ff-v1` nu mai conține atunci chei, iar copia din `sessionStorage` este ștearsă. Copiile vechi se înlocuiesc abia după ce plicul a fost citit înapoi și decriptat cu succes (migrare fără pierdere). „Dezactivează protecția” readuce cheile, după confirmarea parolei.
+- La deschidere aplicația cere parola (poți închide dialogul și debloca mai târziu din Setări). Cheile deblocate stau doar în memorie; „Blochează acum” le scoate. „Șterge toate datele” șterge și seiful. Copia de siguranță necriptată din kit nu conține niciodată seiful.
+- **Limite spuse deschis:** componenta e mică și **nu a fost auditată de un terț**; parola nu se poate recupera (dacă o uiți, reintroduci cheile); nu protejează împotriva unui script rău-intenționat sau a unei extensii care rulează în pagină cât timp cheile sunt deblocate; o parolă scurtă poate fi ghicită offline. Dacă bifezi „Include cheile API” la export, cheile ies din seif în clar în acel fișier: alegerea și responsabilitatea ta. Textele cardului există în română și engleză (celelalte limbi folosesc engleza).
+- Teste: `node tests/keyvault-core.test.mjs` și `node tests/keyvault-ui.test.mjs`.
+
+## Seturi demonstrative de prompturi în română (din 2.1.0)
+
+În fila **Evaluare**, „Adaugă seturile demonstrative (RO)” copiază în lista ta trei seturi cu ID-uri fixe (`demo-ro-1`, `demo-ro-2`, `demo-ro-3`), ca persoane diferite (sau tu, la date diferite) să poată compara modelele pe **aceleași prompturi**:
+
+| ID | Conținut (câte 10 prompturi, fiecare cu categorie) |
+|---|---|
+| `demo-ro-1` | Cunoștințe și raționament: geografie, istorie, știință, logică, matematică, cultură, sănătate, incertitudine (întrebare-capcană), etică, conversii |
+| `demo-ro-2` | Scriere și limba română: corectare, rezumat, e-mail, versuri, traducere, ton, gramatică, proverb, titluri, constrângere |
+| `demo-ro-3` | Cod, date și instrucțiuni: Python, SQL, regex, JSON strict, pași numerotați, calcul, probabilități, depanare, siguranță |
+
+**Sunt seturi demonstrative**: scurte, scrise de mână, nu un benchmark validat statistic. Sunt copiate, deci le poți edita sau șterge; butonul „Exportă raportul (JSON)” din fila Evaluare înregistrează setul și rezultatele. Pentru repetabilitate păstrează aceleași versiuni de model, aceleași seturi și, unde furnizorul permite, aceeași temperatură: aplicația nu controlează aleatoriul modelelor.
 
 ## Funcții noi (v1.1.0)
 

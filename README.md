@@ -2,9 +2,13 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 2.0.0 · **Last updated:** 2026-10-26
+**Version:** 2.1.0 · **Last updated:** 2026-10-27
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
+
+**Status:** stable (2.1.0). The optional password encryption of API keys and the demo prompt sets are new; the encryption **has not been audited by a third party**.
+
+**Offline:** partial. The interface loads offline after the first visit and the demo models and the in-browser engines work without a network; cloud models and local servers need a connection.
 
 Blind duels between AI models, with a local Elo leaderboard — in a single HTML file.
 
@@ -58,6 +62,27 @@ ARENA is a single-file app (`index.html`, vanilla JavaScript) in which you compa
 ## Running locally / offline
 
 Download `index.html` and open it in a browser. The demo models work fully offline. The cloud providers, the import of the WebLLM/Transformers.js engines and the catalogue synchronisation need internet; Ollama or another local server works over the local network, if the server accepts calls from the browser (CORS).
+
+## Password encryption for API keys (since 2.1.0, optional)
+
+In **Settings → Your data** there is a "Password protection" card. **Off by default**: keys keep working as before (plain `localStorage`, or `sessionStorage` with the "session only" option).
+
+- When you turn it on, the keys of all models are encrypted with **AES-256-GCM**, with a key derived from your password through **PBKDF2-SHA256, 600,000 iterations and a random 16-byte salt**, and stored as one envelope in `arena-ff-v1-vault`. `arena-ff-v1` then contains no keys and the `sessionStorage` copy is removed. The old copies are replaced only after the envelope has been read back and decrypted successfully (migration without loss). "Turn off protection" puts the keys back after you confirm the password.
+- The app asks for the password when it opens (you can dismiss the dialog and unlock later from Settings). Unlocked keys live in memory only; "Lock now" drops them. "Delete all data" also removes the vault. The unencrypted kit backup never contains the vault.
+- **Honest limits:** the component is small and **has not been audited by a third party**; the password cannot be recovered (if you forget it, enter the keys again); it does not protect against a malicious script or extension running in the page while the keys are unlocked; a short password can be guessed offline. If you tick "Include API keys" in the export, the keys leave the vault in clear text in that file: your choice and your responsibility. The card's text exists in Romanian and English (other languages fall back to English).
+- Tests: `node tests/keyvault-core.test.mjs` and `node tests/keyvault-ui.test.mjs`.
+
+## Demo prompt sets in Romanian (since 2.1.0)
+
+In the **Evaluation** tab, "Add the demo sets (RO)" copies three sets with fixed IDs (`demo-ro-1`, `demo-ro-2`, `demo-ro-3`) into your list, so different people (or you, on different dates) can compare models on the **same prompts**:
+
+| ID | Content (10 prompts each, each with a category) |
+|---|---|
+| `demo-ro-1` | Knowledge and reasoning: geography, history, science, logic, maths, culture, health, uncertainty (a trap question), ethics, unit conversion |
+| `demo-ro-2` | Writing and the Romanian language: correction, summary, e-mail, verse, translation, tone, grammar, proverb, titles, constraint |
+| `demo-ro-3` | Code, data and instructions: Python, SQL, regex, strict JSON, numbered steps, arithmetic, probability, debugging, safety |
+
+**These are demonstration sets**: short, written by hand, not a statistically validated benchmark. They are copied, so you can edit or delete them; the "Export report (JSON)" button of the Evaluation tab records the set and the results. For repeatability keep the same model versions, the same sets and, where the provider allows it, the same temperature: the app does not control the models' randomness.
 
 ## New features (v1.1.0)
 
