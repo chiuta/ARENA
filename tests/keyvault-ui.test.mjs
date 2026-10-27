@@ -1,0 +1,46 @@
+// Rulează din directorul aplicației: node tests/keyvault-ui.test.mjs  (PW_ROOT / CHROMIUM_PATH opționale). Rețeaua e blocată.
+import {createRequire} from "module"; import {fileURLToPath} from "url"; import path from "path";
+const require = createRequire(process.env.PW_ROOT || import.meta.url); const {chromium} = require("playwright");
+const here = path.dirname(fileURLToPath(import.meta.url)); const URL_ = "file://" + path.resolve(here, "../index.html");
+let fail = 0; const ok = (c, m, x) => { console.log((c ? "  ok  " : "FAIL  ") + m + (!c && x !== undefined ? "  -> " + JSON.stringify(x) : "")); if (!c) fail++; };
+const PW = "parola-de-test-lunga", KEY = "sk-arena-TEST-1234567890";
+const browser = await chromium.launch({executablePath: process.env.CHROMIUM_PATH || undefined, args: ["--no-sandbox"]});
+const ctx = await browser.newContext({viewport: {width: 1100, height: 900}, locale: "ro-RO"}); const errs = [];
+await ctx.route(/^https?:/, r => r.abort());
+const p = await ctx.newPage(); p.on("pageerror", e => errs.push(e.message));
+async function load() { await p.goto(URL_); await p.waitForFunction(() => window.KV && typeof S === "object" && document.querySelector("#kv-host .kv-card")); }
+const ls = k => p.evaluate(k => localStorage.getItem(k), k);
+const keyT1 = () => p.evaluate(() => (S.models.find(m => m.id === "t1") || {}).apiKey);
+await load();
+await p.evaluate(k => { S.models.push({id: "t1", name: "T", provider: "openai", model: "x", baseUrl: "https://exemplu.invalid/v1", apiKey: k, enabled: false, demo: false}); saveState(); }, KEY);
+ok((await ls("arena-ff-v1")).includes(KEY), "înainte: cheia e în localStorage (în clar, ca până acum)");
+await p.click('#nav button[data-tab="set"]');
+await p.click("#kv-host button:has-text('Activează')");
+await p.fill(".kv-box label:nth-of-type(1) input", PW); await p.fill(".kv-box label:nth-of-type(2) input", PW); await p.click(".kv-box button[type=submit]");
+await p.waitForFunction(() => /Protecție activată/.test(document.querySelector("#kv-host").textContent), null, {timeout: 30000});
+const vault = await ls("arena-ff-v1-vault");
+ok(vault && JSON.parse(vault).it >= 600000 && !vault.includes(KEY), "seif criptat, ≥600000 iterații, fără text clar");
+ok(!(await ls("arena-ff-v1")).includes(KEY) && await p.evaluate(() => sessionStorage.getItem("arena-ff-v1-keys")) === null, "cheia dispare din localStorage și sessionStorage");
+ok(await keyT1() === KEY, "cheia rămâne utilizabilă în sesiune");
+await load(); await p.waitForSelector(".kv-ov", {timeout: 10000}); ok(true, "la pornire se cere parola");
+ok(await keyT1() === undefined || await keyT1() === "", "blocat: cheia nu e în memorie");
+await p.fill(".kv-box input", "parola-gresita-xx"); await p.click(".kv-box button[type=submit]");
+await p.waitForFunction(() => /Parolă greșită/.test(document.querySelector(".kv-box .kv-st").textContent), null, {timeout: 30000}); ok(true, "parola greșită respinsă");
+await p.fill(".kv-box input", PW); await p.click(".kv-box button[type=submit]"); await p.waitForSelector(".kv-ov", {state: "detached", timeout: 30000});
+ok(await keyT1() === KEY, "după deblocare cheia revine pe modelul salvat pe disc fără cheie");
+await p.click('#nav button[data-tab="set"]');
+await p.click("#kv-host button:has-text('Dezactivează')"); await p.fill(".kv-box input", PW); await p.click(".kv-box button[type=submit]");
+await p.waitForFunction(() => /Protecție dezactivată/.test(document.querySelector("#kv-host").textContent), null, {timeout: 30000});
+ok(await ls("arena-ff-v1-vault") === null && (await ls("arena-ff-v1")).includes(KEY), "dezactivare: seiful dispare, cheia revine în stocarea obișnuită");
+await load(); ok(await p.locator(".kv-ov").count() === 0 && await keyT1() === KEY, "reîncărcare fără seif: fără parolă, cheia e acolo");
+// seturi demonstrative
+await p.click('#nav button[data-tab="eval"]');
+const n0 = await p.evaluate(() => (S.sets || []).length);
+await p.click("#ev-demo");
+const sets = await p.evaluate(() => (S.sets || []).filter(q => /^demo-ro-/.test(q.id)).map(q => [q.id, q.name, q.items.length, q.items.every(i => i.p && i.c)]));
+ok(sets.length === 3 && sets.every(s => s[2] === 10 && s[3]) && (await p.evaluate(() => S.sets.length)) === n0 + 3, "3 seturi demonstrative × 10 prompturi adăugate", sets);
+await p.click("#ev-demo"); ok((await p.evaluate(() => S.sets.length)) === n0 + 3 && /deja/.test(await p.textContent("#toast")), "a doua apăsare nu dublează seturile");
+ok(await p.evaluate(() => [...document.querySelectorAll("#ev-sel option")].filter(o => /Set demonstrativ RO-/.test(o.textContent)).length) === 3, "seturile apar în listă");
+await p.selectOption("#ev-sel", "demo-ro-1"); ok((await p.inputValue("#ev-items")).split("\n").length === 10 && /geografie \| Care este capitala/.test(await p.inputValue("#ev-items")), "setul se încarcă în editor (categorie | prompt)");
+ok(errs.length === 0, "fără erori de pagină", errs);
+await browser.close(); console.log(fail ? "EȘEC: " + fail : "TOATE OK"); process.exit(fail ? 1 : 0);
