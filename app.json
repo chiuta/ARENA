@@ -28,8 +28,8 @@
   "storageKeys": [
     "arena-ff-v1"
   ],
-  "sizeBytes": 477863,
-  "sha256": "4a8d4c945c2c2c8cca3fae638d0d567ca684eb66e712196fb5e5d238c61050a9",
+  "sizeBytes": 477878,
+  "sha256": "ad4511e0b39a88f7407cd00ef75f6f8756b59acd652853df8895f6f494976300",
   "csp": {
     "present": true,
     "directives": {

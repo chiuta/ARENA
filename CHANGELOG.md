@@ -7,6 +7,9 @@
 - Rămâne `connect-src https: http:` intenționat: endpoint-urile proprii și serverele din rețeaua locală (adrese care nu pot fi listate în CSP) trebuie să funcționeze. Compromisul e documentat; o listă albă strictă ar rupe această funcție.
 - `app.json`/`fff-info`/`sw.js` regenerate cu fff-kit (`release`), `check` strict trece, testele `keyvault-core` și `eval-sets` trec.
 
+### Interfață
+- Selectorul de limbă (8 butoane de 44 px pe ecrane tactile) trece pe mai multe rânduri sub 640 px; înainte pagina avea 10 px de scroll orizontal la 360 px.
+
 ## 2.2.0 — 2026-10-27
 
 ### Adăugat
