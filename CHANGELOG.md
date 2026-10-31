@@ -1,5 +1,12 @@
 # Jurnal de modificări
 
+## 2.2.1 — 2026-10-31
+
+### Securitate
+- **CSP strâns:** `connect-src` nu mai permite `ws:`/`wss:` și `img-src` nu mai permite `https:`. Aplicația nu folosește WebSocket, EventSource sau imagini la distanță, deci funcționalitatea nu se schimbă; scade suprafața de exfiltrare dacă o pagină ar fi compromisă.
+- Rămâne `connect-src https: http:` intenționat: endpoint-urile proprii și serverele din rețeaua locală (adrese care nu pot fi listate în CSP) trebuie să funcționeze. Compromisul e documentat; o listă albă strictă ar rupe această funcție.
+- `app.json`/`fff-info`/`sw.js` regenerate cu fff-kit (`release`), `check` strict trece, testele `keyvault-core` și `eval-sets` trec.
+
 ## 2.2.0 — 2026-10-27
 
 ### Adăugat
