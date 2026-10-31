@@ -2,8 +2,8 @@
   "schema": 1,
   "slug": "arena",
   "name": "Arena fără frontiere",
-  "version": "2.2.0",
-  "updated": "2026-10-27",
+  "version": "2.2.1",
+  "updated": "2026-10-31",
   "description": "Arena fără frontiere — dueluri oarbe între modele AI, clasament Elo, totul offline-first, într-un singur fișier. Fișierul e al tău.",
   "egress": [
     {
@@ -14,19 +14,6 @@
     },
     {
       "host": "https:(orice gazdă)",
-      "via": [
-        "csp:connect-src",
-        "csp:img-src"
-      ]
-    },
-    {
-      "host": "ws:(orice gazdă)",
-      "via": [
-        "csp:connect-src"
-      ]
-    },
-    {
-      "host": "wss:(orice gazdă)",
       "via": [
         "csp:connect-src"
       ]
@@ -41,18 +28,18 @@
   "storageKeys": [
     "arena-ff-v1"
   ],
-  "sizeBytes": 478029,
-  "sha256": "bf0a5ceeed2606fd0de91bf96a875002dd6fa9ed089a269981c0a65ff2058f97",
+  "sizeBytes": 477878,
+  "sha256": "ad4511e0b39a88f7407cd00ef75f6f8756b59acd652853df8895f6f494976300",
   "csp": {
     "present": true,
     "directives": {
       "default-src": "'none'",
       "script-src": "'self' 'wasm-unsafe-eval' sha256×6",
       "style-src": "'unsafe-inline'",
-      "img-src": "'self' data: blob: https:",
+      "img-src": "'self' data: blob:",
       "font-src": "data:",
       "media-src": "blob: data:",
-      "connect-src": "'self' blob: https: http: ws: wss:",
+      "connect-src": "'self' blob: https: http:",
       "worker-src": "'self' blob:",
       "object-src": "'none'",
       "base-uri": "'none'",
@@ -60,7 +47,7 @@
       "manifest-src": "'self'"
     },
     "scriptInline": "hash",
-    "connect": "'self' blob: https: http: ws: wss:"
+    "connect": "'self' blob: https: http:"
   },
   "features": {
     "export": true,
