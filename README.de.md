@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 2.2.2 · **Zuletzt aktualisiert:** 2026-11-02
+**Version:** 2.2.3 · **Zuletzt aktualisiert:** 2026-11-02
 
 Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -25,7 +25,7 @@ ARENA ist eine Anwendung in einer einzigen Datei (`index.html`, reines JavaScrip
 - Lokale Elo-Rangliste (beginnt bei 1000, K=32; Unentschieden und „beide schlecht“ zählen als Remis), mit einer Schaltfläche „Rangliste zurücksetzen“.
 - Einstellungen: Modelle hinzufügen/bearbeiten/löschen (Name, Anbieter, Modell-ID, Base URL, API-Schlüssel), Schaltfläche „Testen“, „Alle aktiven Modelle testen“.
 - Anbietertypen: OpenAI-kompatibel, Anthropic, Ollama (lokal), Pollinations (Schlüssel optional), WebLLM (WebGPU), im Browser integrierte KI (Gemini Nano), Transformers.js, dazu Demo-Modelle.
-- Ein Katalog einbindbarer KIs (Stand 29. Juli 2026, 181 Einträge, 68 Anbieter laut Text in der Anwendung; am 11. Oktober 2026 nicht erneut geprüft, siehe den Hinweis in der Anwendung), mit Filtern, „+ Alle hinzufügen“ und „⟳“ zum Synchronisieren der Modellliste vom Anbieter.
+- Ein Katalog einbindbarer KIs (Stand 29. Juli 2026, 176 Einträge, 65 Anbieter, am 2. November 2026 aus dem Katalog im Code gezählt), mit Filtern, „+ Alle hinzufügen“ und „⟳“ zum Synchronisieren der Modellliste vom Anbieter.
 - „Alles exportieren (JSON)“, „Importieren“, „Alles löschen“.
 - Tastenkürzel: `1` / `2` / `3` / `4` stimmen ab (A, B, Unentschieden, beide schlecht), wenn Sie sich nicht in einem Textfeld befinden; `Strg`/`Cmd`+`Eingabe` im Textfeld startet das Duell oder den Vergleich.
 - „Rangliste exportieren (CSV)“ (im Reiter Rangliste): lokal erzeugte Datei; Namen, die mit `=`, `+`, `-`, `@` beginnen, werden neutralisiert.

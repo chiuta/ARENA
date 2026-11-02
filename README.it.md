@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · **Italiano** · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versione:** 2.2.2 · **Ultimo aggiornamento:** 2026-11-02
+**Versione:** 2.2.3 · **Ultimo aggiornamento:** 2026-11-02
 
 Lingue dell'interfaccia: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -25,7 +25,7 @@ ARENA è un'applicazione in un unico file (`index.html`, JavaScript puro) in cui
 - Classifica Elo locale (parte da 1000, K=32; il pareggio e «entrambi scarsi» contano come patta), con un pulsante «Reimposta la classifica».
 - Impostazioni: aggiunta/modifica/eliminazione di modelli (nome, provider, ID del modello, Base URL, chiave API), pulsante «Prova», «Prova tutti i modelli attivi».
 - Tipi di provider: compatibili OpenAI, Anthropic, Ollama (locale), Pollinations (chiave facoltativa), WebLLM (WebGPU), IA integrata nel browser (Gemini Nano), Transformers.js, più modelli dimostrativi.
-- Un catalogo di IA integrabili (datato 29 luglio 2026, 181 voci, 68 provider secondo il testo nell'applicazione; non riverificato all'11 ottobre 2026, vedi la nota nell'applicazione), con filtri, «+ Aggiungi tutti» e «⟳» per sincronizzare l'elenco dei modelli dal provider.
+- Un catalogo di IA integrabili (datato 29 luglio 2026, 176 voci, 65 provider, contati nel catalogo del codice il 2 novembre 2026), con filtri, «+ Aggiungi tutti» e «⟳» per sincronizzare l'elenco dei modelli dal provider.
 - «Esporta tutto (JSON)», «Importa», «Elimina tutto».
 - Scorciatoie da tastiera: `1` / `2` / `3` / `4` votano (A, B, pareggio, entrambi scarsi) quando non sei in un campo di testo; `Ctrl`/`Cmd`+`Invio` nel campo di testo avvia il duello o il confronto.
 - «Esporta la classifica (CSV)» (nella scheda Classifica): file generato localmente; i nomi che iniziano con `=`, `+`, `-`, `@` vengono neutralizzati.

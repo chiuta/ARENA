@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 2.2.2 · **Last updated:** 2026-11-02
+**Version:** 2.2.3 · **Last updated:** 2026-11-02
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -29,7 +29,7 @@ ARENA is a single-file app (`index.html`, vanilla JavaScript) in which you compa
 - Local Elo leaderboard (starts at 1000, K=32; a tie and "both bad" count as a draw), with a "Reset leaderboard" button.
 - Settings: add/edit/delete models (name, provider, model ID, Base URL, API key), a "Test" button, "Test all active models".
 - Provider types: OpenAI-compatible, Anthropic, Ollama (local), Pollinations (optional key), WebLLM (WebGPU), AI built into the browser (Gemini Nano), Transformers.js, plus demo models.
-- A catalogue of integrable AIs (dated 29 July 2026, 181 entries, 68 providers according to the text in the app; not re-verified on 11 October 2026, see the note in the app), with filters, "+ Add all" and "⟳" to synchronise the model list from the provider.
+- A catalogue of integrable AIs (dated 29 July 2026, 176 entries, 65 providers, counted from the catalogue in the code on 2 November 2026; the catalogue data dated 29 July 2026), with filters, "+ Add all" and "⟳" to synchronise the model list from the provider.
 - "Export everything (JSON)", "Import", "Delete everything".
 - Keyboard shortcuts: `1` / `2` / `3` / `4` vote (A, B, tie, both bad) when you are not in a text field; `Ctrl`/`Cmd`+`Enter` in the text field starts the duel or the comparison.
 - "Export leaderboard (CSV)" (in the Leaderboard tab): a locally generated file; names that begin with `=`, `+`, `-`, `@` are neutralised.

@@ -1,5 +1,11 @@
 # Jurnal de modificări
 
+## 2.2.3 — 2026-11-02
+
+### Surse actualizate (runda 2, verificat la 2026-11-02)
+- Numărătoarea din text: „181 AI-uri / 68 provideri” -> 176 modele / 65 provideri (numărate din catalogul din cod), în cele 8 limbi și în README-uri.
+- Nota Cerebras: „Free tier, ~1M tokeni/zi” nu mai este confirmată; cerebras.ai/pricing menționează un credit promoțional unic de 5 $ (metodă de plată necesară, expiră în 30 de zile).
+
 ## 2.2.2 — 2026-11-02
 
 ### Surse actualizate (catalogul de provideri, verificat parțial la 2026-11-02)
