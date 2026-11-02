@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · **Français** · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version :** 2.2.0 · **Dernière mise à jour :** 2026-10-27
+**Version :** 2.2.3 · **Dernière mise à jour :** 2026-11-02
 
 Langues de l'interface : **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -25,7 +25,7 @@ ARENA est une application en un seul fichier (`index.html`, JavaScript natif) da
 - Classement Elo local (part de 1000, K=32 ; l'égalité et « les deux sont mauvais » comptent comme un match nul), avec un bouton « Réinitialiser le classement ».
 - Paramètres : ajout/modification/suppression de modèles (nom, fournisseur, ID du modèle, Base URL, clé API), bouton « Tester », « Tester tous les modèles actifs ».
 - Types de fournisseurs : compatibles OpenAI, Anthropic, Ollama (local), Pollinations (clé facultative), WebLLM (WebGPU), IA intégrée au navigateur (Gemini Nano), Transformers.js, plus des modèles de démonstration.
-- Un catalogue d'IA intégrables (daté du 29 juillet 2026, 181 entrées, 68 fournisseurs d'après le texte de l'application ; non revérifié au 11 octobre 2026, voir la note dans l'application), avec filtres, « + Tout ajouter » et « ⟳ » pour synchroniser la liste des modèles auprès du fournisseur.
+- Un catalogue d'IA intégrables (daté du 29 juillet 2026, 176 entrées, 65 fournisseurs, comptés dans le catalogue du code le 2 novembre 2026), avec filtres, « + Tout ajouter » et « ⟳ » pour synchroniser la liste des modèles auprès du fournisseur.
 - « Tout exporter (JSON) », « Importer », « Tout supprimer ».
 - Raccourcis clavier : `1` / `2` / `3` / `4` votent (A, B, égalité, les deux sont mauvais) lorsque vous n'êtes pas dans un champ de texte ; `Ctrl`/`Cmd`+`Entrée` dans le champ de texte lance le duel ou la comparaison.
 - « Exporter le classement (CSV) » (dans l'onglet Classement) : fichier généré localement ; les noms commençant par `=`, `+`, `-`, `@` sont neutralisés.

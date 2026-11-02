@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 2.2.0 · **Utolsó frissítés:** 2026-10-27
+**Verzió:** 2.2.3 · **Utolsó frissítés:** 2026-11-02
 
 A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -25,7 +25,7 @@ Az ARENA egyfájlos alkalmazás (`index.html`, vanília JavaScript), amelyben k�
 - Helyi Elo-ranglista (1000-ről indul, K=32; a döntetlen és a „mindkettő gyenge” döntetlennek számít), „Ranglista visszaállítása” gombbal.
 - Beállítások: modellek hozzáadása/szerkesztése/törlése (név, szolgáltató, modellazonosító, Base URL, API-kulcs), „Teszt” gomb, „Az összes aktív modell tesztelése”.
 - Szolgáltatótípusok: OpenAI-kompatibilis, Anthropic, Ollama (helyi), Pollinations (opcionális kulcs), WebLLM (WebGPU), a böngészőbe épített MI (Gemini Nano), Transformers.js, valamint demómodellek.
-- Beépíthető MI-k katalógusa (2026. július 29-i dátummal, 181 bejegyzés, az alkalmazásbeli szöveg szerint 68 szolgáltató; 2026. október 11-én nem ellenőrizték újra, lásd az alkalmazásbeli megjegyzést), szűrőkkel, „+ Összes hozzáadása” és „⟳” gombbal a modelllista szinkronizálásához a szolgáltatótól.
+- Beépíthető MI-k katalógusa (2026. július 29-i dátummal, 176 bejegyzés, 65 szolgáltató, a kódbeli katalógusból megszámolva 2026. november 2-án), szűrőkkel, „+ Összes hozzáadása” és „⟳” gombbal a modelllista szinkronizálásához a szolgáltatótól.
 - „Minden exportálása (JSON)”, „Importálás”, „Minden törlése”.
 - Gyorsbillentyűk: az `1` / `2` / `3` / `4` szavaz (A, B, döntetlen, mindkettő gyenge), ha nem szövegmezőben vagy; a `Ctrl`/`Cmd`+`Enter` a szövegmezőben elindítja a párbajt vagy az összehasonlítást.
 - „Ranglista exportálása (CSV)” (a Ranglista lapon): helyben generált fájl; az `=`, `+`, `-`, `@` karakterrel kezdődő neveket semlegesíti.

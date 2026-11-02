@@ -1,5 +1,23 @@
 # Jurnal de modificări
 
+## 2.2.3 — 2026-11-02
+
+### Surse actualizate (runda 2, verificat la 2026-11-02)
+- Numărătoarea din text: „181 AI-uri / 68 provideri” -> 176 modele / 65 provideri (numărate din catalogul din cod), în cele 8 limbi și în README-uri.
+- Nota Cerebras: „Free tier, ~1M tokeni/zi” nu mai este confirmată; cerebras.ai/pricing menționează un credit promoțional unic de 5 $ (metodă de plată necesară, expiră în 30 de zile).
+
+## 2.2.2 — 2026-11-02
+
+### Surse actualizate (catalogul de provideri, verificat parțial la 2026-11-02)
+- **GitHub Models eliminat din catalog:** serviciul a fost retras pe 30 iulie 2026 (docs.github.com, „costs for GitHub Models”). Intrările deja salvate de utilizatori nu se șterg.
+- **Anthropic:** adăugate `claude-fable-5-1`, `claude-opus-5-5`, `claude-haiku-5-5` (platform.claude.com, „Models overview”); modelele 4.x rămân (încă active).
+- **OpenAI:** adăugate `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6.1-terra`, `gpt-6-luna`; scoase `gpt-5-mini` și `gpt-5-nano` (închidere 2026-12-11, developers.openai.com/api/docs/deprecations); `gpt-5.1` rămâne (până la 2027-04-01).
+- **Groq:** scoase `llama-3.3-70b-versatile` și `llama-3.1-8b-instant` (închise 2026-08-16), `groq/compound` și `groq/compound-mini` (închise 2026-09-21); `qwen/qwen3.6-27b` înlocuit cu `qwen/qwen3.8-27b` (console.groq.com/docs/deprecations).
+- **Cerebras:** scoase `zai-glm-4.7` (retras 2026-08-26) și `gemma-4-31b` (scos din Shared Inference 2026-09-03); adăugat `qwen-3.8-27b`.
+- **Google AI Studio:** adăugat `gemini-3.8-flash` (nivel gratuit, ai.google.dev/pricing).
+- Verificat fără modificare: limitele OpenRouter (20 cereri/min, 50/zi, 1000/zi după 10$) și limita Cohere trial (20/min, 1000/lună).
+- Neverificat (rămâne neschimbat): restul providerilor și limitele lor gratuite; numărătoarea „181 AI-uri / 68 provideri la 29 iulie 2026” din text nu a fost recalculată.
+
 ## 2.2.1 — 2026-10-31
 
 ### Securitate
