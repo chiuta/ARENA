@@ -1,5 +1,9 @@
 # Jurnal de modificări
 
+## 2.2.10 — 2026-11-08
+
+- Clasament: scorurile cu mai puțin de 30 de dueluri sunt marcate «provizoriu*», plus notă că cererile folosesc setările implicite ale furnizorului (8 limbi).
+
 ## 2.2.7 — 2026-11-03
 
 Etapa 9: versiunea API Anthropic (anthropic-version 2026-10-21, verificată în documentația oficială la 2026-11-03) și modelele vin dintr-un singur loc, nucleul AI comun (FFF.ai); temperature/top_p/top_k nu se mai trimit niciodată (eliminate în 2026-10-21); modele retrase înlocuite.
