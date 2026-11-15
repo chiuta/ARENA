@@ -24,19 +24,20 @@
     "serviceWorker",
     "localStorage",
     "Web Crypto",
+    "WebGL",
     "WebGPU",
     "BroadcastChannel"
   ],
   "storageKeys": [
     "arena-ff-v1"
   ],
-  "sizeBytes": 759997,
-  "sha256": "185246d80c595af6004a975d4c6b87433e667dc9b571c9b325ec8bb1fc047c30",
+  "sizeBytes": 812037,
+  "sha256": "54d0f69cc486120748445c19a2049f41c292242be851b2bb0c00e8df71085eb0",
   "csp": {
     "present": true,
     "directives": {
       "default-src": "'none'",
-      "script-src": "'self' 'wasm-unsafe-eval' sha256×9",
+      "script-src": "'self' 'wasm-unsafe-eval' sha256×10",
       "style-src": "'unsafe-inline'",
       "img-src": "'self' data: blob:",
       "font-src": "data:",
