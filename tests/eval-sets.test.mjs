@@ -108,6 +108,7 @@ for (const l of ['ro', 'en', 'fr', 'it', 'es', 'pt', 'hu', 'de']) {
 await page.evaluate(() => { LANG = 'ro'; applyLang(); });
 // a11y + îngust
 await ck(page, '[data-tab=eval]');
+await page.waitForTimeout(500); // axe măsoară contrastul pe culorile calculate: să se fi așezat tranziția la comutarea filei (sub încărcare dădea o fluctuație)
 if (AXE) {
   await page.evaluate(fs.readFileSync(AXE, 'utf8') + '\n;0');
   const ax = await page.evaluate(async () => (await axe.run(document, {resultTypes: ['violations']})).violations.map(v => v.id + ':' + v.nodes.map(n => n.target.join(' ')).slice(0, 3).join('|')));
